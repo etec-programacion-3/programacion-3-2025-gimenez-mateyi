@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %}Inicio{% endblock %}
+{% block content %}
+    <h1 class="mb-4">Vehículos Destacados</h1>
+    <div class="row">
+        {% for vehiculo in destacados %}
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <img src="{{ vehiculo.imagen }}" class="card-img-top" alt="{{ vehiculo.modelo }}" style="height: 200px; object-fit: cover;">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ vehiculo.modelo }}</h5>
+                        <p class="card-text">{{ vehiculo.descripcion }}</p>
+                        <p class="card-text"><strong>Precio:</strong> ${{ "{:,.0f}".format(vehiculo.precio) }}</p>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    <h2 class="mt-5">Solicita tu Cotización</h2>
+    <p>Contacta nuestras sucursales para más información:</p>
+    <ul class="list-unstyled">
+        <li><strong>Godoy Cruz:</strong> 261 212-6144</li>
+        <li><strong>San Rafael:</strong> 260 439-0596</li>
+        <li><strong>Guaymallén:</strong> 0261 424-9000</li>
+    </ul>
+{% endblock %}
