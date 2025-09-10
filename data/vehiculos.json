@@ -1,26 +1,26 @@
 [
-      {
-          "modelo": "Fiat Titano",
-          "tipo": "Camioneta",
-          "precio": 15000000,
-          "imagen": "https://via.placeholder.com/300x200?text=Fiat+Titano",
-          "destacado": true,
-          "descripcion": "Camioneta robusta para todo terreno, ideal para trabajo y aventura."
-      },
-      {
-          "modelo": "Fiat Argo",
-          "tipo": "Auto",
-          "precio": 8000000,
-          "imagen": "https://via.placeholder.com/300x200?text=Fiat+Argo",
-          "destacado": false,
-          "descripcion": "Auto compacto y eficiente, perfecto para la ciudad."
-      },
-      {
-          "modelo": "Fiat Cronos MY2024",
-          "tipo": "Auto",
-          "precio": 9000000,
-          "imagen": "https://via.placeholder.com/300x200?text=Fiat+Cronos",
-          "destacado": true,
-          "descripcion": "Sedán moderno con tecnología avanzada y confort."
-      }
-  ]
+  {
+    "modelo": "Fiat Titano",
+    "tipo": "Camioneta",
+    "precio": 15000000,
+    "imagen": "https://acroadtrip.blob.core.windows.net/catalogo-imagenes/s/RT_V_998f54e505c4436499d7127404364e5c.webp",
+    "destacado": true,
+    "descripcion": "Camioneta robusta para todo terreno, ideal para trabajo y aventura."
+  },
+  {
+    "modelo": "Fiat Argo",
+    "tipo": "Auto",
+    "precio": 8000000,
+    "imagen": "https://via.placeholder.com/300x200?text=Fiat+Argo",
+    "destacado": false,
+    "descripcion": "Auto compacto y eficiente, perfecto para la ciudad."
+  },
+  {
+    "modelo": "Fiat Cronos MY2024",
+    "tipo": "Auto",
+    "precio": 9000000,
+    "imagen": "https://cronos.fiat.com.ar//asset/versoes/driveCVT/negro.png",
+    "destacado": true,
+    "descripcion": "Sedán moderno con tecnología avanzada y confort."
+  }
+]
