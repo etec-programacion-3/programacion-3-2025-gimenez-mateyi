@@ -1,57 +1,52 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Concesionaria Fiat - {% block title %}{% endblock %}</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="/static/css/style.css" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{% endblock %}</title>
+
+  <!-- Estilos propios -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos.css') }}">
+  <!-- Bootstrap -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <!-- Swiper CSS (no duplicar en index) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
 </head>
-<body>
-    <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #003087;">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="/">Gimenez Automotores</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/">Inicio</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/quienes-somos">Quiénes Somos</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Modelos
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="/modelo/fiat-titano">Fiat Titano</a></li>
-                            <li><a class="dropdown-item" href="/modelo/fiat-argo">Fiat Argo</a></li>
-                            <li><a class="dropdown-item" href="/modelo/fiat-cronos">Fiat Cronos MY2024</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/planes">Planes</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/cotizador">Cotizador</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/contacto">Contacto</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-    <div class="container mt-4">
-        {% block content %}{% endblock %}
+<body class="bg-light text-dark">
+
+  <!-- Menú de navegación -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+      <a class="navbar-brand fw-bold" href="/">Giménez Automotores</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link" href="/">Inicio</a></li>
+          <li class="nav-item"><a class="nav-link" href="/quienes-somos">Quiénes Somos</a></li>
+          <li class="nav-item"><a class="nav-link" href="/catalogo">Modelos</a></li>
+          <li class="nav-item"><a class="nav-link" href="/planes">Planes</a></li>
+          <li class="nav-item"><a class="nav-link" href="/cotizador">Cotizador</a></li>
+          <li class="nav-item"><a class="nav-link" href="/contacto">Contacto</a></li>
+        </ul>
+      </div>
     </div>
-    <footer class="bg-light text-center py-3 mt-4">
-        <p>&copy; 2025 Gimenez Automotores - Concesionario Oficial Fiat</p>
-        <p>Sucursales: Godoy Cruz (261 212-6144) | San Rafael (260 439-0596) | Guaymallén (0261 424-9000)</p>
-    </footer>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  </nav>
+
+  <main class="container my-4">
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="bg-dark text-white py-3 mt-5">
+    <div class="container text-center small">
+      © {{ 2025 }} Giménez Automotores
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Swiper JS -->
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+  {% block scripts %}{% endblock %}
 </body>
 </html>

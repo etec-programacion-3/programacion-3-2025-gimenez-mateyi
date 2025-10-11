@@ -1,26 +1,41 @@
 {% extends 'base.html' %}
 {% block title %}Inicio{% endblock %}
+
 {% block content %}
-    <h1 class="mb-4">Vehículos Destacados</h1>
-    <div class="row">
+<section class="hero d-flex align-items-center justify-content-center text-center" 
+         style="background-image: url('{{ url_for('static', filename='img/hero_auto.jpg') }}');
+                background-size: cover;
+                background-position: center;
+                height: 90vh;
+                color: white;">
+    <div class="overlay" style="background-color: rgba(0, 0, 0, 0.5); position: absolute; inset: 0;"></div>
+
+    <div class="container position-relative" style="z-index: 2;">
+        <h1 class="display-3 fw-bold">Tu próximo auto te espera</h1>
+        <p class="lead mt-3 mb-4">Encuentra los mejores modelos al mejor precio en nuestra concesionaria online</p>
+        <a href="{{ url_for('catalogo') }}" class="btn btn-primary btn-lg">Ver Catálogo</a>
+    </div>
+</section>
+
+<section class="container text-center my-5">
+    <h2 class="mb-4">Modelos Destacados</h2>
+    <div class="row justify-content-center">
         {% for vehiculo in destacados %}
-            <div class="col-md-4 mb-4">
-                <div class="card h-100">
-                    <img src="{{ vehiculo.imagen }}" class="card-img-top" alt="{{ vehiculo.modelo }}" style="height: 200px; object-fit: cover;">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ vehiculo.modelo }}</h5>
-                        <p class="card-text">{{ vehiculo.descripcion }}</p>
-                        <p class="card-text"><strong>Precio:</strong> ${{ "{:,.0f}".format(vehiculo.precio) }}</p>
-                    </div>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm">
+                <img src="{{ vehiculo.imagen }}" class="card-img-top" alt="{{ vehiculo.modelo }}" 
+                     style="height: 200px; object-fit: cover;">
+                <div class="card-body">
+                    <h5 class="card-title">{{ vehiculo.modelo }}</h5>
+                    <p class="card-text">{{ vehiculo.descripcion }}</p>
+                    <a href="{{ url_for('catalogo') }}" class="btn btn-outline-primary">Ver más</a>
                 </div>
             </div>
+        </div>
+        {% else %}
+        <p>No hay vehículos destacados por el momento.</p>
         {% endfor %}
     </div>
-    <h2 class="mt-5">Solicita tu Cotización</h2>
-    <p>Contacta nuestras sucursales para más información:</p>
-    <ul class="list-unstyled">
-        <li><strong>Godoy Cruz:</strong> 261 212-6144</li>
-        <li><strong>San Rafael:</strong> 260 439-0596</li>
-        <li><strong>Guaymallén:</strong> 0261 424-9000</li>
-    </ul>
+</section>
 {% endblock %}
+
