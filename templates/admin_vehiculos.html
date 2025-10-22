@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+{% block title %}Admin - Vehículos{% endblock %}
+{% block content %}
+<h1 class="mb-4">Administración de Vehículos</h1>
+
+<button class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#modalVehiculo" onclick="limpiarForm()">
+    ➕ Agregar Vehículo
+</button>
+
+<div id="listadoVehiculos" class="row">
+    <!-- Aquí se cargarán los vehículos dinámicamente -->
+</div>
+
+<!-- Modal para crear/editar vehículo -->
+<div class="modal fade" id="modalVehiculo" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalTitle">Agregar Vehículo</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formVehiculo">
+                    <input type="hidden" id="vehiculoId">
+                    <div class="mb-3">
+                        <label for="modelo" class="form-label">Modelo</label>
+                        <input type="text" class="form-control" id="modelo" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="descripcion" class="form-label">Descripción</label>
+                        <textarea class="form-control" id="descripcion" rows="3" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="precio" class="form-label">Precio</label>
+                        <input type="number" class="form-control" id="precio" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="imagen" class="form-label">URL Imagen</label>
+                        <input type="text" class="form-control" id="imagen" 
+                               placeholder="/static/img/fiat-argo.png" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="guardarVehiculo()">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    let modal;
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        modal = new bootstrap.Modal(document.getElementById('modalVehiculo'));
+        cargarVehiculos();
+    });
+    
+    async function cargarVehiculos() {
+        const response = await fetch('/api/vehiculos');
+        const vehiculos = await response.json();
+        
+        const listado = document.getElementById('listadoVehiculos');
+        listado.innerHTML = '';
+        
+        vehiculos.forEach(v => {
+            listado.innerHTML += `
+                <div class="col-md-4 mb-3">
+                    <div class="card">
+                        <img src="${v.imagen}" class="card-img-top" style="height: 200px; object-fit: cover;">
+                        <div class="card-body">
+                            <h5>${v.modelo}</h5>
+                            <p>${v.descripcion}</p>
+                            <p><strong>$${Number(v.precio).toLocaleString()}</strong></p>
+                            <button class="btn btn-sm btn-warning" onclick="editarVehiculo('${v._id}')">✏️ Editar</button>
+                            <button class="btn btn-sm btn-danger" onclick="eliminarVehiculo('${v._id}')">🗑️ Eliminar</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+    }
+    
+    function limpiarForm() {
+        document.getElementById('formVehiculo').reset();
+        document.getElementById('vehiculoId').value = '';
+        document.getElementById('modalTitle').textContent = 'Agregar Vehículo';
+    }
+    
+    async function editarVehiculo(id) {
+        const response = await fetch(`/api/vehiculos/${id}`);
+        const vehiculo = await response.json();
+        
+        document.getElementById('vehiculoId').value = vehiculo._id;
+        document.getElementById('modelo').value = vehiculo.modelo;
+        document.getElementById('descripcion').value = vehiculo.descripcion;
+        document.getElementById('precio').value = vehiculo.precio;
+        document.getElementById('imagen').value = vehiculo.imagen;
+        document.getElementById('modalTitle').textContent = 'Editar Vehículo';
+        
+        modal.show();
+    }
+    
+    async function guardarVehiculo() {
+        const id = document.getElementById('vehiculoId').value;
+        const datos = {
+            modelo: document.getElementById('modelo').value,
+            descripcion: document.getElementById('descripcion').value,
+            precio: parseFloat(document.getElementById('precio').value),
+            imagen: document.getElementById('imagen').value
+        };
+        
+        const url = id ? `/api/vehiculos/${id}` : '/api/vehiculos';
+        const method = id ? 'PUT' : 'POST';
+        
+        const response = await fetch(url, {
+            method: method,
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(datos)
+        });
+        
+        if (response.ok) {
+            modal.hide();
+            cargarVehiculos();
+            alert('Vehículo guardado exitosamente');
+        }
+    }
+    
+    async function eliminarVehiculo(id) {
+        if (!confirm('¿Estás seguro de eliminar este vehículo?')) return;
+        
+        const response = await fetch(`/api/vehiculos/${id}`, {method: 'DELETE'});
+        
+        if (response.ok) {
+            cargarVehiculos();
+            alert('Vehículo eliminado');
+        }
+    }
+</script>
+{% endblock %}
