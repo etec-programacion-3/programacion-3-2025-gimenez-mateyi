@@ -1,6 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_user, logout_user, login_required, current_user
-from werkzeug.security import check_password_hash
 import logging
 
 auth_bp = Blueprint('auth', __name__)
@@ -36,28 +35,42 @@ class User:
 def login():
     """Página de login"""
     if current_user.is_authenticated:
+        logging.info("Usuario ya autenticado, redirigiendo...")
         return redirect(url_for('vehiculos.admin_vehiculos'))
     
     if request.method == 'POST':
         username = request.form.get('username')
         password = request.form.get('password')
         
+        logging.info(f"🔍 Intento de login - Usuario: {username}")
+        
         if not username or not password:
+            logging.warning("Campos vacíos")
             flash('Por favor completa todos los campos', 'danger')
             return render_template('login.html')
         
+        # Verificar que db esté disponible
+        if db is None:
+            logging.error("❌ Base de datos no disponible")
+            flash('Error del servidor. Intenta más tarde.', 'danger')
+            return render_template('login.html')
+        
         # Verificar credenciales
+        logging.info(f"Verificando credenciales para: {username}")
         usuario = db.verificar_usuario(username, password)
         
         if usuario:
+            logging.info(f"✅ Credenciales correctas para: {username}")
             user_obj = User(usuario)
             login_user(user_obj)
             flash(f'¡Bienvenido {username}!', 'success')
             
             # Redirigir a la página solicitada o al admin
             next_page = request.args.get('next')
+            logging.info(f"Redirigiendo a: {next_page or '/admin/vehiculos'}")
             return redirect(next_page or url_for('vehiculos.admin_vehiculos'))
         else:
+            logging.warning(f"❌ Credenciales incorrectas para: {username}")
             flash('Usuario o contraseña incorrectos', 'danger')
     
     return render_template('login.html')
@@ -66,7 +79,9 @@ def login():
 @login_required
 def logout():
     """Cerrar sesión"""
+    username = current_user.username
     logout_user()
+    logging.info(f"Usuario {username} cerró sesión")
     flash('Sesión cerrada exitosamente', 'info')
     return redirect(url_for('home'))
 

@@ -1,11 +1,16 @@
 {% extends 'base.html' %}
 {% block title %}Admin - Vehículos{% endblock %}
-{% block content %}
-<h1 class="mb-4">Administración de Vehículos</h1>
 
-<button class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#modalVehiculo" onclick="limpiarForm()">
-    ➕ Agregar Vehículo
-</button>
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="mb-1"><i class="bi bi-speedometer2"></i> Administración de Vehículos</h1>
+        <p class="text-muted">Gestiona el catálogo de tu concesionaria</p>
+    </div>
+    <button class="btn btn-success btn-lg" data-bs-toggle="modal" data-bs-target="#modalVehiculo" onclick="limpiarForm()">
+        <i class="bi bi-plus-circle"></i> Agregar Vehículo
+    </button>
+</div>
 
 <div id="listadoVehiculos" class="row">
     <!-- Aquí se cargarán los vehículos dinámicamente -->
@@ -23,27 +28,40 @@
                 <form id="formVehiculo">
                     <input type="hidden" id="vehiculoId">
                     <div class="mb-3">
-                        <label for="modelo" class="form-label">Modelo</label>
+                        <label for="modelo" class="form-label">
+                            <i class="bi bi-car-front"></i> Modelo
+                        </label>
                         <input type="text" class="form-control" id="modelo" required>
                     </div>
                     <div class="mb-3">
-                        <label for="descripcion" class="form-label">Descripción</label>
+                        <label for="descripcion" class="form-label">
+                            <i class="bi bi-card-text"></i> Descripción
+                        </label>
                         <textarea class="form-control" id="descripcion" rows="3" required></textarea>
                     </div>
                     <div class="mb-3">
-                        <label for="precio" class="form-label">Precio</label>
+                        <label for="precio" class="form-label">
+                            <i class="bi bi-currency-dollar"></i> Precio
+                        </label>
                         <input type="number" class="form-control" id="precio" required>
                     </div>
                     <div class="mb-3">
-                        <label for="imagen" class="form-label">URL Imagen</label>
+                        <label for="imagen" class="form-label">
+                            <i class="bi bi-image"></i> URL Imagen
+                        </label>
                         <input type="text" class="form-control" id="imagen" 
                                placeholder="/static/img/fiat-argo.png" required>
+                        <div class="form-text">Ejemplo: /static/img/fiat-argo.png</div>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-primary" onclick="guardarVehiculo()">Guardar</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x-circle"></i> Cancelar
+                </button>
+                <button type="button" class="btn btn-primary" onclick="guardarVehiculo()">
+                    <i class="bi bi-save"></i> Guardar
+                </button>
             </div>
         </div>
     </div>
@@ -60,28 +78,57 @@
     });
     
     async function cargarVehiculos() {
-        const response = await fetch('/api/vehiculos');
-        const vehiculos = await response.json();
-        
-        const listado = document.getElementById('listadoVehiculos');
-        listado.innerHTML = '';
-        
-        vehiculos.forEach(v => {
-            listado.innerHTML += `
-                <div class="col-md-4 mb-3">
-                    <div class="card">
-                        <img src="${v.imagen}" class="card-img-top" style="height: 200px; object-fit: cover;">
-                        <div class="card-body">
-                            <h5>${v.modelo}</h5>
-                            <p>${v.descripcion}</p>
-                            <p><strong>$${Number(v.precio).toLocaleString()}</strong></p>
-                            <button class="btn btn-sm btn-warning" onclick="editarVehiculo('${v._id}')">✏️ Editar</button>
-                            <button class="btn btn-sm btn-danger" onclick="eliminarVehiculo('${v._id}')">🗑️ Eliminar</button>
+        try {
+            const response = await fetch('/api/vehiculos');
+            const vehiculos = await response.json();
+            
+            const listado = document.getElementById('listadoVehiculos');
+            listado.innerHTML = '';
+            
+            if (vehiculos.length === 0) {
+                listado.innerHTML = `
+                    <div class="col-12 text-center py-5">
+                        <i class="bi bi-inbox" style="font-size: 3rem; color: #ccc;"></i>
+                        <p class="text-muted mt-3">No hay vehículos registrados</p>
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalVehiculo" onclick="limpiarForm()">
+                            <i class="bi bi-plus-circle"></i> Agregar Primer Vehículo
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+            
+            vehiculos.forEach(v => {
+                listado.innerHTML += `
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100 shadow-sm">
+                            <img src="${v.imagen}" class="card-img-top" alt="${v.modelo}" 
+                                 style="height: 200px; object-fit: cover;">
+                            <div class="card-body">
+                                <h5 class="card-title">${v.modelo}</h5>
+                                <p class="card-text">${v.descripcion}</p>
+                                <p class="card-text">
+                                    <strong class="text-primary">$${Number(v.precio).toLocaleString()}</strong>
+                                </p>
+                            </div>
+                            <div class="card-footer bg-transparent border-0 pb-3">
+                                <div class="d-flex gap-2">
+                                    <button class="btn btn-warning flex-fill" onclick="editarVehiculo('${v._id}')">
+                                        <i class="bi bi-pencil-fill"></i> Editar
+                                    </button>
+                                    <button class="btn btn-danger flex-fill" onclick="eliminarVehiculo('${v._id}')">
+                                        <i class="bi bi-trash-fill"></i> Eliminar
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            `;
-        });
+                `;
+            });
+        } catch (error) {
+            console.error('Error al cargar vehículos:', error);
+            alert('Error al cargar los vehículos');
+        }
     }
     
     function limpiarForm() {
@@ -91,17 +138,22 @@
     }
     
     async function editarVehiculo(id) {
-        const response = await fetch(`/api/vehiculos/${id}`);
-        const vehiculo = await response.json();
-        
-        document.getElementById('vehiculoId').value = vehiculo._id;
-        document.getElementById('modelo').value = vehiculo.modelo;
-        document.getElementById('descripcion').value = vehiculo.descripcion;
-        document.getElementById('precio').value = vehiculo.precio;
-        document.getElementById('imagen').value = vehiculo.imagen;
-        document.getElementById('modalTitle').textContent = 'Editar Vehículo';
-        
-        modal.show();
+        try {
+            const response = await fetch(`/api/vehiculos/${id}`);
+            const vehiculo = await response.json();
+            
+            document.getElementById('vehiculoId').value = vehiculo._id;
+            document.getElementById('modelo').value = vehiculo.modelo;
+            document.getElementById('descripcion').value = vehiculo.descripcion;
+            document.getElementById('precio').value = vehiculo.precio;
+            document.getElementById('imagen').value = vehiculo.imagen;
+            document.getElementById('modalTitle').textContent = 'Editar Vehículo';
+            
+            modal.show();
+        } catch (error) {
+            console.error('Error al cargar vehículo:', error);
+            alert('Error al cargar el vehículo');
+        }
     }
     
     async function guardarVehiculo() {
@@ -113,31 +165,68 @@
             imagen: document.getElementById('imagen').value
         };
         
-        const url = id ? `/api/vehiculos/${id}` : '/api/vehiculos';
-        const method = id ? 'PUT' : 'POST';
-        
-        const response = await fetch(url, {
-            method: method,
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(datos)
-        });
-        
-        if (response.ok) {
-            modal.hide();
-            cargarVehiculos();
-            alert('Vehículo guardado exitosamente');
+        try {
+            const url = id ? `/api/vehiculos/${id}` : '/api/vehiculos';
+            const method = id ? 'PUT' : 'POST';
+            
+            const response = await fetch(url, {
+                method: method,
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(datos)
+            });
+            
+            if (response.ok) {
+                modal.hide();
+                cargarVehiculos();
+                
+                // Mostrar mensaje de éxito
+                const mensaje = id ? 'Vehículo actualizado' : 'Vehículo creado';
+                mostrarAlerta(mensaje, 'success');
+            } else {
+                throw new Error('Error al guardar');
+            }
+        } catch (error) {
+            console.error('Error al guardar vehículo:', error);
+            mostrarAlerta('Error al guardar el vehículo', 'danger');
         }
     }
     
     async function eliminarVehiculo(id) {
         if (!confirm('¿Estás seguro de eliminar este vehículo?')) return;
         
-        const response = await fetch(`/api/vehiculos/${id}`, {method: 'DELETE'});
-        
-        if (response.ok) {
-            cargarVehiculos();
-            alert('Vehículo eliminado');
+        try {
+            const response = await fetch(`/api/vehiculos/${id}`, {
+                method: 'DELETE'
+            });
+            
+            if (response.ok) {
+                cargarVehiculos();
+                mostrarAlerta('Vehículo eliminado exitosamente', 'info');
+            } else {
+                throw new Error('Error al eliminar');
+            }
+        } catch (error) {
+            console.error('Error al eliminar vehículo:', error);
+            mostrarAlerta('Error al eliminar el vehículo', 'danger');
         }
+    }
+    
+    function mostrarAlerta(mensaje, tipo) {
+        const alertaHTML = `
+            <div class="alert alert-${tipo} alert-dismissible fade show" role="alert">
+                <i class="bi bi-check-circle-fill"></i> ${mensaje}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        `;
+        
+        const container = document.querySelector('.container.my-4');
+        container.insertAdjacentHTML('afterbegin', alertaHTML);
+        
+        // Auto-cerrar después de 3 segundos
+        setTimeout(() => {
+            const alerta = container.querySelector('.alert');
+            if (alerta) alerta.remove();
+        }, 3000);
     }
 </script>
 {% endblock %}

@@ -8,12 +8,15 @@ import os
 # Cargar variables de entorno
 load_dotenv()
 
-# Configuración de logs
-logging.basicConfig(level=logging.DEBUG)
+# Configuración de logs MÁS DETALLADA
+logging.basicConfig(
+    level=logging.DEBUG,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
 
 app = Flask(__name__, template_folder='templates')
 app.static_folder = 'static'
-app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'clave_secreta_por_defecto')
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'clave_secreta_por_defecto_12345')
 
 # --- Configurar Flask-Login ---
 login_manager = LoginManager()
@@ -23,7 +26,8 @@ login_manager.login_message = 'Por favor inicia sesión para acceder a esta pág
 login_manager.login_message_category = 'warning'
 
 # --- Conexión a MongoDB ---
-MONGO_URL = os.getenv('MONGO_URL')
+MONGO_URL = os.getenv('MONGO_URL', "mongodb+srv://mateyi2:Colon1339@cluster0.terwnab.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
+logging.info(f"🔍 Conectando a MongoDB...")
 vehiculos_db = VehiculoDB(MONGO_URL)
 
 # --- User Loader para Flask-Login ---
@@ -31,20 +35,26 @@ from routes.auth import User
 
 @login_manager.user_loader
 def load_user(user_id):
+    logging.debug(f"🔍 Cargando usuario con ID: {user_id}")
     usuario_data = vehiculos_db.obtener_usuario_por_id(user_id)
     if usuario_data:
+        logging.debug(f"✅ Usuario cargado: {usuario_data['username']}")
         return User(usuario_data)
+    logging.warning(f"❌ Usuario no encontrado con ID: {user_id}")
     return None
 
 # --- Registrar Blueprints ---
 from routes.vehiculos import vehiculos_bp, init_vehiculos_routes
 from routes.auth import auth_bp, init_auth_routes
+from routes.mensajes import mensajes_bp, init_mensajes_routes
 
 init_vehiculos_routes(vehiculos_db)
 init_auth_routes(vehiculos_db)
+init_mensajes_routes(vehiculos_db)
 
 app.register_blueprint(vehiculos_bp)
 app.register_blueprint(auth_bp)
+app.register_blueprint(mensajes_bp)
 
 # --- Rutas principales ---
 @app.route('/')
@@ -71,8 +81,17 @@ def contacto():
         nombre = request.form['nombre']
         email = request.form['email']
         mensaje = request.form['mensaje']
-        print(f"📩 Formulario recibido: {nombre} ({email}) - {mensaje}")
-        return render_template('contacto.html', exito=True)
+        
+        # Guardar en la base de datos
+        mensaje_id = vehiculos_db.crear_mensaje(nombre, email, mensaje)
+        
+        if mensaje_id:
+            logging.info(f"📩 Mensaje guardado de {nombre} ({email})")
+            return render_template('contacto.html', exito=True)
+        else:
+            logging.error(f"❌ Error al guardar mensaje de {nombre}")
+            return render_template('contacto.html', exito=False, error=True)
+    
     return render_template('contacto.html', exito=False)
 
 @app.route('/cotizador', methods=['GET', 'POST'])
