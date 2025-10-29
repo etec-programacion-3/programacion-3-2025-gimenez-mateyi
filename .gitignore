@@ -1,0 +1,2 @@
+echo "postman.tar.gz" >> .gitignore
+echo "*.tar.gz" >> .gitignore   
