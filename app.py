@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for
 from flask_login import LoginManager, current_user
 from models import VehiculoDB
 from dotenv import load_dotenv
+from routes.planes_cotizador import planes_cotizador_bp, init_planes_cotizador_routes
 import logging
 import os
 
@@ -48,13 +49,17 @@ from routes.vehiculos import vehiculos_bp, init_vehiculos_routes
 from routes.auth import auth_bp, init_auth_routes
 from routes.mensajes import mensajes_bp, init_mensajes_routes
 
+# Inicializar TODAS las rutas
 init_vehiculos_routes(vehiculos_db)
 init_auth_routes(vehiculos_db)
 init_mensajes_routes(vehiculos_db)
+init_planes_cotizador_routes(vehiculos_db)  # ← AGREGAR ESTA LÍNEA
 
+# Registrar TODOS los blueprints
 app.register_blueprint(vehiculos_bp)
 app.register_blueprint(auth_bp)
 app.register_blueprint(mensajes_bp)
+app.register_blueprint(planes_cotizador_bp)  # ← AGREGAR ESTA LÍNEA
 
 # --- Rutas principales ---
 @app.route('/')
