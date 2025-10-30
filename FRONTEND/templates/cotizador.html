@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block title %}Cotizador de Usados{% endblock %}
+{% block content %}
+    <h1 class="mb-4">Cotizador de Usados</h1>
+    <p>Ingresá los datos de tu vehículo para obtener una cotización estimada:</p>
+    {% if precio %}
+        <div class="alert alert-success">
+            <h4>Precio estimado: ${{ "{:,.0f}".format(precio) }}</h4>
+            <p>Para: {{ datos.marca }} {{ datos.modelo }} (Año: {{ datos.anio }}, Estado: {{ datos.estado }})</p>
+        </div>
+    {% endif %}
+    <form method="POST" class="mb-4">
+        <div class="mb-3">
+            <label for="marca" class="form-label">Marca</label>
+            <input type="text" class="form-control" id="marca" name="marca" required>
+        </div>
+        <div class="mb-3">
+            <label for="modelo" class="form-label">Modelo</label>
+            <input type="text" class="form-control" id="modelo" name="modelo" required>
+        </div>
+        <div class="mb-3">
+            <label for="anio" class="form-label">Año</label>
+            <input type="number" class="form-control" id="anio" name="anio" min="1980" max="2025" required>
+        </div>
+        <div class="mb-3">
+            <label for="estado" class="form-label">Estado del vehículo</label>
+            <select class="form-control" id="estado" name="estado" required>
+                <option value="excelente">Excelente</option>
+                <option value="bueno">Bueno</option>
+                <option value="regular">Regular</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Cotizar</button>
+    </form>
+{% endblock %}

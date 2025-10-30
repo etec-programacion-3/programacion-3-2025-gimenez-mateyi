@@ -1,0 +1,257 @@
+{% extends 'base.html' %}
+{% block title %}Inicio - Giménez Automotores{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-7">
+                    <div class="hero-text">
+                        <h1 class="display-3 fw-bold">Tu Próximo Auto<br>Te Espera Aquí</h1>
+                        <p class="lead">Descubre los mejores modelos Fiat con planes de financiación a tu medida. Calidad, confianza y experiencia desde 2005.</p>
+                        <div class="d-flex gap-3 flex-wrap">
+                            <a href="{{ url_for('catalogo') }}" class="btn btn-primary btn-lg">
+                                <i class="bi bi-car-front-fill me-2"></i>Ver Catálogo
+                            </a>
+                            <a href="{{ url_for('contacto') }}" class="btn btn-outline-light btn-lg">
+                                <i class="bi bi-envelope-fill me-2"></i>Contactanos
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Stats Section -->
+<section class="stats-section py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3 col-6">
+                <div class="stat-item">
+                    <span class="stat-number"><i class="bi bi-calendar-check"></i> 20+</span>
+                    <span class="stat-label">Años de Experiencia</span>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="stat-item">
+                    <span class="stat-number"><i class="bi bi-people"></i> 5000+</span>
+                    <span class="stat-label">Clientes Satisfechos</span>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="stat-item">
+                    <span class="stat-number"><i class="bi bi-geo-alt"></i> 3</span>
+                    <span class="stat-label">Sucursales</span>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="stat-item">
+                    <span class="stat-number"><i class="bi bi-star-fill"></i> 4.9</span>
+                    <span class="stat-label">Calificación Promedio</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Quiénes Somos -->
+<section class="section bg-light">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 mb-4 mb-lg-0">
+                <img src="{{ url_for('static', filename='img/fiat-argo.png') }}" 
+                     alt="Giménez Automotores" 
+                     class="img-fluid rounded shadow-lg"
+                     style="animation: fadeIn 1s ease;">
+            </div>
+            <div class="col-lg-6">
+                <h2 class="section-title">Quiénes Somos</h2>
+                <p class="section-subtitle">Tu Concesionario Oficial Fiat de Confianza</p>
+                <p class="lead">En <strong>Giménez Automotores</strong> somos distribuidores oficiales de Fiat en Mendoza con más de 20 años de trayectoria en el mercado automotriz.</p>
+                <p>Ofrecemos vehículos 0km y usados seleccionados, planes de financiación flexibles y un servicio postventa de excelencia. Contamos con tres sucursales estratégicamente ubicadas en Godoy Cruz, San Rafael y Guaymallén para estar siempre cerca tuyo.</p>
+                
+                <div class="row mt-4">
+                    <div class="col-md-6 mb-3">
+                        <div class="d-flex align-items-start">
+                            <i class="bi bi-check-circle-fill text-success fs-3 me-3"></i>
+                            <div>
+                                <h5>Garantía Oficial</h5>
+                                <p class="text-muted">Todos nuestros vehículos con garantía de fábrica</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="d-flex align-items-start">
+                            <i class="bi bi-check-circle-fill text-success fs-3 me-3"></i>
+                            <div>
+                                <h5>Financiación Flexible</h5>
+                                <p class="text-muted">Planes adaptados a tu presupuesto</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="d-flex align-items-start">
+                            <i class="bi bi-check-circle-fill text-success fs-3 me-3"></i>
+                            <div>
+                                <h5>Atención Personalizada</h5>
+                                <p class="text-muted">Asesoramiento profesional en cada paso</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="d-flex align-items-start">
+                            <i class="bi bi-check-circle-fill text-success fs-3 me-3"></i>
+                            <div>
+                                <h5>Service Oficial</h5>
+                                <p class="text-muted">Mantenimiento con repuestos originales</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Modelos Destacados -->
+<section class="section">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="section-title">Modelos Destacados</h2>
+            <p class="section-subtitle">Descubre nuestra selección de vehículos más populares</p>
+        </div>
+        
+        <div class="row">
+            {% if destacados %}
+                {% for vehiculo in destacados %}
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="card vehicle-card h-100">
+                        <div class="overflow-hidden">
+                            <img src="{{ vehiculo.imagen }}" 
+                                 class="card-img-top" 
+                                 alt="{{ vehiculo.modelo }}"
+                                 style="height: 250px; object-fit: cover;">
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">{{ vehiculo.modelo }}</h5>
+                            <p class="card-text text-muted">{{ vehiculo.descripcion }}</p>
+                            <div class="d-flex justify-content-between align-items-center mt-3">
+                                <span class="vehicle-price">${{ "{:,.0f}".format(vehiculo.precio) }}</span>
+                                <a href="{{ url_for('catalogo') }}" class="btn btn-outline-primary">
+                                    Ver más <i class="bi bi-arrow-right ms-1"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="card-footer bg-transparent border-0 pb-3">
+                            <div class="d-flex gap-2">
+                                <span class="badge bg-light text-dark"><i class="bi bi-fuel-pump"></i> Nafta</span>
+                                <span class="badge bg-light text-dark"><i class="bi bi-gear"></i> Manual</span>
+                                <span class="badge bg-light text-dark"><i class="bi bi-speedometer2"></i> 0 km</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="col-12 text-center">
+                    <p class="text-muted">No hay vehículos destacados disponibles</p>
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="text-center mt-4">
+            <a href="{{ url_for('catalogo') }}" class="btn btn-primary btn-lg">
+                Ver Catálogo Completo <i class="bi bi-arrow-right ms-2"></i>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="section bg-light">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="section-title">¿Por Qué Elegirnos?</h2>
+            <p class="section-subtitle">Beneficios de comprar en Giménez Automotores</p>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="feature-box">
+                    <div class="feature-icon">
+                        <i class="bi bi-shield-check"></i>
+                    </div>
+                    <h4 class="feature-title">Garantía Oficial</h4>
+                    <p class="text-muted">Todos nuestros vehículos 0km cuentan con garantía de fábrica y respaldo oficial Fiat</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="feature-box">
+                    <div class="feature-icon">
+                        <i class="bi bi-credit-card"></i>
+                    </div>
+                    <h4 class="feature-title">Planes Flexibles</h4>
+                    <p class="text-muted">Ofrecemos múltiples opciones de financiación adaptadas a tu presupuesto</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="feature-box">
+                    <div class="feature-icon">
+                        <i class="bi bi-tools"></i>
+                    </div>
+                    <h4 class="feature-title">Service Oficial</h4>
+                    <p class="text-muted">Mantenimiento y reparación con repuestos originales y técnicos certificados</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="feature-box">
+                    <div class="feature-icon">
+                        <i class="bi bi-arrow-left-right"></i>
+                    </div>
+                    <h4 class="feature-title">Tomamos tu Usado</h4>
+                    <p class="text-muted">Tasación inmediata y mejor precio por tu vehículo usado</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="feature-box">
+                    <div class="feature-icon">
+                        <i class="bi bi-headset"></i>
+                    </div>
+                    <h4 class="feature-title">Atención Personalizada</h4>
+                    <p class="text-muted">Asesoramiento profesional en cada etapa de tu compra</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="feature-box">
+                    <div class="feature-icon">
+                        <i class="bi bi-truck"></i>
+                    </div>
+                    <h4 class="feature-title">Entrega Rápida</h4>
+                    <p class="text-muted">Recibí tu vehículo en tiempo récord con toda la documentación</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section text-center">
+    <div class="container">
+        <h2 class="mb-3">¿Listo para tu Próximo Auto?</h2>
+        <p class="lead mb-4">Visitanos en cualquiera de nuestras sucursales o contactanos para más información</p>
+        <div class="d-flex gap-3 justify-content-center flex-wrap">
+            <a href="{{ url_for('contacto') }}" class="btn btn-light btn-lg">
+                <i class="bi bi-envelope-fill me-2"></i>Contactar Ahora
+            </a>
+            <a href="{{ url_for('cotizador') }}" class="btn btn-outline-light btn-lg">
+                <i class="bi bi-calculator me-2"></i>Cotizar Mi Usado
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}

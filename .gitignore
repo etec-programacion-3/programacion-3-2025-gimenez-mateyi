@@ -1,2 +1,42 @@
 echo "postman.tar.gz" >> .gitignore
 echo "*.tar.gz" >> .gitignore   
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Entornos virtuales
+venv/
+env/
+ENV/
+nuevo_venv/
+venv*/
+
+# Flask
+instance/
+.webassets-cache
+
+# Variables de entorno
+.env
+.env.local
+
+# MongoDB
+*.log
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Archivos de instalación
+*.tar.gz
+*.jar
+bfg-*
+
+# Node modules (si hay frontend con npm)
+node_modules/

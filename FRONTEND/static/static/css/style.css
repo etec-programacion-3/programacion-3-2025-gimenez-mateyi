@@ -1,0 +1,377 @@
+/* ==================== VARIABLES DE COLOR ==================== */
+:root {
+    --primary-color: #e63946;
+    --secondary-color: #1d3557;
+    --accent-color: #f1faee;
+    --text-dark: #1d3557;
+    --text-light: #f1faee;
+    --bg-light: #f8f9fa;
+}
+
+/* ==================== RESET Y GENERALES ==================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--text-dark);
+    line-height: 1.6;
+}
+
+/* ==================== NAVBAR ==================== */
+.navbar {
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.navbar-dark {
+    background: linear-gradient(135deg, var(--secondary-color) 0%, #0d1b2a 100%) !important;
+}
+
+.navbar-brand {
+    font-size: 1.5rem;
+    font-weight: 700;
+    transition: transform 0.3s;
+}
+
+.navbar-brand:hover {
+    transform: scale(1.05);
+    color: var(--primary-color) !important;
+}
+
+.nav-link {
+    position: relative;
+    font-weight: 500;
+    transition: all 0.3s;
+    padding: 0.5rem 1rem !important;
+}
+
+.nav-link::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 3px;
+    bottom: 0;
+    left: 50%;
+    background: var(--primary-color);
+    transition: all 0.3s;
+    transform: translateX(-50%);
+}
+
+.nav-link:hover::after {
+    width: 80%;
+}
+
+.nav-link:hover {
+    color: var(--primary-color) !important;
+}
+
+/* ==================== HERO SECTION ==================== */
+.hero-section {
+    position: relative;
+    height: 85vh;
+    overflow: hidden;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+}
+
+.hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to right, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.85));
+    z-index: 1;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.hero-text h1 {
+    font-size: 3.5rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    animation: fadeInUp 1s ease;
+    color: var(--text-dark) !important;
+}
+
+.hero-text p {
+    font-size: 1.3rem;
+    margin-bottom: 2rem;
+    animation: fadeInUp 1.2s ease;
+    color: #495057 !important;
+}
+
+.hero-text .btn-primary {
+    padding: 15px 40px;
+    font-size: 1.1rem;
+    border-radius: 50px;
+    background: var(--primary-color);
+    border: none;
+    transition: all 0.3s;
+    animation: fadeInUp 1.4s ease;
+    color: white !important;
+}
+
+.hero-text .btn-primary:hover {
+    background: #c62e3b;
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(230, 57, 70, 0.4);
+}
+
+.hero-text .btn-outline-light {
+    padding: 15px 40px;
+    font-size: 1.1rem;
+    border-radius: 50px;
+    border: 2px solid var(--secondary-color);
+    color: var(--secondary-color) !important;
+    background: transparent;
+    transition: all 0.3s;
+    animation: fadeInUp 1.4s ease;
+}
+
+.hero-text .btn-outline-light:hover {
+    background: var(--secondary-color);
+    color: white !important;
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(29, 53, 87, 0.4);
+}
+
+/* ==================== SECCIONES ==================== */
+.section {
+    padding: 80px 0;
+}
+
+.section-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: var(--secondary-color);
+    position: relative;
+    display: inline-block;
+}
+
+.section-title::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 0;
+    width: 60px;
+    height: 4px;
+    background: var(--primary-color);
+}
+
+.section-subtitle {
+    font-size: 1.1rem;
+    color: #6c757d;
+    margin-bottom: 3rem;
+}
+
+/* ==================== CARDS DE VEHÍCULOS ==================== */
+.vehicle-card {
+    transition: all 0.3s ease;
+    border: none;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+}
+
+.vehicle-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+}
+
+.vehicle-card img {
+    transition: transform 0.5s;
+}
+
+.vehicle-card:hover img {
+    transform: scale(1.1);
+}
+
+.vehicle-card .card-body {
+    padding: 1.5rem;
+}
+
+.vehicle-card .card-title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--secondary-color);
+    margin-bottom: 0.5rem;
+}
+
+.vehicle-price {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+/* ==================== STATS SECTION ==================== */
+.stats-section {
+    background: linear-gradient(135deg, var(--secondary-color) 0%, #0d1b2a 100%);
+    color: white;
+}
+
+.stat-item {
+    text-align: center;
+    padding: 2rem;
+}
+
+.stat-number {
+    font-size: 3rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    display: block;
+}
+
+.stat-label {
+    font-size: 1.1rem;
+    margin-top: 0.5rem;
+}
+
+/* ==================== FEATURES SECTION ==================== */
+.feature-box {
+    text-align: center;
+    padding: 2rem;
+    transition: all 0.3s;
+    border-radius: 15px;
+}
+
+.feature-box:hover {
+    background: var(--bg-light);
+    transform: translateY(-5px);
+}
+
+.feature-icon {
+    font-size: 3rem;
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+}
+
+.feature-title {
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+/* ==================== CTA SECTION ==================== */
+.cta-section {
+    background: linear-gradient(135deg, var(--primary-color) 0%, #c62e3b 100%);
+    color: white;
+    padding: 60px 0;
+}
+
+.cta-section h2 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.cta-section .btn {
+    padding: 15px 40px;
+    font-size: 1.1rem;
+    border-radius: 50px;
+    background: white;
+    color: var(--primary-color);
+    border: none;
+    font-weight: 600;
+    transition: all 0.3s;
+}
+
+.cta-section .btn:hover {
+    background: var(--accent-color);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+/* ==================== FOOTER ==================== */
+footer {
+    background: linear-gradient(135deg, var(--secondary-color) 0%, #0d1b2a 100%);
+}
+
+/* ==================== ANIMACIONES ==================== */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* ==================== DROPDOWN ==================== */
+.dropdown-menu {
+    border-radius: 10px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+    border: none;
+    margin-top: 0.5rem;
+}
+
+.dropdown-item {
+    padding: 0.7rem 1.5rem;
+    transition: all 0.3s;
+}
+
+.dropdown-item:hover {
+    background: var(--bg-light);
+    padding-left: 2rem;
+    color: var(--primary-color);
+}
+
+/* ==================== RESPONSIVE ==================== */
+@media (max-width: 768px) {
+    .hero-text h1 {
+        font-size: 2.5rem;
+    }
+    
+    .hero-text p {
+        font-size: 1rem;
+    }
+    
+    .section-title {
+        font-size: 2rem;
+    }
+    
+    .stat-number {
+        font-size: 2rem;
+    }
+}
+
+/* ==================== BUTTONS ==================== */
+.btn-outline-light {
+    border-width: 2px;
+    font-weight: 600;
+    transition: all 0.3s;
+}
+
+.btn-outline-light:hover {
+    background: linear-gradient(135deg, var(--primary-color) 0%, #c62e3b 100%);
+    border-color: transparent;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(230, 57, 70, 0.4);
+}
+
+/* ==================== BADGES ==================== */
+.badge {
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+}
