@@ -2,21 +2,23 @@ from flask import Flask, render_template, request, redirect, url_for
 from flask_login import LoginManager, current_user
 from models import VehiculoDB
 from dotenv import load_dotenv
-from routes.planes_cotizador import planes_cotizador_bp, init_planes_cotizador_routes
 import logging
 import os
 
 # Cargar variables de entorno
 load_dotenv()
 
-# Configuración de logs MÁS DETALLADA
+# Configuración de logs
 logging.basicConfig(
     level=logging.DEBUG,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
 
-app = Flask(__name__, template_folder='templates')
-app.static_folder = 'static'
+# Cambiar las rutas de templates y static
+app = Flask(__name__, 
+            template_folder='../FRONTEND/templates',
+            static_folder='../FRONTEND/static')
+
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'clave_secreta_por_defecto_12345')
 
 # --- Configurar Flask-Login ---
@@ -48,18 +50,17 @@ def load_user(user_id):
 from routes.vehiculos import vehiculos_bp, init_vehiculos_routes
 from routes.auth import auth_bp, init_auth_routes
 from routes.mensajes import mensajes_bp, init_mensajes_routes
+from routes.planes_cotizador import planes_cotizador_bp, init_planes_cotizador_routes
 
-# Inicializar TODAS las rutas
 init_vehiculos_routes(vehiculos_db)
 init_auth_routes(vehiculos_db)
 init_mensajes_routes(vehiculos_db)
-init_planes_cotizador_routes(vehiculos_db)  # ← AGREGAR ESTA LÍNEA
+init_planes_cotizador_routes(vehiculos_db)
 
-# Registrar TODOS los blueprints
 app.register_blueprint(vehiculos_bp)
 app.register_blueprint(auth_bp)
 app.register_blueprint(mensajes_bp)
-app.register_blueprint(planes_cotizador_bp)  # ← AGREGAR ESTA LÍNEA
+app.register_blueprint(planes_cotizador_bp)
 
 # --- Rutas principales ---
 @app.route('/')
