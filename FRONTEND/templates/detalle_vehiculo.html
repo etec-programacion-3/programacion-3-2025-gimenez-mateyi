@@ -1,0 +1,285 @@
+{% extends 'base.html' %}
+{% block title %}{{ vehiculo.modelo }}{% endblock %}
+{% block content %}
+
+<!-- Header del vehículo -->
+<div class="vehicle-detail-header">
+    <div class="container">
+        <h1>{{ vehiculo.modelo }}</h1>
+    </div>
+</div>
+
+<!-- Sección principal con imagen y forma angular -->
+<section class="vehicle-main-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <div class="vehicle-image-container">
+                    <!-- Forma angular de fondo -->
+                    <div class="angular-bg"></div>
+                    <div class="angular-bg-label">DRIVE MT</div>
+                    
+                    <!-- Imagen principal del vehículo -->
+                    <img src="{{ vehiculo.imagen }}" alt="{{ vehiculo.modelo }}" class="vehicle-main-image">
+                </div>
+            </div>
+            
+            <div class="col-lg-6">
+                <div class="vehicle-info-box">
+                    <h2>{{ vehiculo.modelo }}</h2>
+                    <p class="vehicle-description">
+                        {{ vehiculo.descripcion }}
+                    </p>
+                    
+                    <!-- Selector de colores -->
+                    <div class="colors-section">
+                        <h3 class="colors-title">COLORES</h3>
+                        <div class="color-selector">
+                            <div class="color-option color-white active" data-color="Blanco Banchisa" title="Blanco Banchisa"></div>
+                            <div class="color-option color-silver" data-color="Gris Plata" title="Gris Plata"></div>
+                            <div class="color-option color-black" data-color="Negro Vulcano" title="Negro Vulcano"></div>
+                            <div class="color-option color-red" data-color="Rojo Montecarlo" title="Rojo Montecarlo"></div>
+                            <div class="color-option color-blue" data-color="Azul Bari" title="Azul Bari"></div>
+                        </div>
+                        <p class="color-name">Blanco Banchisa</p>
+                    </div>
+                    
+                    <!-- Precio -->
+                    <div class="my-4">
+                        <span class="vehicle-price">Precio: ${{ "{:,.0f}".format(vehiculo.precio) }}</span>
+                    </div>
+                    
+                    <!-- Botón de cotización -->
+                    <a href="{{ url_for('cotizador') }}?vehiculo={{ vehiculo._id }}" class="btn btn-quote-large">
+                        SOLICITAR COTIZACIÓN
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Sección de financiación -->
+<section class="financing-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="financing-box">
+                    <div class="financing-label">FINANCIACIÓN</div>
+                    <h2 class="financing-title">{{ vehiculo.modelo }}</h2>
+                    <p class="financing-subtitle">Hasta $20.000.000 u 80% del precio de lista</p>
+                    <p class="financing-details">
+                        <strong>12 meses TNA 0,00%</strong><br>
+                        Plan UVA
+                    </p>
+                    <a href="{{ url_for('cotizador') }}?vehiculo={{ vehiculo._id }}" class="btn btn-quote-large">
+                        SOLICITAR COTIZACIÓN
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Galería de fotos -->
+<section class="gallery-section">
+    <div class="container">
+        <h2 class="section-title text-center mb-5">FOTOS</h2>
+        <div class="gallery-grid">
+            <!-- Aquí irían las imágenes de la galería -->
+            <div class="gallery-item">
+                <img src="{{ url_for('static', filename='img/Argo_MY25_galeria2.png') }}" alt="Interior 1">
+            </div>
+            <div class="gallery-item">
+                <img src="{{ url_for('static', filename='img/Argo_MY25_galeria4.png') }}" alt="Interior 2">
+            </div>
+            <div class="gallery-item">
+                <img src="{{ url_for('static', filename='img/Argo_MY25_galeria5.png') }}" alt="Interior 3">
+            </div>
+            <div class="gallery-item">
+                <img src="{{ url_for('static', filename='img/Cronos_MY26_galeria2.png') }}" alt="Detalle 1">
+            </div>
+            <div class="gallery-item">
+                <img src="{{ url_for('static', filename='img/Cronos_MY26_galeria7.png') }}" alt="Detalle 2">
+            </div>
+            <div class="gallery-item">
+                <img src="{{ url_for('static', filename='img/Cronos_MY26_galeria8.png') }}" alt="Detalle 3">
+            </div>
+            <div class="gallery-item">
+                <img src="{{ url_for('static', filename='img/mobi5-desktop.png') }}" alt="Exterior 1">
+            </div>
+            <div class="gallery-item">
+                <img src="{{ url_for('static', filename='img/mobi6-desktop.png') }}" alt="Exterior 2">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Ficha técnica -->
+<section class="specs-section">
+    <div class="container">
+        <div class="specs-header">
+            <h3>FICHA TÉCNICA</h3>
+        </div>
+        
+        <div class="accordion" id="specsAccordion">
+            <!-- Motor -->
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseMotor">
+                        Motor y Transmisión
+                    </button>
+                </h2>
+                <div id="collapseMotor" class="accordion-collapse collapse show" data-bs-parent="#specsAccordion">
+                    <div class="accordion-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p><strong>Tipo de motor:</strong> 1.3 Firefly</p>
+                                <p><strong>Potencia:</strong> 101 CV</p>
+                                <p><strong>Cilindrada:</strong> 1.3L</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><strong>Transmisión:</strong> Manual 5 velocidades</p>
+                                <p><strong>Combustible:</strong> Nafta</p>
+                                <p><strong>Tracción:</strong> Delantera</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Dimensiones -->
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDimensions">
+                        Dimensiones y Capacidades
+                    </button>
+                </h2>
+                <div id="collapseDimensions" class="accordion-collapse collapse" data-bs-parent="#specsAccordion">
+                    <div class="accordion-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p><strong>Largo:</strong> 3.99 m</p>
+                                <p><strong>Ancho:</strong> 1.72 m</p>
+                                <p><strong>Alto:</strong> 1.50 m</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><strong>Capacidad baúl:</strong> 300 litros</p>
+                                <p><strong>Tanque combustible:</strong> 48 litros</p>
+                                <p><strong>Plazas:</strong> 5</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Seguridad -->
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSafety">
+                        Seguridad y Equipamiento
+                    </button>
+                </h2>
+                <div id="collapseSafety" class="accordion-collapse collapse" data-bs-parent="#specsAccordion">
+                    <div class="accordion-body">
+                        <ul>
+                            <li>ABS con EBD</li>
+                            <li>Control de estabilidad (ESC)</li>
+                            <li>4 Airbags</li>
+                            <li>Frenos a disco en las 4 ruedas</li>
+                            <li>Isofix</li>
+                            <li>Sensores de estacionamiento traseros</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Confort -->
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseComfort">
+                        Confort y Tecnología
+                    </button>
+                </h2>
+                <div id="collapseComfort" class="accordion-collapse collapse" data-bs-parent="#specsAccordion">
+                    <div class="accordion-body">
+                        <ul>
+                            <li>Sistema multimedia con pantalla táctil 7"</li>
+                            <li>Conectividad Apple CarPlay y Android Auto</li>
+                            <li>Aire acondicionado</li>
+                            <li>Cierre centralizado</li>
+                            <li>Elevavidrios eléctricos delanteros</li>
+                            <li>Volante multifunción</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Accesorios disponibles -->
+<section class="accessories-section">
+    <div class="container">
+        <div class="specs-header mb-4">
+            <h3>ACCESORIOS DISPONIBLES PARA ESTE MODELO</h3>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-md-3">
+                <div class="accessory-card">
+                    <img src="{{ url_for('static', filename='img/accesorio-red-baul.jpg') }}" alt="Red elástica para baúl" onerror="this.src='https://via.placeholder.com/200x200?text=Accesorio'">
+                    <h4 class="accessory-title">RED ELÁSTICA PARA BAÚL</h4>
+                    <button class="btn btn-consult">Consultanos</button>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="accessory-card">
+                    <img src="{{ url_for('static', filename='img/accesorio-cubrecarter.jpg') }}" alt="Cubrecárter" onerror="this.src='https://via.placeholder.com/200x200?text=Accesorio'">
+                    <h4 class="accessory-title">CUBRECÁRTER</h4>
+                    <button class="btn btn-consult">Consultanos</button>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="accessory-card">
+                    <img src="{{ url_for('static', filename='img/accesorio-tapa-espejo.jpg') }}" alt="Tapa espejo retrovisor externo cromado" onerror="this.src='https://via.placeholder.com/200x200?text=Accesorio'">
+                    <h4 class="accessory-title">TAPA ESPEJO RETROVISOR EXTERNO CROMADO</h4>
+                    <button class="btn btn-consult">Consultanos</button>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="accessory-card">
+                    <img src="{{ url_for('static', filename='img/accesorio-moldura-puerta.jpg') }}" alt="Moldura de puerta cromada" onerror="this.src='https://via.placeholder.com/200x200?text=Accesorio'">
+                    <h4 class="accessory-title">MOLDURA DE PUERTA CROMADA</h4>
+                    <button class="btn btn-consult">Consultanos</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- JavaScript para selector de colores -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const colorOptions = document.querySelectorAll('.color-option');
+    const colorName = document.querySelector('.color-name');
+    
+    colorOptions.forEach(option => {
+        option.addEventListener('click', function() {
+            // Remover clase active de todos
+            colorOptions.forEach(opt => opt.classList.remove('active'));
+            
+            // Agregar clase active al seleccionado
+            this.classList.add('active');
+            
+            // Actualizar nombre del color
+            colorName.textContent = this.getAttribute('data-color');
+        });
+    });
+});
+</script>
+
+{% endblock %}

@@ -1,19 +1,66 @@
 {% extends 'base.html' %}
 {% block title %}Catálogo{% endblock %}
 {% block content %}
-    <h1 class="mb-4">Catálogo de Vehículos</h1>
-    <div class="row">
+<div class="container-fluid px-4 py-5">
+    <div class="text-center mb-5">
+        <h1 class="section-title">ENCONTRÁ TU FIAT 0KM</h1>
+        <p class="section-subtitle">Descubrí nuestra línea completa de vehículos</p>
+    </div>
+    
+    <div class="row g-4">
         {% for vehiculo in vehiculos %}
-            <div class="col-md-4 mb-4">
-                <div class="card h-100">
-                    <img src="{{ vehiculo.imagen }}" class="card-img-top" alt="{{ vehiculo.modelo }}" style="height: 200px; object-fit: cover;">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ vehiculo.modelo }}</h5>
-                        <p class="card-text">{{ vehiculo.descripcion }}</p>
-                        <p class="card-text"><strong>Precio:</strong> ${{ "{:,.0f}".format(vehiculo.precio) }}</p>
+        <div class="col-md-6 col-lg-4">
+            <div class="vehicle-card">
+                <!-- Badge de versión -->
+                <div class="vehicle-badge">FIAT</div>
+                
+                <!-- Imagen del vehículo -->
+                <div class="vehicle-card-img-container">
+                    <img src="{{ vehiculo.imagen }}" class="card-img-top" alt="{{ vehiculo.modelo }}">
+                </div>
+                
+                <!-- Cuerpo del card -->
+                <div class="card-body">
+                    <h5 class="card-title">{{ vehiculo.modelo }}</h5>
+                    <p class="card-text">{{ vehiculo.descripcion }}</p>
+                    <span class="vehicle-price">Precio: ${{ "{:,.0f}".format(vehiculo.precio) }}</span>
+                    
+                    <!-- Botones de acción -->
+                    <div class="vehicle-card-actions">
+                        <a href="{{ url_for('vehiculos.detalle_vehiculo', id=vehiculo._id) }}" class="btn btn-view-more">
+                            <span>VER MÁS →</span>
+                        </a>
+                        <a href="{{ url_for('cotizador') }}?vehiculo={{ vehiculo._id }}" class="btn btn-quote">
+                            <span>COTIZAR</span>
+                        </a>
                     </div>
                 </div>
             </div>
+        </div>
         {% endfor %}
     </div>
+</div>
+
+<style>
+/* Estilos adicionales específicos para el catálogo */
+.container-fluid {
+    max-width: 1400px;
+}
+
+.vehicle-card {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.vehicle-card .card-body {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.vehicle-card-actions {
+    margin-top: auto;
+}
+</style>
 {% endblock %}
