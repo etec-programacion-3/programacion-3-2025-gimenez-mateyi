@@ -72,10 +72,8 @@ def home():
 def quienes_somos():
     return render_template('quienes_somos.html')
 
-@app.route('/catalogo')
-def catalogo():
-    vehiculos = vehiculos_db.obtener_vehiculos()
-    return render_template('catalogo.html', vehiculos=vehiculos)
+# NOTA: La ruta /catalogo ahora está en vehiculos_bp (routes/vehiculos.py)
+# No duplicar esta ruta aquí para evitar conflictos
 
 @app.route('/planes')
 def planes():

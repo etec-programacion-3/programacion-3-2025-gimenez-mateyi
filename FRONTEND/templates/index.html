@@ -13,7 +13,7 @@
                         <h1 class="display-3 fw-bold">Tu Próximo Auto<br>Te Espera Aquí</h1>
                         <p class="lead">Descubre los mejores modelos Fiat con planes de financiación a tu medida. Calidad, confianza y experiencia desde 2005.</p>
                         <div class="d-flex gap-3 flex-wrap">
-                            <a href="{{ url_for('catalogo') }}" class="btn btn-primary btn-lg">
+                            <a href="{{ url_for('vehiculos.catalogo') }}" class="btn btn-primary btn-lg">
                                 <i class="bi bi-car-front-fill me-2"></i>Ver Catálogo
                             </a>
                             <a href="{{ url_for('contacto') }}" class="btn btn-outline-light btn-lg">
@@ -142,7 +142,7 @@
                             <p class="card-text text-muted">{{ vehiculo.descripcion }}</p>
                             <div class="d-flex justify-content-between align-items-center mt-3">
                                 <span class="vehicle-price">${{ "{:,.0f}".format(vehiculo.precio) }}</span>
-                                <a href="{{ url_for('catalogo') }}" class="btn btn-outline-primary">
+                                <a href="{{ url_for('vehiculos.detalle_vehiculo', id=vehiculo._id) }}" class="btn btn-outline-primary">
                                     Ver más <i class="bi bi-arrow-right ms-1"></i>
                                 </a>
                             </div>
@@ -165,7 +165,7 @@
         </div>
         
         <div class="text-center mt-4">
-            <a href="{{ url_for('catalogo') }}" class="btn btn-primary btn-lg">
+            <a href="{{ url_for('vehiculos.catalogo') }}" class="btn btn-primary btn-lg">
                 Ver Catálogo Completo <i class="bi bi-arrow-right ms-2"></i>
             </a>
         </div>

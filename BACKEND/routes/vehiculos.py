@@ -1,89 +1,75 @@
-from flask import Blueprint, request, jsonify, render_template
-from flask_login import login_required, current_user
+"""
+Rutas para la gestión de vehículos
+"""
+from flask import Blueprint, render_template, request, redirect, url_for, flash
 from bson import ObjectId
+from bson.errors import InvalidId
 import logging
 
-# Crear el Blueprint
 vehiculos_bp = Blueprint('vehiculos', __name__)
 
-# Variable global para la base de datos (se inicializará desde app.py)
-db = None
+# Variable global para almacenar la instancia de VehiculoDB
+db_instance = None
 
-def init_vehiculos_routes(vehiculos_db):
-    """Inicializa las rutas con la instancia de la base de datos"""
-    global db
-    db = vehiculos_db
-
-# --- API REST endpoints ---
-
-@vehiculos_bp.route('/api/vehiculos', methods=['GET'])
-def api_obtener_vehiculos():
-    """GET - Obtener todos los vehículos (público)"""
-    if db is None:
-        return jsonify({"error": "Base de datos no disponible"}), 500
+def init_vehiculos_routes(db):
+    """
+    Inicializa las rutas con la instancia de la base de datos
+    Debe ser llamado desde app.py después de crear la instancia de VehiculoDB
     
-    vehiculos = db.obtener_vehiculos()
-    return jsonify(vehiculos), 200
+    Args:
+        db: Instancia de VehiculoDB
+    """
+    global db_instance
+    db_instance = db
+    logging.info("✅ Rutas de vehículos inicializadas correctamente")
 
-@vehiculos_bp.route('/api/vehiculos/<vehiculo_id>', methods=['GET'])
-def api_obtener_vehiculo(vehiculo_id):
-    """GET - Obtener un vehículo específico (público)"""
-    if db is None:
-        return jsonify({"error": "Base de datos no disponible"}), 500
-    
-    vehiculo = db.obtener_vehiculo(vehiculo_id)
-    if vehiculo:
-        return jsonify(vehiculo), 200
-    return jsonify({"error": "Vehículo no encontrado"}), 404
+@vehiculos_bp.route('/catalogo')
+def catalogo():
+    """
+    Muestra el catálogo completo de vehículos disponibles
+    """
+    try:
+        vehiculos = db_instance.obtener_vehiculos()
+        logging.info(f"📋 Catálogo cargado con {len(vehiculos)} vehículos")
+        return render_template('catalogo.html', vehiculos=vehiculos)
+    except Exception as e:
+        logging.error(f"❌ Error al cargar catálogo: {e}")
+        flash('Error al cargar el catálogo de vehículos', 'error')
+        return redirect(url_for('home'))
 
-@vehiculos_bp.route('/api/vehiculos', methods=['POST'])
-# @login_required  # ⚠️ COMENTADO TEMPORALMENTE PARA TESTING
-def api_crear_vehiculo():
-    """POST - Crear un nuevo vehículo"""
-    if db is None:
-        return jsonify({"error": "Base de datos no disponible"}), 500
+@vehiculos_bp.route('/vehiculo/<id>')
+def detalle_vehiculo(id):
+    """
+    Muestra el detalle completo de un vehículo específico
     
-    datos = request.json
-    
-    # Validación básica
-    campos_requeridos = ['modelo', 'descripcion', 'precio', 'imagen']
-    for campo in campos_requeridos:
-        if campo not in datos:
-            return jsonify({"error": f"Falta el campo: {campo}"}), 400
-    
-    vehiculo_id = db.crear_vehiculo(datos)
-    if vehiculo_id:
-        return jsonify({"mensaje": "Vehículo creado", "id": vehiculo_id}), 201
-    return jsonify({"error": "Error al crear vehículo"}), 500
-
-@vehiculos_bp.route('/api/vehiculos/<vehiculo_id>', methods=['PUT'])
-# @login_required  # ⚠️ COMENTADO TEMPORALMENTE PARA TESTING
-def api_actualizar_vehiculo(vehiculo_id):
-    """PUT - Actualizar un vehículo"""
-    if db is None:
-        return jsonify({"error": "Base de datos no disponible"}), 500
-    
-    datos = request.json
-    
-    if db.actualizar_vehiculo(vehiculo_id, datos):
-        return jsonify({"mensaje": "Vehículo actualizado"}), 200
-    return jsonify({"error": "Error al actualizar vehículo"}), 500
-
-@vehiculos_bp.route('/api/vehiculos/<vehiculo_id>', methods=['DELETE'])
-# @login_required  # ⚠️ COMENTADO TEMPORALMENTE PARA TESTING
-def api_eliminar_vehiculo(vehiculo_id):
-    """DELETE - Eliminar un vehículo"""
-    if db is None:
-        return jsonify({"error": "Base de datos no disponible"}), 500
-    
-    if db.eliminar_vehiculo(vehiculo_id):
-        return jsonify({"mensaje": "Vehículo eliminado"}), 200
-    return jsonify({"error": "Error al eliminar vehículo"}), 500
-
-# --- Ruta para el panel de administración (UI) ---
-
-@vehiculos_bp.route('/admin/vehiculos')
-# @login_required  # ⚠️ COMENTADO TEMPORALMENTE PARA TESTING
-def admin_vehiculos():
-    """Panel de administración de vehículos"""
-    return render_template('admin_vehiculos.html')
+    Args:
+        id: ID del vehículo en MongoDB (puede ser string o ya ObjectId)
+    """
+    try:
+        logging.info(f"🔍 Intentando cargar vehículo con ID: {id}")
+        
+        # Intentar obtener el vehículo directamente (tu método ya maneja la conversión)
+        vehiculo = db_instance.obtener_vehiculo(id)
+        
+        if not vehiculo:
+            logging.warning(f"⚠️ Vehículo no encontrado con ID: {id}")
+            flash('Vehículo no encontrado', 'warning')
+            return redirect(url_for('vehiculos.catalogo'))
+        
+        logging.info(f"✅ Vehículo cargado exitosamente: {vehiculo.get('modelo', 'Sin modelo')}")
+        
+        # Debug: mostrar qué datos tiene el vehículo
+        logging.debug(f"📊 Datos del vehículo: {vehiculo}")
+        
+        return render_template('detalle_vehiculo.html', vehiculo=vehiculo)
+        
+    except InvalidId as e:
+        logging.error(f"❌ ID inválido: {id} - Error: {e}")
+        flash('ID de vehículo inválido', 'error')
+        return redirect(url_for('vehiculos.catalogo'))
+        
+    except Exception as e:
+        logging.error(f"❌ Error inesperado al cargar vehículo {id}: {e}")
+        logging.exception("Traceback completo:")
+        flash('Error al cargar el vehículo', 'error')
+        return redirect(url_for('vehiculos.catalogo'))
