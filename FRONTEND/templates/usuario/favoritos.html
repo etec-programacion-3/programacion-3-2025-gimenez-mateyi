@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% block title %}Mis Favoritos{% endblock %}
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1><i class="bi bi-heart-fill text-danger"></i> Mis Favoritos</h1>
+        <p class="text-muted">Vehículos que te interesan</p>
+    </div>
+    <a href="{{ url_for('vehiculos.catalogo') }}" class="btn btn-primary">
+        <i class="bi bi-car-front-fill"></i> Explorar Catálogo
+    </a>
+</div>
+
+{% if favoritos %}
+<div class="row g-4">
+    {% for vehiculo in favoritos %}
+    <div class="col-md-6 col-lg-4">
+        <div class="card vehicle-card h-100">
+            <div class="vehicle-badge">FIAT</div>
+            
+            <div class="vehicle-card-img-container">
+                <img src="{{ vehiculo.imagen }}" class="card-img-top" alt="{{ vehiculo.modelo }}">
+            </div>
+            
+            <div class="card-body">
+                <h5 class="card-title">{{ vehiculo.modelo }}</h5>
+                <p class="card-text">{{ vehiculo.descripcion }}</p>
+                <span class="vehicle-price">Precio: ${{ "{:,.0f}".format(vehiculo.precio) }}</span>
+                
+                <div class="mt-3 mb-2">
+                    <small class="text-muted">
+                        <i class="bi bi-clock"></i> Agregado: {{ vehiculo.fecha_agregado.strftime('%d/%m/%Y') }}
+                    </small>
+                </div>
+                
+                <div class="vehicle-card-actions">
+                    <a href="{{ url_for('vehiculos.detalle_vehiculo', id=vehiculo._id) }}" class="btn btn-view-more">
+                        <span>VER MÁS →</span>
+                    </a>
+                    <button class="btn btn-danger" onclick="eliminarFavorito('{{ vehiculo._id }}')">
+                        <i class="bi bi-heart-fill"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="text-center py-5">
+    <i class="bi bi-heart" style="font-size: 5rem; color: #dee2e6;"></i>
+    <h3 class="mt-4 text-muted">No tenés favoritos aún</h3>
+    <p class="text-muted">Explorá nuestro catálogo y guardá los autos que te interesen</p>
+    <a href="{{ url_for('vehiculos.catalogo') }}" class="btn btn-primary btn-lg mt-3">
+        <i class="bi bi-car-front-fill"></i> Ver Catálogo
+    </a>
+</div>
+{% endif %}
+
+<script>
+async function eliminarFavorito(vehiculoId) {
+    if (!confirm('¿Querés eliminar este vehículo de tus favoritos?')) return;
+    
+    try {
+        const response = await fetch(`/usuario/favorito/eliminar/${vehiculoId}`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'}
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            location.reload();
+        } else {
+            alert('Error al eliminar favorito');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Error al eliminar favorito');
+    }
+}
+</script>
+
+{% endblock %}

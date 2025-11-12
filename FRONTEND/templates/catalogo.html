@@ -1,66 +1,497 @@
 {% extends 'base.html' %}
-{% block title %}Catálogo{% endblock %}
+{% block title %}Catálogo - Giménez Automotores{% endblock %}
 {% block content %}
-<div class="container-fluid px-4 py-5">
-    <div class="text-center mb-5">
-        <h1 class="section-title">ENCONTRÁ TU FIAT 0KM</h1>
-        <p class="section-subtitle">Descubrí nuestra línea completa de vehículos</p>
-    </div>
-    
-    <div class="row g-4">
-        {% for vehiculo in vehiculos %}
-        <div class="col-md-6 col-lg-4">
-            <div class="vehicle-card">
-                <!-- Badge de versión -->
-                <div class="vehicle-badge">FIAT</div>
-                
-                <!-- Imagen del vehículo -->
-                <div class="vehicle-card-img-container">
-                    <img src="{{ vehiculo.imagen }}" class="card-img-top" alt="{{ vehiculo.modelo }}">
-                </div>
-                
-                <!-- Cuerpo del card -->
-                <div class="card-body">
-                    <h5 class="card-title">{{ vehiculo.modelo }}</h5>
-                    <p class="card-text">{{ vehiculo.descripcion }}</p>
-                    <span class="vehicle-price">Precio: ${{ "{:,.0f}".format(vehiculo.precio) }}</span>
-                    
-                    <!-- Botones de acción -->
-                    <div class="vehicle-card-actions">
-                        <a href="{{ url_for('vehiculos.detalle_vehiculo', id=vehiculo._id) }}" class="btn btn-view-more">
-                            <span>VER MÁS →</span>
-                        </a>
-                        <a href="{{ url_for('cotizador') }}?vehiculo={{ vehiculo._id }}" class="btn btn-quote">
-                            <span>COTIZAR</span>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        {% endfor %}
-    </div>
+
+<!-- Header del Catálogo -->
+<div class="catalogo-header">
+  <div class="header-content">
+    <h1 class="catalogo-title">Encontrá Tu FIAT 0KM</h1>
+    <p class="catalogo-subtitle">Descubrí nuestra línea completa de vehículos con la mejor financiación</p>
+  </div>
+  <div class="header-bg"></div>
 </div>
 
+<!-- Grid de Vehículos -->
+<section class="vehiculos-grid">
+  <div class="container">
+    {% if vehiculos %}
+    <div class="row g-4">
+      {% for vehiculo in vehiculos %}
+      <div class="col-md-6 col-lg-4">
+        <div class="vehicle-card-modern" data-aos="fade-up">
+          <!-- Imagen con overlay gradient -->
+          <div class="vehicle-image-wrapper">
+            <div class="vehicle-badge-modern">
+              <span>FIAT</span>
+            </div>
+            <div class="vehicle-overlay-gradient"></div>
+            <img src="{{ vehiculo.imagen }}" alt="{{ vehiculo.modelo }}" class="vehicle-image">
+            
+            <!-- Botón de favorito flotante (solo para usuarios) -->
+            {% if current_user.is_authenticated and not current_user.is_admin() %}
+            <button class="btn-favorite-float" onclick="toggleFavorito('{{ vehiculo._id }}')">
+              <i class="bi bi-heart-fill"></i>
+            </button>
+            {% endif %}
+          </div>
+          
+          <!-- Contenido de la card -->
+          <div class="vehicle-content">
+            <h3 class="vehicle-title">{{ vehiculo.modelo }}</h3>
+            <p class="vehicle-description">{{ vehiculo.descripcion }}</p>
+            
+            <!-- Specs rápidas -->
+            <div class="vehicle-specs">
+              <span class="spec-item">
+                <i class="bi bi-calendar"></i> {{ vehiculo.anio }}
+              </span>
+              <span class="spec-item">
+                <i class="bi bi-speedometer2"></i> 0 km
+              </span>
+              <span class="spec-item">
+                <i class="bi bi-box-seam"></i> Stock: {{ vehiculo.stock }}
+              </span>
+            </div>
+            
+            <!-- Precio destacado -->
+            <div class="vehicle-price-section">
+              <span class="price-label">Desde</span>
+              <span class="price-amount">${{ "{:,.0f}".format(vehiculo.precio) }}</span>
+            </div>
+            
+            <!-- Botones de acción -->
+            <div class="vehicle-actions-modern">
+              <a href="{{ url_for('vehiculos.detalle_vehiculo', id=vehiculo._id) }}" class="btn-ver-detalle">
+                <span>Ver Detalles</span>
+                <i class="bi bi-arrow-right"></i>
+              </a>
+              <a href="{{ url_for('cotizador') }}" class="btn-cotizar">
+                <i class="bi bi-calculator"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+      <i class="bi bi-car-front"></i>
+      <h3>No hay vehículos disponibles</h3>
+      <p>Pronto tendremos nuevos modelos para vos</p>
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+<!-- Call to Action -->
+<section class="cta-section">
+  <div class="container">
+    <div class="cta-card">
+      <div class="cta-content">
+        <h2>¿No encontraste lo que buscabas?</h2>
+        <p>Contactanos y te ayudamos a encontrar el FIAT perfecto para vos</p>
+      </div>
+      <a href="{{ url_for('contacto') }}" class="btn-cta">
+        Contactar Ahora <i class="bi bi-arrow-right ms-2"></i>
+      </a>
+    </div>
+  </div>
+</section>
+
 <style>
-/* Estilos adicionales específicos para el catálogo */
-.container-fluid {
-    max-width: 1400px;
+/* Header del Catálogo */
+.catalogo-header {
+  position: relative;
+  height: 350px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  margin-bottom: 60px;
 }
 
-.vehicle-card {
-    height: 100%;
-    display: flex;
+.header-content {
+  position: relative;
+  z-index: 10;
+  text-align: center;
+  color: white;
+  padding: 0 20px;
+  animation: fadeInUp 0.8s ease;
+}
+
+.catalogo-title {
+  font-size: 4rem;
+  font-weight: 900;
+  margin-bottom: 20px;
+  text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+
+.catalogo-subtitle {
+  font-size: 1.4rem;
+  opacity: 0.95;
+}
+
+.header-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    radial-gradient(circle at 20% 50%, rgba(255,255,255,0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(255,255,255,0.1) 0%, transparent 50%);
+  animation: bgMove 20s ease-in-out infinite;
+}
+
+@keyframes bgMove {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(-20px, -20px); }
+}
+
+/* Grid de Vehículos */
+.vehiculos-grid {
+  padding: 40px 0 80px;
+}
+
+/* Cards Modernas */
+.vehicle-card-modern {
+  background: white;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+  position: relative;
+}
+
+.vehicle-card-modern:hover {
+  transform: translateY(-12px);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+}
+
+/* Imagen con gradient overlay */
+.vehicle-image-wrapper {
+  position: relative;
+  height: 280px;
+  overflow: hidden;
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.vehicle-overlay-gradient {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 60%;
+  background: linear-gradient(to top, rgba(0,0,0,0.5) 0%, transparent 100%);
+  z-index: 2;
+}
+
+.vehicle-badge-modern {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  background: rgba(255,255,255,0.95);
+  backdrop-filter: blur(10px);
+  padding: 8px 20px;
+  border-radius: 20px;
+  z-index: 5;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.vehicle-badge-modern span {
+  font-weight: 800;
+  font-size: 0.9rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.vehicle-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s ease;
+  filter: brightness(1.05);
+}
+
+.vehicle-card-modern:hover .vehicle-image {
+  transform: scale(1.12) rotate(2deg);
+}
+
+/* Botón de favorito flotante */
+.btn-favorite-float {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 50px;
+  height: 50px;
+  background: rgba(255,255,255,0.95);
+  border: none;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 5;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.btn-favorite-float:hover {
+  transform: scale(1.1);
+  background: #ff6b6b;
+  color: white;
+}
+
+.btn-favorite-float i {
+  font-size: 1.3rem;
+  color: #ff6b6b;
+  transition: color 0.3s ease;
+}
+
+.btn-favorite-float:hover i {
+  color: white;
+}
+
+/* Contenido de la card */
+.vehicle-content {
+  padding: 30px;
+}
+
+.vehicle-title {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #2c3e50;
+  margin-bottom: 12px;
+  line-height: 1.2;
+}
+
+.vehicle-description {
+  color: #7f8c8d;
+  margin-bottom: 20px;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+/* Specs rápidas */
+.vehicle-specs {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.spec-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.9rem;
+  color: #95a5a6;
+  background: #f8f9fa;
+  padding: 6px 12px;
+  border-radius: 8px;
+}
+
+.spec-item i {
+  color: #667eea;
+}
+
+/* Precio */
+.vehicle-price-section {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.price-label {
+  font-size: 0.9rem;
+  color: #95a5a6;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.price-amount {
+  font-size: 2rem;
+  font-weight: 900;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Botones de acción */
+.vehicle-actions-modern {
+  display: flex;
+  gap: 12px;
+}
+
+.btn-ver-detalle {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 15px 25px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  text-decoration: none;
+  border-radius: 12px;
+  font-weight: 700;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.btn-ver-detalle:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
+  color: white;
+}
+
+.btn-cotizar {
+  width: 55px;
+  height: 55px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f8f9fa;
+  border: 2px solid #e9ecef;
+  border-radius: 12px;
+  color: #667eea;
+  font-size: 1.3rem;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.btn-cotizar:hover {
+  background: #667eea;
+  color: white;
+  border-color: #667eea;
+  transform: translateY(-3px);
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: 100px 20px;
+  color: #95a5a6;
+}
+
+.empty-state i {
+  font-size: 5rem;
+  margin-bottom: 20px;
+  opacity: 0.5;
+}
+
+/* CTA Section */
+.cta-section {
+  padding: 60px 0;
+  background: #f8f9fa;
+}
+
+.cta-card {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 50px;
+  border-radius: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: white;
+  box-shadow: 0 15px 50px rgba(102, 126, 234, 0.3);
+}
+
+.cta-content h2 {
+  font-size: 2rem;
+  font-weight: 800;
+  margin-bottom: 10px;
+}
+
+.cta-content p {
+  font-size: 1.1rem;
+  opacity: 0.95;
+}
+
+.btn-cta {
+  padding: 18px 40px;
+  background: white;
+  color: #667eea;
+  text-decoration: none;
+  border-radius: 50px;
+  font-weight: 700;
+  font-size: 1.1rem;
+  white-space: nowrap;
+  transition: all 0.3s ease;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+}
+
+.btn-cta:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+  color: #667eea;
+}
+
+/* Animaciones */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+  .catalogo-title {
+    font-size: 2.5rem;
+  }
+  
+  .cta-card {
     flex-direction: column;
+    text-align: center;
+    gap: 30px;
+  }
 }
 
-.vehicle-card .card-body {
-    flex-grow: 1;
-    display: flex;
+@media (max-width: 768px) {
+  .catalogo-title {
+    font-size: 2rem;
+  }
+  
+  .vehicle-actions-modern {
     flex-direction: column;
-}
-
-.vehicle-card-actions {
-    margin-top: auto;
+  }
+  
+  .btn-cotizar {
+    width: 100%;
+    height: 50px;
+  }
 }
 </style>
+
+<script>
+function toggleFavorito(vehiculoId) {
+  fetch('/usuario/favorito/agregar/' + vehiculoId, {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'}
+  })
+  .then(function(response) { return response.json(); })
+  .then(function(data) {
+    if (data.success) {
+      alert('¡Agregado a favoritos!');
+    } else {
+      alert('Ya está en favoritos');
+    }
+  })
+  .catch(function(error) {
+    console.error('Error:', error);
+  });
+}
+</script>
+
 {% endblock %}
