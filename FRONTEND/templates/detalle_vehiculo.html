@@ -2,284 +2,402 @@
 {% block title %}{{ vehiculo.modelo }}{% endblock %}
 {% block content %}
 
-<!-- Header del vehículo -->
-<div class="vehicle-detail-header">
-    <div class="container">
-        <h1>{{ vehiculo.modelo }}</h1>
+<div class="row">
+    <!-- Imagen del vehículo -->
+    <div class="col-lg-6 mb-4">
+        <div class="vehicle-detail-img-container">
+            <div class="vehicle-badge">FIAT</div>
+            <img src="{{ vehiculo.imagen }}" alt="{{ vehiculo.modelo }}" class="img-fluid rounded shadow-lg">
+        </div>
+    </div>
+    
+    <!-- Información del vehículo -->
+    <div class="col-lg-6">
+        <div class="vehicle-detail-info">
+            <h1 class="display-4 fw-bold mb-3">{{ vehiculo.modelo }}</h1>
+            <p class="lead text-muted mb-4">{{ vehiculo.descripcion }}</p>
+            
+            <!-- Precio -->
+            <div class="price-box mb-4">
+                <span class="vehicle-price-detail">Precio: ${{ vehiculo.precio|int|string|replace(',', '.') if vehiculo.precio else '0' }}</span>
+                <small class="text-muted d-block">Precio sugerido al público</small>
+            </div>
+            
+            <!-- Colores disponibles -->
+            {% if vehiculo.colores %}
+            <div class="mb-4">
+                <h5 class="mb-3">
+                    <i class="bi bi-palette-fill"></i> Colores Disponibles
+                </h5>
+                <div class="color-selector">
+                    {% for color in vehiculo.colores %}
+                    <div class="color-option" 
+                         data-color="{{ color.nombre }}"
+                         data-imagen="{{ color.imagen }}"
+                         title="{{ color.nombre }}">
+                        <div class="color-circle" style="background: {{ color.hex }}"></div>
+                        <small>{{ color.nombre }}</small>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+            
+            <!-- Especificaciones -->
+            <div class="specs-grid mb-4">
+                <div class="spec-item">
+                    <i class="bi bi-calendar3"></i>
+                    <strong>Año:</strong> {{ vehiculo.anio }}
+                </div>
+                <div class="spec-item">
+                    <i class="bi bi-boxes"></i>
+                    <strong>Stock:</strong> {{ vehiculo.stock }} disponibles
+                </div>
+            </div>
+            
+            <!-- Botones de acción -->
+            <div class="action-buttons">
+                <a href="{{ url_for('cotizador') }}" class="btn btn-primary btn-lg">
+                    <i class="bi bi-calculator"></i> Solicitar Cotización
+                </a>
+                <a href="{{ url_for('contacto') }}" class="btn btn-outline-secondary btn-lg">
+                    <i class="bi bi-chat-dots"></i> Consultar
+                </a>
+            </div>
+        </div>
     </div>
 </div>
 
-<!-- Sección principal con imagen y forma angular -->
-<section class="vehicle-main-section">
-    <div class="container">
-        <div class="row align-items-center">
-            <div class="col-lg-6">
-                <div class="vehicle-image-container">
-                    <!-- Forma angular de fondo -->
-                    <div class="angular-bg"></div>
-                    <div class="angular-bg-label">DRIVE MT</div>
-                    
-                    <!-- Imagen principal del vehículo -->
-                    <img src="{{ vehiculo.imagen }}" alt="{{ vehiculo.modelo }}" class="vehicle-main-image">
-                </div>
-            </div>
-            
-            <div class="col-lg-6">
-                <div class="vehicle-info-box">
-                    <h2>{{ vehiculo.modelo }}</h2>
-                    <p class="vehicle-description">
-                        {{ vehiculo.descripcion }}
-                    </p>
-                    
-                    <!-- Selector de colores -->
-                    <div class="colors-section">
-                        <h3 class="colors-title">COLORES</h3>
-                        <div class="color-selector">
-                            <div class="color-option color-white active" data-color="Blanco Banchisa" title="Blanco Banchisa"></div>
-                            <div class="color-option color-silver" data-color="Gris Plata" title="Gris Plata"></div>
-                            <div class="color-option color-black" data-color="Negro Vulcano" title="Negro Vulcano"></div>
-                            <div class="color-option color-red" data-color="Rojo Montecarlo" title="Rojo Montecarlo"></div>
-                            <div class="color-option color-blue" data-color="Azul Bari" title="Azul Bari"></div>
-                        </div>
-                        <p class="color-name">Blanco Banchisa</p>
-                    </div>
-                    
-                    <!-- Precio -->
-                    <div class="my-4">
-                        <span class="vehicle-price">Precio: ${{ "{:,.0f}".format(vehiculo.precio) }}</span>
-                    </div>
-                    
-                    <!-- Botón de cotización -->
-                    <a href="{{ url_for('cotizador') }}?vehiculo={{ vehiculo._id }}" class="btn btn-quote-large">
-                        SOLICITAR COTIZACIÓN
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+<!-- Botón de Favorito (solo para usuarios logueados no-admin) -->
+{% if current_user.is_authenticated %}
+{% if not current_user.is_admin() %}
+<button id="btn-favorito" 
+        class="btn-favorito" 
+        onclick="toggleFavorito()"
+        data-vehiculo-id="{{ vehiculo._id }}">
+    <i class="bi bi-heart-fill"></i>
+    <span id="texto-favorito">Guardar en Favoritos</span>
+</button>
+{% endif %}
+{% endif %}
 
-<!-- Sección de financiación -->
-<section class="financing-section">
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-lg-8">
-                <div class="financing-box">
-                    <div class="financing-label">FINANCIACIÓN</div>
-                    <h2 class="financing-title">{{ vehiculo.modelo }}</h2>
-                    <p class="financing-subtitle">Hasta $20.000.000 u 80% del precio de lista</p>
-                    <p class="financing-details">
-                        <strong>12 meses TNA 0,00%</strong><br>
-                        Plan UVA
-                    </p>
-                    <a href="{{ url_for('cotizador') }}?vehiculo={{ vehiculo._id }}" class="btn btn-quote-large">
-                        SOLICITAR COTIZACIÓN
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Galería de fotos -->
-<section class="gallery-section">
-    <div class="container">
-        <h2 class="section-title text-center mb-5">FOTOS</h2>
-        <div class="gallery-grid">
-            <!-- Aquí irían las imágenes de la galería -->
-            <div class="gallery-item">
-                <img src="{{ url_for('static', filename='img/Argo_MY25_galeria2.png') }}" alt="Interior 1">
-            </div>
-            <div class="gallery-item">
-                <img src="{{ url_for('static', filename='img/Argo_MY25_galeria4.png') }}" alt="Interior 2">
-            </div>
-            <div class="gallery-item">
-                <img src="{{ url_for('static', filename='img/Argo_MY25_galeria5.png') }}" alt="Interior 3">
-            </div>
-            <div class="gallery-item">
-                <img src="{{ url_for('static', filename='img/Cronos_MY26_galeria2.png') }}" alt="Detalle 1">
-            </div>
-            <div class="gallery-item">
-                <img src="{{ url_for('static', filename='img/Cronos_MY26_galeria7.png') }}" alt="Detalle 2">
-            </div>
-            <div class="gallery-item">
-                <img src="{{ url_for('static', filename='img/Cronos_MY26_galeria8.png') }}" alt="Detalle 3">
-            </div>
-            <div class="gallery-item">
-                <img src="{{ url_for('static', filename='img/mobi5-desktop.png') }}" alt="Exterior 1">
-            </div>
-            <div class="gallery-item">
-                <img src="{{ url_for('static', filename='img/mobi6-desktop.png') }}" alt="Exterior 2">
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Ficha técnica -->
-<section class="specs-section">
-    <div class="container">
-        <div class="specs-header">
-            <h3>FICHA TÉCNICA</h3>
-        </div>
-        
-        <div class="accordion" id="specsAccordion">
-            <!-- Motor -->
-            <div class="accordion-item">
-                <h2 class="accordion-header">
-                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseMotor">
-                        Motor y Transmisión
-                    </button>
-                </h2>
-                <div id="collapseMotor" class="accordion-collapse collapse show" data-bs-parent="#specsAccordion">
-                    <div class="accordion-body">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <p><strong>Tipo de motor:</strong> 1.3 Firefly</p>
-                                <p><strong>Potencia:</strong> 101 CV</p>
-                                <p><strong>Cilindrada:</strong> 1.3L</p>
-                            </div>
-                            <div class="col-md-6">
-                                <p><strong>Transmisión:</strong> Manual 5 velocidades</p>
-                                <p><strong>Combustible:</strong> Nafta</p>
-                                <p><strong>Tracción:</strong> Delantera</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Dimensiones -->
-            <div class="accordion-item">
-                <h2 class="accordion-header">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDimensions">
-                        Dimensiones y Capacidades
-                    </button>
-                </h2>
-                <div id="collapseDimensions" class="accordion-collapse collapse" data-bs-parent="#specsAccordion">
-                    <div class="accordion-body">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <p><strong>Largo:</strong> 3.99 m</p>
-                                <p><strong>Ancho:</strong> 1.72 m</p>
-                                <p><strong>Alto:</strong> 1.50 m</p>
-                            </div>
-                            <div class="col-md-6">
-                                <p><strong>Capacidad baúl:</strong> 300 litros</p>
-                                <p><strong>Tanque combustible:</strong> 48 litros</p>
-                                <p><strong>Plazas:</strong> 5</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Seguridad -->
-            <div class="accordion-item">
-                <h2 class="accordion-header">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSafety">
-                        Seguridad y Equipamiento
-                    </button>
-                </h2>
-                <div id="collapseSafety" class="accordion-collapse collapse" data-bs-parent="#specsAccordion">
-                    <div class="accordion-body">
-                        <ul>
-                            <li>ABS con EBD</li>
-                            <li>Control de estabilidad (ESC)</li>
-                            <li>4 Airbags</li>
-                            <li>Frenos a disco en las 4 ruedas</li>
-                            <li>Isofix</li>
-                            <li>Sensores de estacionamiento traseros</li>
+<!-- Información adicional -->
+<div class="row mt-5">
+    <div class="col-12">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body">
+                <h3 class="mb-4">
+                    <i class="bi bi-info-circle-fill text-primary"></i> Información del Vehículo
+                </h3>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5 class="text-primary">Características Principales</h5>
+                        <ul class="list-unstyled">
+                            <li><i class="bi bi-check-circle-fill text-success"></i> Garantía oficial de fábrica</li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i> 0 km</li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i> Patentamiento incluido</li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i> Service oficial FIAT</li>
                         </ul>
                     </div>
-                </div>
-            </div>
-            
-            <!-- Confort -->
-            <div class="accordion-item">
-                <h2 class="accordion-header">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseComfort">
-                        Confort y Tecnología
-                    </button>
-                </h2>
-                <div id="collapseComfort" class="accordion-collapse collapse" data-bs-parent="#specsAccordion">
-                    <div class="accordion-body">
-                        <ul>
-                            <li>Sistema multimedia con pantalla táctil 7"</li>
-                            <li>Conectividad Apple CarPlay y Android Auto</li>
-                            <li>Aire acondicionado</li>
-                            <li>Cierre centralizado</li>
-                            <li>Elevavidrios eléctricos delanteros</li>
-                            <li>Volante multifunción</li>
+                    <div class="col-md-6">
+                        <h5 class="text-primary">Financiación</h5>
+                        <ul class="list-unstyled">
+                            <li><i class="bi bi-credit-card-fill text-info"></i> Planes de financiación disponibles</li>
+                            <li><i class="bi bi-credit-card-fill text-info"></i> Aceptamos vehículos en parte de pago</li>
+                            <li><i class="bi bi-credit-card-fill text-info"></i> Tasa preferencial</li>
                         </ul>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</section>
+</div>
 
-<!-- Accesorios disponibles -->
-<section class="accessories-section">
-    <div class="container">
-        <div class="specs-header mb-4">
-            <h3>ACCESORIOS DISPONIBLES PARA ESTE MODELO</h3>
-        </div>
-        
-        <div class="row g-4">
-            <div class="col-md-3">
-                <div class="accessory-card">
-                    <img src="{{ url_for('static', filename='img/accesorio-red-baul.jpg') }}" alt="Red elástica para baúl" onerror="this.src='https://via.placeholder.com/200x200?text=Accesorio'">
-                    <h4 class="accessory-title">RED ELÁSTICA PARA BAÚL</h4>
-                    <button class="btn btn-consult">Consultanos</button>
-                </div>
-            </div>
-            
-            <div class="col-md-3">
-                <div class="accessory-card">
-                    <img src="{{ url_for('static', filename='img/accesorio-cubrecarter.jpg') }}" alt="Cubrecárter" onerror="this.src='https://via.placeholder.com/200x200?text=Accesorio'">
-                    <h4 class="accessory-title">CUBRECÁRTER</h4>
-                    <button class="btn btn-consult">Consultanos</button>
-                </div>
-            </div>
-            
-            <div class="col-md-3">
-                <div class="accessory-card">
-                    <img src="{{ url_for('static', filename='img/accesorio-tapa-espejo.jpg') }}" alt="Tapa espejo retrovisor externo cromado" onerror="this.src='https://via.placeholder.com/200x200?text=Accesorio'">
-                    <h4 class="accessory-title">TAPA ESPEJO RETROVISOR EXTERNO CROMADO</h4>
-                    <button class="btn btn-consult">Consultanos</button>
-                </div>
-            </div>
-            
-            <div class="col-md-3">
-                <div class="accessory-card">
-                    <img src="{{ url_for('static', filename='img/accesorio-moldura-puerta.jpg') }}" alt="Moldura de puerta cromada" onerror="this.src='https://via.placeholder.com/200x200?text=Accesorio'">
-                    <h4 class="accessory-title">MOLDURA DE PUERTA CROMADA</h4>
-                    <button class="btn btn-consult">Consultanos</button>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+<style>
+.vehicle-detail-img-container {
+    position: relative;
+    border-radius: 15px;
+    overflow: hidden;
+}
 
-<!-- JavaScript para selector de colores -->
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const colorOptions = document.querySelectorAll('.color-option');
-    const colorName = document.querySelector('.color-name');
+.vehicle-badge {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+    color: white;
+    padding: 8px 20px;
+    border-radius: 25px;
+    font-weight: bold;
+    font-size: 1rem;
+    z-index: 5;
+    box-shadow: 0 4px 15px rgba(220, 53, 69, 0.4);
+}
+
+.vehicle-detail-info {
+    padding: 20px;
+}
+
+.price-box {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 25px;
+    border-radius: 15px;
+    color: white;
+    box-shadow: 0 5px 20px rgba(102, 126, 234, 0.3);
+}
+
+.vehicle-price-detail {
+    font-size: 2.5rem;
+    font-weight: bold;
+    display: block;
+}
+
+.color-selector {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.color-option {
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.color-option:hover {
+    transform: scale(1.1);
+}
+
+.color-circle {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 3px solid #ddd;
+    margin-bottom: 5px;
+    transition: border-color 0.2s;
+}
+
+.color-option:hover .color-circle {
+    border-color: #667eea;
+}
+
+.specs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 10px;
+}
+
+.spec-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.spec-item i {
+    font-size: 1.5rem;
+    color: #667eea;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.btn-favorito {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    color: white;
+    border: none;
+    padding: 15px 25px;
+    border-radius: 50px;
+    font-size: 1rem;
+    font-weight: 600;
+    box-shadow: 0 10px 30px rgba(245, 87, 108, 0.4);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.btn-favorito:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(245, 87, 108, 0.6);
+}
+
+.btn-favorito:active {
+    transform: translateY(-2px);
+}
+
+.btn-favorito i {
+    font-size: 1.3rem;
+    animation: heartbeat 1.5s infinite;
+}
+
+.btn-favorito.favorito-activo {
+    background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+}
+
+.btn-favorito.favorito-activo i {
+    animation: heartPulse 0.5s ease;
+}
+
+@keyframes heartbeat {
+    0%, 100% { transform: scale(1); }
+    10%, 30% { transform: scale(1.1); }
+    20% { transform: scale(0.95); }
+}
+
+@keyframes heartPulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.3); }
+    100% { transform: scale(1); }
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOut {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
+@media (max-width: 768px) {
+    .btn-favorito {
+        bottom: 20px;
+        right: 20px;
+        padding: 12px 20px;
+        font-size: 0.9rem;
+    }
     
-    colorOptions.forEach(option => {
-        option.addEventListener('click', function() {
-            // Remover clase active de todos
-            colorOptions.forEach(opt => opt.classList.remove('active'));
-            
-            // Agregar clase active al seleccionado
-            this.classList.add('active');
-            
-            // Actualizar nombre del color
-            colorName.textContent = this.getAttribute('data-color');
+    .btn-favorito span {
+        display: none;
+    }
+    
+    .btn-favorito i {
+        margin: 0;
+    }
+}
+</style>
+
+<script>
+var esFavorito = false;
+var vehiculoId = '{{ vehiculo._id }}';
+
+function verificarFavorito() {
+    var btn = document.getElementById('btn-favorito');
+    if (!btn) return;
+    
+    fetch('/usuario/favorito/verificar/' + vehiculoId)
+        .then(function(response) { return response.json(); })
+        .then(function(data) {
+            if (data.es_favorito) {
+                esFavorito = true;
+                actualizarBotonFavorito();
+            }
+        })
+        .catch(function(error) {
+            console.error('Error:', error);
         });
+}
+
+function toggleFavorito() {
+    var btn = document.getElementById('btn-favorito');
+    
+    btn.style.transform = 'scale(0.95)';
+    setTimeout(function() { btn.style.transform = ''; }, 100);
+    
+    var url = esFavorito ? '/usuario/favorito/eliminar/' : '/usuario/favorito/agregar/';
+    url += vehiculoId;
+    
+    fetch(url, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'}
+    })
+    .then(function(response) { return response.json(); })
+    .then(function(data) {
+        if (data.success) {
+            esFavorito = !esFavorito;
+            actualizarBotonFavorito();
+            
+            var mensaje = esFavorito ? '¡Agregado a favoritos!' : 'Eliminado de favoritos';
+            var tipo = esFavorito ? 'success' : 'info';
+            mostrarNotificacion(mensaje, tipo);
+        }
+    })
+    .catch(function(error) {
+        console.error('Error:', error);
+        mostrarNotificacion('Error al actualizar favoritos', 'error');
     });
-});
+}
+
+function actualizarBotonFavorito() {
+    var btn = document.getElementById('btn-favorito');
+    var texto = document.getElementById('texto-favorito');
+    
+    if (!btn) return;
+    
+    if (esFavorito) {
+        btn.classList.add('favorito-activo');
+        texto.textContent = 'Guardado en Favoritos';
+    } else {
+        btn.classList.remove('favorito-activo');
+        texto.textContent = 'Guardar en Favoritos';
+    }
+}
+
+function mostrarNotificacion(mensaje, tipo) {
+    var colores = {
+        success: '#28a745',
+        error: '#dc3545',
+        info: '#17a2b8'
+    };
+    
+    var notif = document.createElement('div');
+    notif.style.cssText = 'position: fixed; top: 20px; right: 20px; background: ' + colores[tipo] + '; color: white; padding: 15px 25px; border-radius: 10px; box-shadow: 0 5px 20px rgba(0,0,0,0.3); z-index: 10000; animation: slideIn 0.3s ease;';
+    notif.textContent = mensaje;
+    
+    document.body.appendChild(notif);
+    
+    setTimeout(function() {
+        notif.style.animation = 'slideOut 0.3s ease';
+        setTimeout(function() { notif.remove(); }, 300);
+    }, 3000);
+}
+
+var colorOptions = document.querySelectorAll('.color-option');
+for (var i = 0; i < colorOptions.length; i++) {
+    colorOptions[i].addEventListener('click', function() {
+        var nuevaImagen = this.dataset.imagen;
+        if (nuevaImagen) {
+            document.querySelector('.vehicle-detail-img-container img').src = nuevaImagen;
+        }
+    });
+}
+
+document.addEventListener('DOMContentLoaded', verificarFavorito);
 </script>
 
 {% endblock %}

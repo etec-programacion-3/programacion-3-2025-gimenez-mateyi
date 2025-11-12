@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% block title %}Agendar Test Drive{% endblock %}
+{% block content %}
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card border-0 shadow">
+            <div class="card-body p-4">
+                <h2 class="mb-4">
+                    <i class="bi bi-calendar-plus text-success"></i> Agendar Test Drive
+                </h2>
+                
+                <form method="POST">
+                    <div class="mb-4">
+                        <label for="vehiculo_id" class="form-label">
+                            <i class="bi bi-car-front-fill"></i> Vehículo
+                        </label>
+                        <select class="form-select form-select-lg" id="vehiculo_id" name="vehiculo_id" required>
+                            <option value="">Seleccioná un vehículo...</option>
+                            {% for vehiculo in vehiculos %}
+                            <option value="{{ vehiculo._id }}">
+                                {{ vehiculo.modelo }} - ${{ "{:,.0f}".format(vehiculo.precio) }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-4">
+                            <label for="fecha" class="form-label">
+                                <i class="bi bi-calendar"></i> Fecha
+                            </label>
+                            <input type="date" 
+                                   class="form-control form-control-lg" 
+                                   id="fecha" 
+                                   name="fecha"
+                                   min="{{ (datetime.now() + timedelta(days=1)).strftime('%Y-%m-%d') }}"
+                                   required>
+                        </div>
+                        
+                        <div class="col-md-6 mb-4">
+                            <label for="hora" class="form-label">
+                                <i class="bi bi-clock"></i> Hora
+                            </label>
+                            <select class="form-select form-control-lg" id="hora" name="hora" required>
+                                <option value="">Seleccioná horario...</option>
+                                <option value="09:00">09:00 hs</option>
+                                <option value="10:00">10:00 hs</option>
+                                <option value="11:00">11:00 hs</option>
+                                <option value="14:00">14:00 hs</option>
+                                <option value="15:00">15:00 hs</option>
+                                <option value="16:00">16:00 hs</option>
+                                <option value="17:00">17:00 hs</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="comentarios" class="form-label">
+                            <i class="bi bi-chat-left-text"></i> Comentarios (opcional)
+                        </label>
+                        <textarea class="form-control" 
+                                  id="comentarios" 
+                                  name="comentarios" 
+                                  rows="3" 
+                                  placeholder="¿Alguna consulta o preferencia especial?"></textarea>
+                    </div>
+                    
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle"></i>
+                        <strong>Importante:</strong> Te confirmaremos el turno por email dentro de las próximas 24 horas.
+                    </div>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-between">
+                        <a href="{{ url_for('usuarios.mis_turnos') }}" class="btn btn-outline-secondary btn-lg">
+                            <i class="bi bi-arrow-left"></i> Volver
+                        </a>
+                        <button type="submit" class="btn btn-success btn-lg">
+                            <i class="bi bi-check-circle"></i> Confirmar Turno
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

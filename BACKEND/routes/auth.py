@@ -1,23 +1,26 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_user, logout_user, login_required, current_user
 import logging
+import re
 
 auth_bp = Blueprint('auth', __name__)
 
-# Variable global para la base de datos
 db = None
 
 def init_auth_routes(vehiculos_db):
-    """Inicializa las rutas de autenticación con la instancia de la base de datos"""
     global db
     db = vehiculos_db
 
 class User:
-    """Clase User para Flask-Login"""
+    """Clase User para Flask-Login con soporte de roles"""
     def __init__(self, usuario_data):
         self.id = usuario_data['_id']
         self.username = usuario_data['username']
         self.email = usuario_data.get('email', '')
+        self.role = usuario_data.get('role', 'usuario')
+        
+        # LOG para debug
+        logging.info(f"🔍 Usuario cargado: {self.username} | Rol: {self.role}")
     
     def is_authenticated(self):
         return True
@@ -30,47 +33,51 @@ class User:
     
     def get_id(self):
         return str(self.id)
+    
+    def is_admin(self):
+        """Verifica si el usuario es administrador"""
+        es_admin = self.role == 'admin'
+        logging.info(f"🔍 Verificando admin para {self.username}: role={self.role}, is_admin={es_admin}")
+        return es_admin
 
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
-    """Página de login"""
     if current_user.is_authenticated:
-        logging.info("Usuario ya autenticado, redirigiendo...")
-        return redirect(url_for('vehiculos.admin_vehiculos'))
+        if current_user.is_admin():
+            return redirect(url_for('vehiculos.admin_vehiculos'))
+        else:
+            return redirect(url_for('home'))
     
     if request.method == 'POST':
-        username = request.form.get('username')
-        password = request.form.get('password')
+        username = request.form.get('username', '').strip()
+        password = request.form.get('password', '')
         
         logging.info(f"🔍 Intento de login - Usuario: {username}")
         
         if not username or not password:
-            logging.warning("Campos vacíos")
             flash('Por favor completa todos los campos', 'danger')
             return render_template('login.html')
         
-        # Verificar que db esté disponible
         if db is None:
-            logging.error("❌ Base de datos no disponible")
             flash('Error del servidor. Intenta más tarde.', 'danger')
             return render_template('login.html')
         
-        # Verificar credenciales
-        logging.info(f"Verificando credenciales para: {username}")
         usuario = db.verificar_usuario(username, password)
         
         if usuario:
-            logging.info(f"✅ Credenciales correctas para: {username}")
+            logging.info(f"✅ Usuario encontrado: {usuario}")
             user_obj = User(usuario)
             login_user(user_obj)
-            flash(f'¡Bienvenido {username}!', 'success')
             
-            # Redirigir a la página solicitada o al admin
-            next_page = request.args.get('next')
-            logging.info(f"Redirigiendo a: {next_page or '/admin/vehiculos'}")
-            return redirect(next_page or url_for('vehiculos.admin_vehiculos'))
+            if user_obj.is_admin():
+                logging.info(f"✅ Admin login exitoso: {username}")
+                flash(f'¡Bienvenido Admin {username}!', 'success')
+                return redirect(url_for('vehiculos.admin_vehiculos'))
+            else:
+                logging.info(f"✅ Usuario login exitoso: {username}")
+                flash(f'¡Bienvenido {username}!', 'success')
+                return redirect(url_for('home'))
         else:
-            logging.warning(f"❌ Credenciales incorrectas para: {username}")
             flash('Usuario o contraseña incorrectos', 'danger')
     
     return render_template('login.html')
@@ -78,40 +85,82 @@ def login():
 @auth_bp.route('/logout')
 @login_required
 def logout():
-    """Cerrar sesión"""
     username = current_user.username
     logout_user()
-    logging.info(f"Usuario {username} cerró sesión")
     flash('Sesión cerrada exitosamente', 'info')
     return redirect(url_for('home'))
 
+def validar_username(username):
+    if len(username) < 3:
+        return False, "El nombre de usuario debe tener al menos 3 caracteres"
+    if len(username) > 20:
+        return False, "El nombre de usuario no puede tener más de 20 caracteres"
+    if not re.match("^[a-zA-Z0-9_]+$", username):
+        return False, "El nombre de usuario solo puede contener letras, números y guiones bajos"
+    return True, ""
+
+def validar_email(email):
+    patron = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+    if not re.match(patron, email):
+        return False, "El formato del email no es válido"
+    return True, ""
+
+def validar_password(password):
+    if len(password) < 6:
+        return False, "La contraseña debe tener al menos 6 caracteres"
+    if len(password) > 50:
+        return False, "La contraseña no puede tener más de 50 caracteres"
+    return True, ""
+
 @auth_bp.route('/register', methods=['GET', 'POST'])
 def register():
-    """Página de registro (opcional, puedes deshabilitarla en producción)"""
     if current_user.is_authenticated:
-        return redirect(url_for('vehiculos.admin_vehiculos'))
+        return redirect(url_for('home'))
     
     if request.method == 'POST':
-        username = request.form.get('username')
-        email = request.form.get('email')
-        password = request.form.get('password')
-        password2 = request.form.get('password2')
+        username = request.form.get('username', '').strip().lower()
+        email = request.form.get('email', '').strip().lower()
+        password = request.form.get('password', '')
+        password2 = request.form.get('password2', '')
         
         if not all([username, email, password, password2]):
             flash('Por favor completa todos los campos', 'danger')
+            return render_template('register.html')
+        
+        valido, mensaje = validar_username(username)
+        if not valido:
+            flash(mensaje, 'danger')
+            return render_template('register.html')
+        
+        valido, mensaje = validar_email(email)
+        if not valido:
+            flash(mensaje, 'danger')
+            return render_template('register.html')
+        
+        valido, mensaje = validar_password(password)
+        if not valido:
+            flash(mensaje, 'danger')
             return render_template('register.html')
         
         if password != password2:
             flash('Las contraseñas no coinciden', 'danger')
             return render_template('register.html')
         
-        # Crear usuario
-        usuario_id = db.crear_usuario(username, password, email)
+        if db.obtener_usuario_por_username(username):
+            flash('El nombre de usuario ya está en uso', 'danger')
+            return render_template('register.html')
+        
+        usuario_email = db.db['usuarios'].find_one({'email': email})
+        if usuario_email:
+            flash('El email ya está registrado', 'danger')
+            return render_template('register.html')
+        
+        usuario_id = db.crear_usuario(username, password, email, role='usuario')
         
         if usuario_id:
-            flash('Usuario creado exitosamente. Por favor inicia sesión.', 'success')
+            flash('¡Cuenta creada exitosamente! Ya podés iniciar sesión.', 'success')
             return redirect(url_for('auth.login'))
         else:
-            flash('El usuario ya existe', 'danger')
+            flash('Error al crear la cuenta. Intenta nuevamente.', 'danger')
     
     return render_template('register.html')

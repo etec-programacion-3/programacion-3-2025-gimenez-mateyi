@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% block title %}Mis Turnos{% endblock %}
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1><i class="bi bi-calendar-check-fill text-success"></i> Mis Turnos</h1>
+        <p class="text-muted">Turnos agendados para test drive</p>
+    </div>
+    <a href="{{ url_for('usuarios.agendar_turno') }}" class="btn btn-success">
+        <i class="bi bi-calendar-plus"></i> Agendar Turno
+    </a>
+</div>
+
+{% if turnos %}
+<div class="row g-3">
+    {% for turno in turnos %}
+    <div class="col-12">
+        <div class="card border-0 shadow-sm border-start border-5 border-{{ 'success' if turno.estado == 'confirmado' else 'warning' if turno.estado == 'pendiente' else 'secondary' }}">
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col-md-2">
+                        {% if turno.vehiculo %}
+                        <img src="{{ turno.vehiculo.imagen }}" alt="{{ turno.vehiculo.modelo }}" class="img-fluid rounded">
+                        {% endif %}
+                    </div>
+                    <div class="col-md-6">
+                        <h5 class="mb-2">
+                            {% if turno.vehiculo %}
+                                {{ turno.vehiculo.modelo }}
+                            {% else %}
+                                Vehículo no disponible
+                            {% endif %}
+                        </h5>
+                        <p class="mb-1">
+                            <i class="bi bi-calendar"></i> {{ turno.fecha_hora.strftime('%d/%m/%Y') }}
+                            <i class="bi bi-clock ms-3"></i> {{ turno.fecha_hora.strftime('%H:%M') }}hs
+                        </p>
+                        {% if turno.comentarios %}
+                        <p class="text-muted small mb-0">
+                            <i class="bi bi-chat-left-text"></i> {{ turno.comentarios }}
+                        </p>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-4 text-md-end">
+                        <span class="badge bg-{{ 'success' if turno.estado == 'confirmado' else 'warning' if turno.estado == 'pendiente' else 'danger' if turno.estado == 'cancelado' else 'secondary' }} mb-2">
+                            {{ turno.estado.capitalize() }}
+                        </span>
+                        <br>
+                        {% if turno.estado == 'pendiente' %}
+                        <button class="btn btn-sm btn-outline-danger" onclick="cancelarTurno('{{ turno._id }}')">
+                            <i class="bi bi-x-circle"></i> Cancelar
+                        </button>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="text-center py-5">
+    <i class="bi bi-calendar-x" style="font-size: 5rem; color: #dee2e6;"></i>
+    <h3 class="mt-4 text-muted">No tenés turnos agendados</h3>
+    <p class="text-muted">Agendá tu primer test drive y probá el auto de tus sueños</p>
+    <a href="{{ url_for('usuarios.agendar_turno') }}" class="btn btn-success btn-lg mt-3">
+        <i class="bi bi-calendar-plus"></i> Agendar Test Drive
+    </a>
+</div>
+{% endif %}
+
+<script>
+async function cancelarTurno(turnoId) {
+    if (!confirm('¿Estás seguro de cancelar este turno?')) return;
+    
+    try {
+        const response = await fetch(`/usuario/turno/cancelar/${turnoId}`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'}
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            location.reload();
+        } else {
+            alert('Error al cancelar turno');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Error al cancelar turno');
+    }
+}
+</script>
+
+{% endblock %}
