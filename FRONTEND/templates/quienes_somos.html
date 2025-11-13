@@ -1,7 +1,577 @@
 {% extends 'base.html' %}
-{% block title %}Quiénes Somos{% endblock %}
+{% block title %}Quiénes Somos - Giménez Automotores{% endblock %}
 {% block content %}
-    <h1 class="mb-4">Quiénes Somos</h1>
-    <p>Somos Gimenez Automotores, tu concesionario oficial Fiat en Mendoza. Con más de 10 años de experiencia, ofrecemos vehículos nuevos y usados, planes de financiación y un servicio postventa de calidad.</p>
-    <p>Nuestras sucursales están ubicadas en Godoy Cruz, San Rafael y Guaymallén, listas para atenderte.</p>
+
+<!-- Hero Quiénes Somos -->
+<div class="qs-hero">
+  <div class="qs-hero-overlay"></div>
+  <div class="container qs-hero-content">
+    <h1 class="qs-hero-title">Giménez Automotores</h1>
+    <p class="qs-hero-subtitle">Más de 20 años conectando mendocinos con su FIAT ideal</p>
+  </div>
+</div>
+
+<!-- Nuestra Historia -->
+<section class="qs-section-historia">
+  <div class="container">
+    <div class="row align-items-center g-5">
+      <div class="col-lg-6">
+        <div class="qs-imagen-container">
+          <img src="{{ url_for('static', filename='img/fiat-cronos.png') }}" 
+               alt="Giménez Automotores" 
+               class="qs-imagen">
+          <div class="qs-badge-flotante">
+            <i class="bi bi-award-fill"></i>
+            <div>
+              <strong>+20 Años</strong>
+              <span>de Experiencia</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="qs-content">
+          <span class="qs-label">Nuestra Historia</span>
+          <h2 class="qs-title">Concesionario Oficial FIAT en Mendoza</h2>
+          <p class="qs-text">
+            Somos <strong>Giménez Automotores</strong>, tu concesionario oficial Fiat en Mendoza. 
+            Con más de <strong>10 años de experiencia</strong>, ofrecemos vehículos nuevos y usados, 
+            planes de financiación y un servicio postventa de calidad.
+          </p>
+          <p class="qs-text">
+            Nuestras sucursales están ubicadas en <strong>Godoy Cruz, San Rafael y Guaymallén</strong>, 
+            listas para atenderte con profesionalismo y dedicación.
+          </p>
+          
+          <div class="qs-stats">
+            <div class="qs-stat-item">
+              <i class="bi bi-car-front-fill"></i>
+              <div>
+                <strong>+500</strong>
+                <span>Vehículos Vendidos</span>
+              </div>
+            </div>
+            <div class="qs-stat-item">
+              <i class="bi bi-people-fill"></i>
+              <div>
+                <strong>+350</strong>
+                <span>Clientes Satisfechos</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Nuestras Sucursales -->
+<section class="qs-section-sucursales">
+  <div class="container">
+    <div class="text-center mb-5">
+      <span class="qs-label">Dónde Encontrarnos</span>
+      <h2 class="qs-title">Nuestras Sucursales</h2>
+    </div>
+    
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="qs-sucursal-card">
+          <div class="qs-sucursal-icon">
+            <i class="bi bi-geo-alt-fill"></i>
+          </div>
+          <h3>San Rafael</h3>
+          <p class="qs-sucursal-direccion">Av. Balloffet 1250</p>
+          <div class="qs-sucursal-info">
+            <span><i class="bi bi-telephone-fill"></i> (261) 423-8000</span>
+            <span><i class="bi bi-clock-fill"></i> Lun a Vie 9-19hs</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-md-4">
+        <div class="qs-sucursal-card qs-sucursal-destacada">
+          <div class="qs-badge-principal">Principal</div>
+          <div class="qs-sucursal-icon">
+            <i class="bi bi-geo-alt-fill"></i>
+          </div>
+          <h3>Godoy Cruz</h3>
+          <p class="qs-sucursal-direccion">Artigas 236</p>
+          <div class="qs-sucursal-info">
+            <span><i class="bi bi-telephone-fill"></i> (260) 442-5500</span>
+            <span><i class="bi bi-clock-fill"></i> Lun a Sáb 9-20hs</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-md-4">
+        <div class="qs-sucursal-card">
+          <div class="qs-sucursal-icon">
+            <i class="bi bi-geo-alt-fill"></i>
+          </div>
+          <h3>Guaymallén</h3>
+          <p class="qs-sucursal-direccion">Urquiza 2850</p>
+          <div class="qs-sucursal-info">
+            <span><i class="bi bi-telephone-fill"></i> (261) 431-7200</span>
+            <span><i class="bi bi-clock-fill"></i> Lun a Vie 9-19hs</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Nuestros Valores -->
+<section class="qs-section-valores">
+  <div class="container">
+    <div class="text-center mb-5">
+      <span class="qs-label">Lo Que Nos Define</span>
+      <h2 class="qs-title">Nuestros Valores</h2>
+    </div>
+    
+    <div class="row g-4">
+      <div class="col-md-3 col-sm-6">
+        <div class="qs-valor-card">
+          <div class="qs-valor-icon">
+            <i class="bi bi-shield-check"></i>
+          </div>
+          <h4>Confianza</h4>
+          <p>Transparencia en cada operación</p>
+        </div>
+      </div>
+      
+      <div class="col-md-3 col-sm-6">
+        <div class="qs-valor-card">
+          <div class="qs-valor-icon">
+            <i class="bi bi-award"></i>
+          </div>
+          <h4>Calidad</h4>
+          <p>Vehículos y servicio premium</p>
+        </div>
+      </div>
+      
+      <div class="col-md-3 col-sm-6">
+        <div class="qs-valor-card">
+          <div class="qs-valor-icon">
+            <i class="bi bi-people"></i>
+          </div>
+          <h4>Compromiso</h4>
+          <p>Con vos, antes y después</p>
+        </div>
+      </div>
+      
+      <div class="col-md-3 col-sm-6">
+        <div class="qs-valor-card">
+          <div class="qs-valor-icon">
+            <i class="bi bi-heart"></i>
+          </div>
+          <h4>Pasión</h4>
+          <p>Por los autos y nuestro trabajo</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA Final -->
+<section class="qs-cta">
+  <div class="container">
+    <div class="qs-cta-card">
+      <h2>¿Listo para tu próximo FIAT?</h2>
+      <p>Visitanos en cualquiera de nuestras sucursales o contactanos</p>
+      <div class="qs-cta-buttons">
+        <a href="{{ url_for('vehiculos.catalogo') }}" class="btn-qs-primary">
+          Ver Vehículos
+        </a>
+        <a href="{{ url_for('contacto') }}" class="btn-qs-secondary">
+          Contactar
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+/* Hero */
+.qs-hero {
+  position: relative;
+  height: 450px;
+  background: 
+    linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  margin-bottom: 80px;
+}
+
+.qs-hero-overlay {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: 
+    radial-gradient(circle at 20% 50%, rgba(255,255,255,0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(255,255,255,0.1) 0%, transparent 50%);
+  animation: bgMove 15s ease-in-out infinite;
+}
+
+.qs-hero-content {
+  position: relative;
+  z-index: 10;
+  text-align: center;
+  color: white;
+}
+
+.qs-hero-title {
+  font-size: 4.5rem;
+  font-weight: 900;
+  margin-bottom: 20px;
+  text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  animation: fadeInUp 0.8s ease;
+}
+
+.qs-hero-subtitle {
+  font-size: 1.6rem;
+  opacity: 0.95;
+  animation: fadeInUp 1s ease;
+}
+
+/* Sección Historia */
+.qs-section-historia {
+  padding: 80px 0;
+}
+
+.qs-imagen-container {
+  position: relative;
+}
+
+.qs-imagen {
+  width: 100%;
+  border-radius: 24px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+}
+
+.qs-badge-flotante {
+  position: absolute;
+  bottom: 30px;
+  right: 30px;
+  background: white;
+  padding: 20px 30px;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  animation: float 3s ease-in-out infinite;
+}
+
+.qs-badge-flotante i {
+  font-size: 2.5rem;
+  color: #ffd700;
+}
+
+.qs-badge-flotante strong {
+  display: block;
+  font-size: 1.5rem;
+  color: #2c3e50;
+}
+
+.qs-badge-flotante span {
+  display: block;
+  font-size: 0.9rem;
+  color: #7f8c8d;
+}
+
+.qs-label {
+  display: inline-block;
+  padding: 8px 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 20px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.qs-title {
+  font-size: 3rem;
+  font-weight: 900;
+  color: #2c3e50;
+  margin-bottom: 25px;
+  line-height: 1.2;
+}
+
+.qs-text {
+  font-size: 1.1rem;
+  color: #5a6c7d;
+  line-height: 1.8;
+  margin-bottom: 20px;
+}
+
+.qs-stats {
+  display: flex;
+  gap: 30px;
+  margin-top: 40px;
+  flex-wrap: wrap;
+}
+
+.qs-stat-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.qs-stat-item i {
+  font-size: 3rem;
+  color: #667eea;
+}
+
+.qs-stat-item strong {
+  display: block;
+  font-size: 2rem;
+  color: #2c3e50;
+  font-weight: 900;
+}
+
+.qs-stat-item span {
+  display: block;
+  font-size: 0.9rem;
+  color: #7f8c8d;
+}
+
+/* Sucursales */
+.qs-section-sucursales {
+  padding: 80px 0;
+  background: #f8f9fa;
+}
+
+.qs-sucursal-card {
+  background: white;
+  padding: 40px 30px;
+  border-radius: 20px;
+  text-align: center;
+  transition: all 0.3s ease;
+  height: 100%;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+  position: relative;
+}
+
+.qs-sucursal-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+}
+
+.qs-sucursal-destacada {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.qs-sucursal-destacada h3,
+.qs-sucursal-destacada .qs-sucursal-direccion,
+.qs-sucursal-destacada .qs-sucursal-info span {
+  color: white;
+}
+
+.qs-sucursal-destacada .qs-sucursal-icon {
+  background: rgba(255,255,255,0.2);
+  color: white;
+}
+
+.qs-badge-principal {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: rgba(255,255,255,0.3);
+  backdrop-filter: blur(10px);
+  padding: 6px 15px;
+  border-radius: 15px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.qs-sucursal-icon {
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  margin: 0 auto 25px;
+}
+
+.qs-sucursal-card h3 {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #2c3e50;
+  margin-bottom: 10px;
+}
+
+.qs-sucursal-direccion {
+  color: #7f8c8d;
+  font-size: 1.1rem;
+  margin-bottom: 20px;
+}
+
+.qs-sucursal-info {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-size: 0.95rem;
+  color: #5a6c7d;
+}
+
+.qs-sucursal-info i {
+  margin-right: 8px;
+  color: #667eea;
+}
+
+/* Valores */
+.qs-section-valores {
+  padding: 80px 0;
+}
+
+.qs-valor-card {
+  text-align: center;
+  padding: 30px 20px;
+  border-radius: 16px;
+  transition: all 0.3s ease;
+}
+
+.qs-valor-card:hover {
+  background: #f8f9fa;
+  transform: translateY(-5px);
+}
+
+.qs-valor-icon {
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  margin: 0 auto 20px;
+}
+
+.qs-valor-card h4 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #2c3e50;
+  margin-bottom: 10px;
+}
+
+.qs-valor-card p {
+  color: #7f8c8d;
+  font-size: 1rem;
+}
+
+/* CTA */
+.qs-cta {
+  padding: 80px 0;
+  background: #f8f9fa;
+}
+
+.qs-cta-card {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 60px 40px;
+  border-radius: 24px;
+  text-align: center;
+  color: white;
+  box-shadow: 0 20px 60px rgba(102, 126, 234, 0.3);
+}
+
+.qs-cta-card h2 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin-bottom: 15px;
+}
+
+.qs-cta-card p {
+  font-size: 1.2rem;
+  margin-bottom: 35px;
+  opacity: 0.95;
+}
+
+.qs-cta-buttons {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btn-qs-primary, .btn-qs-secondary {
+  padding: 18px 45px;
+  border-radius: 50px;
+  font-weight: 700;
+  font-size: 1.1rem;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.btn-qs-primary {
+  background: white;
+  color: #667eea;
+}
+
+.btn-qs-primary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px rgba(255,255,255,0.3);
+  color: #667eea;
+}
+
+.btn-qs-secondary {
+  background: rgba(255,255,255,0.2);
+  color: white;
+  border: 2px solid white;
+}
+
+.btn-qs-secondary:hover {
+  background: white;
+  color: #667eea;
+  transform: translateY(-3px);
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes bgMove {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(-20px, -20px); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@media (max-width: 768px) {
+  .qs-hero-title {
+    font-size: 2.5rem;
+  }
+  
+  .qs-title {
+    font-size: 2rem;
+  }
+  
+  .qs-stats {
+    flex-direction: column;
+  }
+}
+</style>
+
 {% endblock %}

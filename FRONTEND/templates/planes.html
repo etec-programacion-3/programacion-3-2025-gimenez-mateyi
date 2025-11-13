@@ -1,11 +1,684 @@
 {% extends 'base.html' %}
-{% block title %}Planes{% endblock %}
+{% block title %}Planes de Financiación - Giménez Automotores{% endblock %}
 {% block content %}
-    <h1 class="mb-4">Planes de Financiación</h1>
-    <p>Ofrecemos planes personalizados para que adquieras tu Fiat. Consulta con nuestras sucursales para detalles sobre cuotas y financiamiento.</p>
-    <ul>
-        <li>Plan A: 12 cuotas sin interés</li>
-        <li>Plan B: 24 cuotas con tasa promocional</li>
-        <li>Plan C: Financiación al 100%</li>
-    </ul>
+
+<!-- Hero Planes -->
+<div class="planes-hero">
+  <div class="planes-hero-overlay"></div>
+  <div class="container planes-hero-content">
+    <h1 class="planes-hero-title">Planes de Financiación</h1>
+    <p class="planes-hero-subtitle">Encontrá el plan perfecto para vos y llevate tu FIAT hoy</p>
+  </div>
+</div>
+
+<!-- Acciones Rápidas -->
+<section class="planes-actions">
+  <div class="container">
+    <div class="row g-3">
+      <div class="col-lg-3 col-md-6">
+        <a href="#planes-disponibles" class="action-card">
+          <i class="bi bi-card-checklist"></i>
+          <div>
+            <strong>Ver Planes</strong>
+            <span>Opciones disponibles</span>
+          </div>
+        </a>
+      </div>
+      
+      <div class="col-lg-3 col-md-6">
+        <a href="{{ url_for('cotizador') }}" class="action-card">
+          <i class="bi bi-calculator"></i>
+          <div>
+            <strong>Cotizar Online</strong>
+            <span>Calculá tu cuota</span>
+          </div>
+        </a>
+      </div>
+      
+      <div class="col-lg-3 col-md-6">
+        <a href="#preguntas" class="action-card">
+          <i class="bi bi-question-circle"></i>
+          <div>
+            <strong>Preguntas Frecuentes</strong>
+            <span>Resolv tus dudas</span>
+          </div>
+        </a>
+      </div>
+      
+      <div class="col-lg-3 col-md-6">
+        <a href="{{ url_for('contacto') }}" class="action-card action-card-destacada">
+          <i class="bi bi-headset"></i>
+          <div>
+            <strong>Atención al Cliente</strong>
+            <span>Te asesoramos</span>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Planes Disponibles -->
+<section class="planes-disponibles" id="planes-disponibles">
+  <div class="container">
+    <div class="text-center mb-5">
+      <span class="planes-label">Elegí Tu Plan</span>
+      <h2 class="planes-title">Planes FIAT Disponibles</h2>
+      <p class="planes-subtitle">Ofrecemos diferentes opciones de financiación adaptadas a tus necesidades</p>
+    </div>
+    
+    <div class="row g-4">
+      <!-- Plan A -->
+      <div class="col-lg-4 col-md-6">
+        <div class="plan-card">
+          <div class="plan-header plan-header-1">
+            <div class="plan-icon">
+              <i class="bi bi-lightning-charge-fill"></i>
+            </div>
+            <h3>Plan A</h3>
+            <p>Pago Rápido</p>
+          </div>
+          
+          <div class="plan-body">
+            <div class="plan-precio">
+              <span class="plan-desde">Desde</span>
+              <span class="plan-monto">12 Cuotas</span>
+              <span class="plan-condicion">Sin Interés</span>
+            </div>
+            
+            <ul class="plan-features">
+              <li><i class="bi bi-check-circle-fill"></i> 12 cuotas sin interés</li>
+              <li><i class="bi bi-check-circle-fill"></i> Entrega inmediata</li>
+              <li><i class="bi bi-check-circle-fill"></i> Sin gastos administrativos</li>
+              <li><i class="bi bi-check-circle-fill"></i> Ideal para efectivo disponible</li>
+            </ul>
+            
+            <a href="{{ url_for('cotizador') }}" class="btn-plan">
+              Cotizar Plan <i class="bi bi-arrow-right ms-2"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Plan B -->
+      <div class="col-lg-4 col-md-6">
+        <div class="plan-card plan-destacado">
+          <div class="plan-badge-popular">Más Elegido</div>
+          <div class="plan-header plan-header-2">
+            <div class="plan-icon">
+              <i class="bi bi-star-fill"></i>
+            </div>
+            <h3>Plan B</h3>
+            <p>Equilibrio Perfecto</p>
+          </div>
+          
+          <div class="plan-body">
+            <div class="plan-precio">
+              <span class="plan-desde">Hasta</span>
+              <span class="plan-monto">24 Cuotas</span>
+              <span class="plan-condicion">Tasa Promocional</span>
+            </div>
+            
+            <ul class="plan-features">
+              <li><i class="bi bi-check-circle-fill"></i> 24 cuotas con tasa promocional</li>
+              <li><i class="bi bi-check-circle-fill"></i> Anticipo flexible desde 20%</li>
+              <li><i class="bi bi-check-circle-fill"></i> Seguro incluido</li>
+              <li><i class="bi bi-check-circle-fill"></i> Asesoramiento personalizado</li>
+            </ul>
+            
+            <a href="{{ url_for('cotizador') }}" class="btn-plan">
+              Cotizar Plan <i class="bi bi-arrow-right ms-2"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Plan C -->
+      <div class="col-lg-4 col-md-6">
+        <div class="plan-card">
+          <div class="plan-header plan-header-3">
+            <div class="plan-icon">
+              <i class="bi bi-percent"></i>
+            </div>
+            <h3>Plan C</h3>
+            <p>Máxima Flexibilidad</p>
+          </div>
+          
+          <div class="plan-body">
+            <div class="plan-precio">
+              <span class="plan-desde">Financiación</span>
+              <span class="plan-monto">100%</span>
+              <span class="plan-condicion">Sin Anticipo</span>
+            </div>
+            
+            <ul class="plan-features">
+              <li><i class="bi bi-check-circle-fill"></i> Financiación al 100%</li>
+              <li><i class="bi bi-check-circle-fill"></i> Hasta 60 cuotas</li>
+              <li><i class="bi bi-check-circle-fill"></i> Entrega en 72hs</li>
+              <li><i class="bi bi-check-circle-fill"></i> Para todos los modelos</li>
+            </ul>
+            
+            <a href="{{ url_for('cotizador') }}" class="btn-plan">
+              Cotizar Plan <i class="bi bi-arrow-right ms-2"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Beneficios -->
+<section class="planes-beneficios">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2 class="planes-title">Beneficios de Financiar con Nosotros</h2>
+    </div>
+    
+    <div class="row g-4">
+      <div class="col-md-3 col-sm-6">
+        <div class="beneficio-item">
+          <i class="bi bi-shield-check"></i>
+          <h4>Garantía Oficial</h4>
+          <p>Respaldo FIAT incluido</p>
+        </div>
+      </div>
+      
+      <div class="col-md-3 col-sm-6">
+        <div class="beneficio-item">
+          <i class="bi bi-truck"></i>
+          <h4>Entrega Rápida</h4>
+          <p>Tu auto en tiempo récord</p>
+        </div>
+      </div>
+      
+      <div class="col-md-3 col-sm-6">
+        <div class="beneficio-item">
+          <i class="bi bi-people"></i>
+          <h4>Asesoramiento</h4>
+          <p>Expertos a tu disposición</p>
+        </div>
+      </div>
+      
+      <div class="col-md-3 col-sm-6">
+        <div class="beneficio-item">
+          <i class="bi bi-award"></i>
+          <h4>Mejor Precio</h4>
+          <p>Competitivo del mercado</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Preguntas Frecuentes -->
+<section class="planes-faq" id="preguntas">
+  <div class="container">
+    <div class="text-center mb-5">
+      <span class="planes-label">FAQ</span>
+      <h2 class="planes-title">Preguntas Frecuentes</h2>
+    </div>
+    
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <div class="accordion" id="accordionFAQ">
+          <div class="accordion-item">
+            <h2 class="accordion-header">
+              <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                ¿Qué documentación necesito?
+              </button>
+            </h2>
+            <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#accordionFAQ">
+              <div class="accordion-body">
+                DNI, últimos 3 recibos de sueldo, constancia de CUIL y servicio a tu nombre.
+              </div>
+            </div>
+          </div>
+          
+          <div class="accordion-item">
+            <h2 class="accordion-header">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                ¿Puedo tomar más de un vehículo?
+              </button>
+            </h2>
+            <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#accordionFAQ">
+              <div class="accordion-body">
+                Sí, consultá con nuestros asesores sobre planes especiales para flota.
+              </div>
+            </div>
+          </div>
+          
+          <div class="accordion-item">
+            <h2 class="accordion-header">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                ¿Cuánto tiempo demora la aprobación?
+              </button>
+            </h2>
+            <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#accordionFAQ">
+              <div class="accordion-body">
+                Entre 24 y 48 horas hábiles desde la presentación completa de documentación.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="planes-cta">
+  <div class="container">
+    <div class="cta-box">
+      <h2>¿Listo para tu FIAT?</h2>
+      <p>Contactanos y te ayudamos a elegir el mejor plan para vos</p>
+      <a href="{{ url_for('contacto') }}" class="btn-cta-grande">
+        Contactar Ahora <i class="bi bi-whatsapp ms-2"></i>
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+/* Hero */
+.planes-hero {
+  position: relative;
+  height: 400px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  margin-bottom: 60px;
+}
+
+.planes-hero-overlay {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at 30% 50%, rgba(255,255,255,0.1) 0%, transparent 50%);
+  animation: bgMove 15s ease-in-out infinite;
+}
+
+.planes-hero-content {
+  position: relative;
+  z-index: 10;
+  text-align: center;
+  color: white;
+}
+
+.planes-hero-title {
+  font-size: 4rem;
+  font-weight: 900;
+  margin-bottom: 20px;
+  text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+
+.planes-hero-subtitle {
+  font-size: 1.4rem;
+  opacity: 0.95;
+}
+
+/* Acciones Rápidas */
+.planes-actions {
+  margin-top: -30px;
+  margin-bottom: 80px;
+  position: relative;
+  z-index: 100;
+}
+
+.action-card {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  background: white;
+  padding: 25px;
+  border-radius: 16px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  color: #2c3e50;
+}
+
+.action-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+  color: #667eea;
+}
+
+.action-card i {
+  font-size: 2.5rem;
+  color: #667eea;
+}
+
+.action-card strong {
+  display: block;
+  font-size: 1.1rem;
+  margin-bottom: 3px;
+}
+
+.action-card span {
+  font-size: 0.9rem;
+  color: #7f8c8d;
+}
+
+.action-card-destacada {
+  background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+  color: white;
+}
+
+.action-card-destacada i,
+.action-card-destacada span {
+  color: white;
+}
+
+.action-card-destacada:hover {
+  color: white;
+}
+
+/* Sección Planes */
+.planes-disponibles {
+  padding: 80px 0;
+  background: #f8f9fa;
+}
+
+.planes-label {
+  display: inline-block;
+  padding: 8px 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 20px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+}
+
+.planes-title {
+  font-size: 3rem;
+  font-weight: 900;
+  color: #2c3e50;
+  margin-bottom: 15px;
+}
+
+.planes-subtitle {
+  font-size: 1.2rem;
+  color: #7f8c8d;
+}
+
+/* Cards de Planes */
+.plan-card {
+  background: white;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+  transition: all 0.4s ease;
+  height: 100%;
+  position: relative;
+}
+
+.plan-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+}
+
+.plan-destacado {
+  border: 3px solid #667eea;
+  transform: scale(1.05);
+}
+
+.plan-badge-popular {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: #dc3545;
+  color: white;
+  padding: 8px 20px;
+  border-radius: 20px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  z-index: 10;
+  box-shadow: 0 5px 15px rgba(220, 53, 69, 0.3);
+}
+
+.plan-header {
+  padding: 40px 30px;
+  text-align: center;
+  color: white;
+  position: relative;
+}
+
+.plan-header-1 {
+  background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+}
+
+.plan-header-2 {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.plan-header-3 {
+  background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+}
+
+.plan-icon {
+  width: 80px;
+  height: 80px;
+  background: rgba(255,255,255,0.2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+  font-size: 2.5rem;
+}
+
+.plan-header h3 {
+  font-size: 2rem;
+  font-weight: 800;
+  margin-bottom: 5px;
+}
+
+.plan-header p {
+  font-size: 1.1rem;
+  opacity: 0.95;
+}
+
+.plan-body {
+  padding: 40px 30px;
+}
+
+.plan-precio {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.plan-desde {
+  display: block;
+  font-size: 0.9rem;
+  color: #7f8c8d;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.plan-monto {
+  display: block;
+  font-size: 3rem;
+  font-weight: 900;
+  color: #2c3e50;
+  margin: 10px 0;
+}
+
+.plan-condicion {
+  display: block;
+  font-size: 1.1rem;
+  color: #667eea;
+  font-weight: 700;
+}
+
+.plan-features {
+  list-style: none;
+  padding: 0;
+  margin-bottom: 30px;
+}
+
+.plan-features li {
+  padding: 12px 0;
+  border-bottom: 1px solid #f0f0f0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #5a6c7d;
+}
+
+.plan-features i {
+  color: #38ef7d;
+  font-size: 1.2rem;
+}
+
+.btn-plan {
+  display: block;
+  width: 100%;
+  padding: 18px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 1.1rem;
+  transition: all 0.3s ease;
+}
+
+.btn-plan:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+  color: white;
+}
+
+/* Beneficios */
+.planes-beneficios {
+  padding: 80px 0;
+}
+
+.beneficio-item {
+  text-align: center;
+  padding: 30px 20px;
+}
+
+.beneficio-item i {
+  font-size: 3.5rem;
+  color: #667eea;
+  margin-bottom: 20px;
+}
+
+.beneficio-item h4 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #2c3e50;
+  margin-bottom: 10px;
+}
+
+.beneficio-item p {
+  color: #7f8c8d;
+}
+
+/* FAQ */
+.planes-faq {
+  padding: 80px 0;
+  background: #f8f9fa;
+}
+
+.accordion-item {
+  border: none;
+  margin-bottom: 15px;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+.accordion-button {
+  font-weight: 700;
+  font-size: 1.1rem;
+  padding: 20px 25px;
+  background: white;
+  color: #2c3e50;
+}
+
+.accordion-button:not(.collapsed) {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.accordion-body {
+  padding: 25px;
+  font-size: 1.05rem;
+  color: #5a6c7d;
+  line-height: 1.7;
+}
+
+/* CTA */
+.planes-cta {
+  padding: 80px 0;
+}
+
+.cta-box {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 60px 40px;
+  border-radius: 24px;
+  text-align: center;
+  color: white;
+  box-shadow: 0 20px 60px rgba(102, 126, 234, 0.3);
+}
+
+.cta-box h2 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin-bottom: 15px;
+}
+
+.cta-box p {
+  font-size: 1.2rem;
+  margin-bottom: 35px;
+  opacity: 0.95;
+}
+
+.btn-cta-grande {
+  display: inline-block;
+  padding: 20px 50px;
+  background: white;
+  color: #667eea;
+  text-decoration: none;
+  border-radius: 50px;
+  font-weight: 700;
+  font-size: 1.2rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 10px 30px rgba(255,255,255,0.3);
+}
+
+.btn-cta-grande:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 40px rgba(255,255,255,0.4);
+  color: #667eea;
+}
+
+@keyframes bgMove {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(-20px, -20px); }
+}
+
+@media (max-width: 768px) {
+  .planes-hero-title {
+    font-size: 2.5rem;
+  }
+  
+  .planes-title {
+    font-size: 2rem;
+  }
+  
+  .plan-destacado {
+    transform: scale(1);
+  }
+}
+</style>
+
 {% endblock %}
