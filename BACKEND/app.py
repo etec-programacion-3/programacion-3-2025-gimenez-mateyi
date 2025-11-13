@@ -1,4 +1,4 @@
-from flask import Flask, render_template, jsonify
+from flask import Flask, render_template, request, flash, redirect, url_for, jsonify
 from flask_login import LoginManager, login_required
 from models import VehiculoDB
 from routes.auth import auth_bp, init_auth_routes, User
@@ -63,12 +63,97 @@ def quienes_somos():
 def planes():
     return render_template('planes.html')
 
-@app.route('/cotizador')
+@app.route('/cotizador', methods=['GET', 'POST'])
 def cotizador():
+    """Cotizador de vehículos usados"""
+    if request.method == 'POST':
+        try:
+            # Obtener datos del formulario
+            marca = request.form.get('marca', '')
+            modelo = request.form.get('modelo', '')
+            anio = int(request.form.get('anio', 2020))
+            kilometraje = int(request.form.get('kilometraje', 0))
+            estado = request.form.get('estado', 'bueno')
+            
+            # Cálculo simple de cotización
+            valor_base = 8000000  # Base de 8 millones
+            
+            # Depreciación por año
+            anio_actual = 2025
+            anos_uso = anio_actual - anio
+            depreciacion_anual = 400000  # 400k por año
+            depreciacion_total = anos_uso * depreciacion_anual
+            
+            # Depreciación por kilometraje
+            depreciacion_km = (kilometraje / 10000) * 80000  # 80k cada 10k km
+            
+            # Multiplicador por estado
+            multiplicadores = {
+                'excelente': 1.15,
+                'muy_bueno': 1.0,
+                'bueno': 0.85,
+                'regular': 0.65
+            }
+            multiplicador = multiplicadores.get(estado, 0.85)
+            
+            # Calcular valor final
+            valor_estimado = (valor_base - depreciacion_total - depreciacion_km) * multiplicador
+            valor_estimado = max(valor_estimado, 500000)  # Mínimo 500k
+            
+            flash(f'Cotización calculada exitosamente para {marca} {modelo}', 'success')
+            
+            return render_template('cotizador.html', 
+                                   resultado={
+                                       'valor_estimado': valor_estimado,
+                                       'marca': marca,
+                                       'modelo': modelo,
+                                       'anio': anio
+                                   })
+        
+        except Exception as e:
+            logging.error(f"Error en cotizador: {e}")
+            flash('Error al calcular la cotización. Verificá los datos ingresados.', 'danger')
+            return render_template('cotizador.html')
+    
     return render_template('cotizador.html')
 
-@app.route('/contacto')
+@app.route('/contacto', methods=['GET', 'POST'])
 def contacto():
+    """Formulario de contacto"""
+    if request.method == 'POST':
+        try:
+            nombre = request.form.get('nombre', '')
+            email = request.form.get('email', '')
+            telefono = request.form.get('telefono', '')
+            mensaje = request.form.get('mensaje', '')
+            
+            if not nombre or not email or not mensaje:
+                flash('Por favor completá todos los campos obligatorios', 'warning')
+                return render_template('contacto.html')
+            
+            # Guardar mensaje en la base de datos
+            mensaje_data = {
+                'nombre': nombre,
+                'email': email,
+                'telefono': telefono,
+                'mensaje': mensaje,
+                'leido': False
+            }
+            
+            resultado = db.db['mensajes'].insert_one(mensaje_data)
+            
+            if resultado.inserted_id:
+                flash('¡Mensaje enviado exitosamente! Te responderemos a la brevedad.', 'success')
+                logging.info(f"Mensaje de contacto recibido de {nombre} ({email})")
+            else:
+                flash('Error al enviar el mensaje. Intenta nuevamente.', 'danger')
+        
+        except Exception as e:
+            logging.error(f"Error en contacto: {e}")
+            flash('Error al procesar tu mensaje. Intenta nuevamente.', 'danger')
+        
+        return redirect(url_for('contacto'))
+    
     return render_template('contacto.html')
 
 @app.route('/api/vehiculos/destacados')

@@ -1,0 +1,130 @@
+version: '3.8'
+
+services:
+  # Base de datos MongoDB
+  mongodb:
+    image: mongo:7.0
+    container_name: gimenez-mongodb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin123
+      MONGO_INITDB_DATABASE: concesionaria
+    volumes:
+      - mongodb_data:/data/db
+      - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+    networks:
+      - gimenez-network
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/concesionaria --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Mongo Express - Interfaz web para administrar MongoDB (OPCIONAL)
+  mongo-express:
+    image: mongo-express:1.0-20
+    container_name: gimenez-mongo-express
+    restart: unless-stopped
+    ports:
+      - "8081:8081"
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: admin
+      ME_CONFIG_MONGODB_ADMINPASSWORD: admin123
+      ME_CONFIG_MONGODB_URL: mongodb://admin:admin123@mongodb:27017/
+      ME_CONFIG_BASICAUTH_USERNAME: admin
+      ME_CONFIG_BASICAUTH_PASSWORD: admin123
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    networks:
+      - gimenez-network
+
+volumes:
+  mongodb_data:
+    driver: local
+
+networks:
+  gimenez-network:
+    driver: bridge
+
+###############################################################################
+# INSTRUCCIONES DE USO - MongoDB Local con Docker
+###############################################################################
+#
+# Este docker-compose.yml configura MongoDB localmente sin necesidad de
+# credenciales externas. Perfecto para evaluación sin compartir credenciales.
+#
+# PASO 1: Iniciar la base de datos
+#   docker-compose up -d
+#
+# PASO 2: Verificar que está corriendo
+#   docker-compose ps
+#
+# PASO 3: Usar el archivo .env.local (copiar como .env)
+#   cp .env.local .env
+#
+# PASO 4: Ejecutar la aplicación
+#   cd BACKEND
+#   python app.py
+#
+# PASO 5: Abrir en navegador
+#   http://127.0.0.1:5002
+#
+###############################################################################
+# COMANDOS ÚTILES:
+###############################################################################
+#
+# Iniciar servicios:
+#   docker-compose up -d
+#
+# Ver logs:
+#   docker-compose logs -f
+#
+# Detener servicios:
+#   docker-compose down
+#
+# Reiniciar servicios:
+#   docker-compose restart
+#
+# Eliminar todo (incluyendo datos):
+#   docker-compose down -v
+#
+# Ver estado:
+#   docker-compose ps
+#
+###############################################################################
+# ACCESO A MONGO EXPRESS (Interfaz Web - OPCIONAL):
+###############################################################################
+#
+# URL: http://localhost:8081
+# Usuario: admin
+# Contraseña: admin123
+#
+# Permite ver y administrar la base de datos de forma visual
+#
+###############################################################################
+# CREDENCIALES DE LA BASE DE DATOS:
+###############################################################################
+#
+# Host: localhost
+# Puerto: 27017
+# Usuario: admin
+# Contraseña: admin123
+# Base de datos: concesionaria
+#
+# Connection String:
+# mongodb://admin:admin123@localhost:27017/concesionaria?authSource=admin
+#
+###############################################################################
+# DATOS PRECARGADOS:
+###############################################################################
+#
+# El script init-mongo.js carga automáticamente:
+# ✅ 5 vehículos de ejemplo (Cronos, Argo, Pulse, Toro, 500)
+# ✅ Usuario administrador (admin/admin123)
+# ✅ Colecciones: vehiculos, usuarios, mensajes
+#
+###############################################################################
