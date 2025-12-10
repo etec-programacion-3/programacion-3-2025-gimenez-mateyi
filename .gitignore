@@ -1,222 +1,23 @@
-# Python
-__pycache__/
-*.py[cod]
-*$py.class
-*.so
-.Python
-*.pyc
-
-# Entornos virtuales
-venv/
-env/
-ENV/
-nuevo_venv/
-venv*/
-.venv/
-
-# Flask
-instance/
-.webassets-cache
+# Node modules
+node_modules/
 
 # Variables de entorno
 .env
 .env.local
 .env.production
 
-# Bases de datos locales
-*.db
-*.sqlite
-*.sqlite3
-data/
-
-# MongoDB local
-mongod.log
-
 # Logs
 *.log
-logs/
-
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-
-# OS
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
-
-# Archivos temporales
-*.tmp
-*.temp
-*.bak
-*.backup
-
-# Instaladores
-*.tar.gz
-*.zip
-*.jar
-*.exe
-bfg-*
-postman.tar.gz
-
-# Node (si existe frontend con npm)
-node_modules/
-package-lock.json
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# Build
-dist/
-build/
-*.egg-info/
-
-# Jupyter Notebooks
-.ipynb_checkpoints/
-
-# PyCharm
-.idea/
-
-# VS Code
-.vscode/
-
-# Archivos de prueba personales
-test_*.py
-debug_*.py
-scratch_*.py
-```
-
-## Estructura Final Recomendada:
-```
-programacion-3-2025-gimenez-mateyi-2/
-│
-├── BACKEND/                    # Todo el backend
-│   ├── app.py
-│   ├── models.py
-│   ├── crear_admin.py
-│   ├── requirements.txt
-│   ├── routes/
-│   └── tests/                 # (opcional) tests del backend
-│
-├── FRONTEND/                   # Todo el frontend
-│   ├── templates/
-│   └── static/
-│
-├── docs/                       # (opcional) Documentación adicional
-│   └── capturas/              # Screenshots del proyecto
-│
-├── .env                        # Variables de entorno (NO en Git)
-├── .gitignore                  # Ignorar archivos
-├── README.md                   # Documentación principal
-├── README_API.md               # Documentación API
-└── LICENSE                     # (opcional) Licencia del proyectoecho "postman.tar.gz" >> .gitignore
-echo "*.tar.gz" >> .gitignore   
-# Python
-__pycache__/
-*.py[cod]
-*$py.class
-*.so
-.Python
-
-# Entornos virtuales
-venv/
-env/
-ENV/
-nuevo_venv/
-venv*/
-
-# Flask
-instance/
-.webassets-cache
-
-# Variables de entorno
-.env
-.env.local
-
-# MongoDB
-*.log
-
-# IDE
-.vscode/
-.idea/
-
-# OS
+# Sistema operativo
 .DS_Store
 Thumbs.db
-
-# Archivos de instalación
-*.tar.gz
-*.jar
-bfg-*
-
-# Node modules (si hay frontend con npm)
-node_modules/
-
-# Python
-__pycache__/
-*.py[cod]
-*$py.class
-*.so
-.Python
-env/
-venv/
-ENV/
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
-
-# Scripts de administración (privados)
-BACKEND/forzar_rol_admin.py
-BACKEND/verificar_admin.py
-BACKEND/setup_admin.py
-BACKEND/scripts/
-
-# Variables de entorno
-.env
-.env.local
-.env.*.local
 
 # IDEs
 .vscode/
 .idea/
 *.swp
 *.swo
-*~
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Logs
-*.log
-logs/
-
-# MongoDB
-dump/
-
-# Outputs temporales
-outputs/
-temp/
-*.tmp
-
-# Node modules (si usas npm)
-node_modules/
