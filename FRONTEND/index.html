@@ -2,162 +2,794 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Giménez Automotores - Concesionario FIAT</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-  <link rel="stylesheet" href="/static/static/css/styles.css">
-</head>
-<body>
-
-<!-- NAVBAR -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-  <div class="container">
-    <a class="navbar-brand" href="index.html">
-      <i class="bi bi-car-front-fill"></i> Giménez Automotores
-    </a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav ms-auto">
-        <li class="nav-item"><a class="nav-link" href="index.html">Inicio</a></li>
-        <li class="nav-item"><a class="nav-link" href="catalogo.html">Catálogo</a></li>
-        <li class="nav-item"><a class="nav-link" href="planes.html">Planes</a></li>
-        <li class="nav-item"><a class="nav-link" href="quienes_somos.html">Quiénes Somos</a></li>
-        <li class="nav-item"><a class="nav-link" href="contacto.html">Contacto</a></li>
-        <li class="nav-item" id="auth-menu">
-          <a class="nav-link" href="login.html">Iniciar Sesión</a>
-        </li>
-      </ul>
-    </div>
-  </div>
-</nav>
-
-<!-- HERO SECTION -->
-<section class="hero">
-  <div class="container">
-    <h2>Tu Próximo FIAT Te Espera</h2>
-    <p>Descubrí la mejor selección de vehículos 0km con financiación a tu medida</p>
-    <a href="catalogo.html" class="btn btn-light">Ver Catálogo</a>
-    <a href="planes.html" class="btn btn-outline-light">Cotizar</a>
-  </div>
-</section>
-
-<!-- STATS -->
-<section class="container my-5">
-  <div class="row text-center">
-    <div class="col-md-6">
-      <h3>+500 Vehículos Vendidos</h3>
-      <p class="text-muted">Confianza de nuestros clientes</p>
-    </div>
-    <div class="col-md-6">
-      <h3>+350 Clientes Satisfechos</h3>
-      <p class="text-muted">Experiencia excepcional</p>
-    </div>
-  </div>
-</section>
-
-<!-- VEHÍCULOS DESTACADOS -->
-<section class="container my-5">
-  <h2 class="section-title">Vehículos Destacados</h2>
-  <p class="section-subtitle">Los más elegidos por nuestros clientes</p>
-  <div id="featured-list" class="vehicle-grid">
-    <p class="text-center">Cargando vehículos...</p>
-  </div>
-  <div class="text-center mt-4">
-    <a href="catalogo.html" class="btn btn-primary btn-lg">Ver Catálogo Completo</a>
-  </div>
-</section>
-
-<!-- SERVICIOS -->
-<section class="container my-5">
-  <div class="row">
-    <div class="col-md-3 text-center">
-      <i class="bi bi-shield-check" style="font-size: 3rem; color: #0d6efd;"></i>
-      <h4 class="mt-3">Garantía Oficial</h4>
-      <p>Respaldo de fábrica incluido</p>
-    </div>
-    <div class="col-md-3 text-center">
-      <i class="bi bi-percent" style="font-size: 3rem; color: #0d6efd;"></i>
-      <h4 class="mt-3">Planes Flexibles</h4>
-      <p>Financiación a tu medida</p>
-    </div>
-    <div class="col-md-3 text-center">
-      <i class="bi bi-tools" style="font-size: 3rem; color: #0d6efd;"></i>
-      <h4 class="mt-3">Service Oficial</h4>
-      <p>Repuestos originales</p>
-    </div>
-    <div class="col-md-3 text-center">
-      <i class="bi bi-lightning-charge" style="font-size: 3rem; color: #0d6efd;"></i>
-      <h4 class="mt-3">Entrega Rápida</h4>
-      <p>Tu auto en tiempo récord</p>
-    </div>
-  </div>
-</section>
-
-<!-- FOOTER -->
-<footer>
-  <p>&copy; 2025 Giménez Automotores - Todos los derechos reservados</p>
-</footer>
-
-<!-- Scripts -->
-<script src="js/config.js"></script>
-<script src="js/api.js"></script>
-<script>
-document.addEventListener('DOMContentLoaded', async () => {
-  await loadFeaturedVehicles();
-  updateAuthMenu();
-});
-
-async function loadFeaturedVehicles() {
-  try {
-    const container = document.getElementById('featured-list');
-    const vehicles = await api.getFeaturedVehicles();
-    
-    if (!vehicles || vehicles.length === 0) {
-      container.innerHTML = '<p class="text-center text-muted">No hay vehículos destacados disponibles</p>';
-      return;
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Inicio - Giménez Automotores</title>
+  <link rel="stylesheet" href="static/css/styles.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+  <style>
+    /* Hero Ultra Premium */
+    .hero-ultra {
+      position: relative;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex;
+      align-items: center;
+      overflow: hidden;
     }
 
-    container.innerHTML = vehicles.map(v => `
-      <div class="vehicle-card">
-        <img src="${v.imagen || 'https://via.placeholder.com/300x200'}" alt="${v.modelo}">
-        <div class="card-body">
-          <h5>${v.marca} ${v.modelo}</h5>
-          <p>${v.descripcion || ''}</p>
-          <p class="price">$${Number(v.precio || 0).toLocaleString('es-AR')}</p>
-          <button class="btn" onclick="goToVehicle('${v._id}')">Ver detalles</button>
+    .hero-bg-layer {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at 20% 50%, rgba(255,255,255,0.1) 0%, transparent 50%);
+      animation: bgMove 15s ease-in-out infinite;
+    }
+
+    .particles {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    .particle {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: rgba(255,255,255,0.5);
+      border-radius: 50%;
+      animation: float 20s infinite;
+    }
+
+    .particle:nth-child(1) { left: 10%; animation-delay: 0s; }
+    .particle:nth-child(2) { left: 20%; animation-delay: 2s; }
+    .particle:nth-child(3) { left: 30%; animation-delay: 4s; }
+    .particle:nth-child(4) { left: 40%; animation-delay: 6s; }
+    .particle:nth-child(5) { left: 50%; animation-delay: 8s; }
+    .particle:nth-child(6) { left: 60%; animation-delay: 10s; }
+    .particle:nth-child(7) { left: 70%; animation-delay: 12s; }
+    .particle:nth-child(8) { left: 80%; animation-delay: 14s; }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(100vh) scale(0); opacity: 0; }
+      50% { opacity: 1; }
+      100% { transform: translateY(-100vh) scale(1); opacity: 0; }
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+      position: relative;
+      z-index: 10;
+    }
+
+    .hero-text-zone {
+      color: white;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255,255,255,0.2);
+      backdrop-filter: blur(10px);
+      padding: 10px 25px;
+      border-radius: 50px;
+      margin-bottom: 30px;
+      font-weight: 600;
+      animation: fadeInUp 0.8s ease;
+    }
+
+    .hero-title-premium {
+      font-size: 5rem;
+      font-weight: 900;
+      line-height: 1.1;
+      margin-bottom: 30px;
+      animation: fadeInUp 1s ease;
+    }
+
+    .hero-title-highlight {
+      background: linear-gradient(45deg, #ffd700, #ffed4e);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-text {
+      font-size: 1.3rem;
+      margin-bottom: 40px;
+      opacity: 0.95;
+      animation: fadeInUp 1.2s ease;
+    }
+
+    .hero-stats {
+      display: flex;
+      gap: 40px;
+      margin-bottom: 40px;
+      animation: fadeInUp 1.4s ease;
+    }
+
+    .stat {
+      text-align: center;
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 2.5rem;
+      font-weight: 900;
+      color: #ffd700;
+    }
+
+    .stat span {
+      font-size: 0.9rem;
+      opacity: 0.9;
+    }
+
+    .hero-ctas {
+      display: flex;
+      gap: 20px;
+      animation: fadeInUp 1.6s ease;
+    }
+
+    .btn-primary-hero {
+      padding: 18px 40px;
+      background: white;
+      color: #667eea;
+      text-decoration: none;
+      border-radius: 50px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      transition: all 0.3s ease;
+      box-shadow: 0 10px 30px rgba(255,255,255,0.3);
+    }
+
+    .btn-primary-hero:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 15px 40px rgba(255,255,255,0.4);
+      color: #667eea;
+    }
+
+    .btn-secondary-hero {
+      padding: 18px 40px;
+      background: rgba(255,255,255,0.2);
+      backdrop-filter: blur(10px);
+      color: white;
+      text-decoration: none;
+      border-radius: 50px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      transition: all 0.3s ease;
+      border: 2px solid white;
+    }
+
+    .btn-secondary-hero:hover {
+      background: white;
+      color: #667eea;
+      transform: translateY(-3px);
+    }
+
+    .hero-car-zone {
+      position: relative;
+      animation: fadeInRight 1s ease;
+    }
+
+    .floating-badge {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: white;
+      padding: 20px 30px;
+      border-radius: 20px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+      z-index: 10;
+      animation: float2 3s ease-in-out infinite;
+    }
+
+    .badge-content {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .badge-content i {
+      font-size: 2.5rem;
+      color: #ffd700;
+    }
+
+    .badge-content strong {
+      display: block;
+      font-size: 1.5rem;
+      color: #2c3e50;
+    }
+
+    .badge-content span {
+      display: block;
+      font-size: 0.9rem;
+      color: #7f8c8d;
+    }
+
+    .car-showcase-premium {
+      position: relative;
+      padding: 40px;
+    }
+
+    .car-glow {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle, rgba(255,215,0,0.3) 0%, transparent 70%);
+      filter: blur(60px);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    .car-main-image {
+      width: 100%;
+      position: relative;
+      z-index: 5;
+      filter: drop-shadow(0 20px 40px rgba(0,0,0,0.3));
+      animation: float2 3s ease-in-out infinite;
+    }
+
+    .car-info-card {
+      background: white;
+      padding: 25px;
+      border-radius: 20px;
+      margin-top: 30px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    }
+
+    .car-info-card h3 {
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: #2c3e50;
+      margin-bottom: 15px;
+    }
+
+    .car-features {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .car-features span {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #667eea;
+      font-weight: 600;
+    }
+
+    /* Sección Destacados */
+    .section-destacados {
+      padding: 80px 0;
+      background: #f8f9fa;
+    }
+
+    .section-header-modern {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+
+    .section-label {
+      display: inline-block;
+      padding: 8px 20px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border-radius: 20px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      margin-bottom: 20px;
+    }
+
+    .section-title-modern {
+      font-size: 3rem;
+      font-weight: 900;
+      color: #2c3e50;
+      margin-bottom: 15px;
+    }
+
+    .section-desc {
+      font-size: 1.2rem;
+      color: #7f8c8d;
+    }
+
+    .vehicle-card-premium {
+      background: white;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+      transition: all 0.3s ease;
+    }
+
+    .vehicle-card-premium:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+    }
+
+    .vehicle-img-wrapper {
+      position: relative;
+      height: 250px;
+      overflow: hidden;
+    }
+
+    .vehicle-badge {
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+      color: white;
+      padding: 8px 20px;
+      border-radius: 20px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      z-index: 5;
+    }
+
+    .vehicle-img-wrapper img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+
+    .vehicle-card-premium:hover .vehicle-img-wrapper img {
+      transform: scale(1.1);
+    }
+
+    .vehicle-body {
+      padding: 25px;
+    }
+
+    .vehicle-name {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #2c3e50;
+      margin-bottom: 10px;
+    }
+
+    .vehicle-desc {
+      color: #7f8c8d;
+      margin-bottom: 15px;
+      font-size: 0.95rem;
+    }
+
+    .vehicle-price {
+      font-size: 2rem;
+      font-weight: 900;
+      color: #667eea;
+      display: block;
+      margin-bottom: 20px;
+    }
+
+    .btn-ver-auto {
+      display: inline-block;
+      padding: 12px 30px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      text-decoration: none;
+      border-radius: 50px;
+      font-weight: 700;
+      transition: all 0.3s ease;
+    }
+
+    .btn-ver-auto:hover {
+      transform: translateX(5px);
+      color: white;
+      box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-ver-catalogo {
+      display: inline-block;
+      padding: 18px 50px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      text-decoration: none;
+      border-radius: 50px;
+      font-weight: 700;
+      font-size: 1.2rem;
+      transition: all 0.3s ease;
+    }
+
+    .btn-ver-catalogo:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+      color: white;
+    }
+
+    /* Beneficios */
+    .section-beneficios-modern {
+      padding: 80px 0;
+      background: white;
+    }
+
+    .benefit-modern {
+      background: white;
+      padding: 40px 30px;
+      border-radius: 20px;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+      transition: all 0.3s ease;
+      height: 100%;
+    }
+
+    .benefit-modern:hover {
+      transform: translateY(-10px);
+    }
+
+    .benefit-green { border-top: 5px solid #28a745; }
+    .benefit-blue { border-top: 5px solid #0d6efd; }
+    .benefit-orange { border-top: 5px solid #fd7e14; }
+    .benefit-red { border-top: 5px solid #dc3545; }
+
+    .benefit-icon-modern {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 25px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      color: white;
+    }
+
+    .benefit-modern h4 {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: #2c3e50;
+      margin-bottom: 10px;
+    }
+
+    .benefit-modern p {
+      color: #7f8c8d;
+      margin: 0;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeInRight {
+      from {
+        opacity: 0;
+        transform: translateX(50px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes bgMove {
+      0%, 100% { transform: translate(0, 0); }
+      50% { transform: translate(-20px, -20px); }
+    }
+
+    @keyframes float2 {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-20px); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.5; }
+      50% { opacity: 1; }
+    }
+
+    @media (max-width: 768px) {
+      .hero-grid {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+
+      .hero-title-premium {
+        font-size: 2.5rem;
+      }
+
+      .hero-stats {
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      .hero-ctas {
+        flex-direction: column;
+      }
+
+      .section-title-modern {
+        font-size: 2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- NAVBAR -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+      <a class="navbar-brand fw-bold" href="index.html">
+        <i class="bi bi-car-front-fill"></i> Giménez Automotores
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link active" href="index.html">Inicio</a></li>
+          <li class="nav-item"><a class="nav-link" href="quienes_somos.html">Quiénes Somos</a></li>
+          <li class="nav-item"><a class="nav-link" href="catalogo.html">Catálogo</a></li>
+          <li class="nav-item"><a class="nav-link" href="planes.html">Planes</a></li>
+          <li class="nav-item"><a class="nav-link" href="cotizador.html">Cotizador</a></li>
+          <li class="nav-item"><a class="nav-link" href="contacto.html">Contacto</a></li>
+          
+          <li class="nav-item" id="nav-user" style="display: none;">
+            <div class="dropdown">
+              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                <i class="bi bi-person-circle"></i> <span id="username-display"></span>
+              </a>
+              <ul class="dropdown-menu dropdown-menu-end">
+                <li><a class="dropdown-item" href="#" onclick="logout()">
+                  <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
+                </a></li>
+              </ul>
+            </div>
+          </li>
+          
+          <li class="nav-item" id="nav-login">
+            <a class="btn btn-outline-light btn-sm" href="login.html">
+              <i class="bi bi-lock-fill"></i> Iniciar Sesión
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  
+  <!-- HERO ULTRA PREMIUM -->
+  <div class="hero-ultra">
+    <div class="hero-bg-layer"></div>
+    
+    <div class="particles">
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+    </div>
+    
+    <div class="container hero-grid">
+      <div class="hero-text-zone">
+        <div class="hero-badge">
+          <i class="bi bi-star-fill"></i>
+          <span>Concesionario Oficial FIAT</span>
+        </div>
+        
+        <h1 class="hero-title-premium">
+          Tu Próximo <br>
+          <span class="hero-title-highlight">FIAT</span> <br>
+          Te Espera
+        </h1>
+        
+        <p class="hero-text">
+          Descubrí la mejor selección de vehículos 0km con 
+          <strong>financiación a tu medida</strong> y llevátelo hoy mismo
+        </p>
+        
+        <div class="hero-stats">
+          <div class="stat">
+            <strong>+500</strong>
+            <span>Vehículos Vendidos</span>
+          </div>
+          <div class="stat">
+            <strong>+350</strong>
+            <span>Clientes Satisfechos</span>
+          </div>
+        </div>
+        
+        <div class="hero-ctas">
+          <a href="catalogo.html" class="btn-primary-hero">
+            <span>Ver Catálogo</span>
+            <i class="bi bi-arrow-right"></i>
+          </a>
+          <a href="cotizador.html" class="btn-secondary-hero">
+            <i class="bi bi-calculator-fill"></i>
+            <span>Cotizar</span>
+          </a>
         </div>
       </div>
-    `).join('');
-  } catch (error) {
-    console.error('Error:', error);
-    document.getElementById('featured-list').innerHTML = 
-      '<p class="text-center text-danger">Error al cargar vehículos</p>';
-  }
-}
+      
+      <div class="hero-car-zone">
+        <div class="floating-badge">
+          <div class="badge-content">
+            <i class="bi bi-lightning-charge-fill"></i>
+            <div>
+              <strong>0km</strong>
+              <span>Entrega Inmediata</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="car-showcase-premium">
+          <div class="car-glow"></div>
+          <img src="static/img/fiat-cronos.png" alt="Fiat Cronos" class="car-main-image">
+        </div>
+        
+        <div class="car-info-card">
+          <h3>FIAT Cronos</h3>
+          <div class="car-features">
+            <span><i class="bi bi-speedometer2"></i> Sedán</span>
+            <span><i class="bi bi-gear"></i> Manual/Auto</span>
+            <span><i class="bi bi-fuel-pump"></i> Nafta</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-function goToVehicle(id) {
-  window.location.href = `detalle_vehiculo.html?id=${id}`;
-}
+  <!-- Modelos Destacados -->
+  <section class="section-destacados">
+    <div class="container">
+      <div class="section-header-modern">
+        <span class="section-label">Nuestros Modelos</span>
+        <h2 class="section-title-modern">Vehículos Destacados</h2>
+        <p class="section-desc">Los más elegidos por nuestros clientes</p>
+      </div>
+      
+      <div class="row g-4" id="vehiculos-container">
+        <div class="col-12 text-center py-5">
+          <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;"></div>
+          <p class="mt-3 text-muted">Cargando vehículos...</p>
+        </div>
+      </div>
+      
+      <div class="text-center mt-5">
+        <a href="catalogo.html" class="btn-ver-catalogo">
+          Ver Catálogo Completo
+          <i class="bi bi-arrow-right ms-2"></i>
+        </a>
+      </div>
+    </div>
+  </section>
 
-function updateAuthMenu() {
-  const user = JSON.parse(localStorage.getItem('user'));
-  const authMenu = document.getElementById('auth-menu');
+  <!-- Beneficios Modernos -->
+  <section class="section-beneficios-modern">
+    <div class="container">
+      <div class="row g-4">
+        <div class="col-lg-3 col-md-6">
+          <div class="benefit-modern benefit-green">
+            <div class="benefit-icon-modern">
+              <i class="bi bi-shield-check"></i>
+            </div>
+            <h4>Garantía Oficial</h4>
+            <p>Respaldo de fábrica incluido</p>
+          </div>
+        </div>
+        
+        <div class="col-lg-3 col-md-6">
+          <div class="benefit-modern benefit-blue">
+            <div class="benefit-icon-modern">
+              <i class="bi bi-credit-card-2-front"></i>
+            </div>
+            <h4>Planes Flexibles</h4>
+            <p>Financiación a tu medida</p>
+          </div>
+        </div>
+        
+        <div class="col-lg-3 col-md-6">
+          <div class="benefit-modern benefit-orange">
+            <div class="benefit-icon-modern">
+              <i class="bi bi-tools"></i>
+            </div>
+            <h4>Service Oficial</h4>
+            <p>Repuestos originales</p>
+          </div>
+        </div>
+        
+        <div class="col-lg-3 col-md-6">
+          <div class="benefit-modern benefit-red">
+            <div class="benefit-icon-modern">
+              <i class="bi bi-truck"></i>
+            </div>
+            <h4>Entrega Rápida</h4>
+            <p>Tu auto en tiempo récord</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="bg-dark text-white py-4">
+    <div class="container text-center">
+      <p class="mb-0"><i class="bi bi-c-circle"></i> 2025 Giménez Automotores - Todos los derechos reservados</p>
+    </div>
+  </footer>
   
-  if (user) {
-    authMenu.innerHTML = `
-      <span class="nav-link">Hola, <strong>${user.username}</strong></span>
-      <button class="btn btn-logout" onclick="logout()">Cerrar sesión</button>
-    `;
-  }
-}
-
-function logout() {
-  api.logout();
-  location.reload();
-}
-</script>
-
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <script>
+    const API_URL = 'http://localhost:3000/api';
+    
+    function checkAuth() {
+      const token = localStorage.getItem('token');
+      const username = localStorage.getItem('username');
+      
+      if (token && username) {
+        document.getElementById('nav-user').style.display = 'block';
+        document.getElementById('nav-login').style.display = 'none';
+        document.getElementById('username-display').textContent = username;
+      }
+    }
+    
+    function logout() {
+      localStorage.clear();
+      window.location.reload();
+    }
+    
+    async function cargarVehiculosDestacados() {
+      try {
+        const response = await fetch(`${API_URL}/vehiculos/destacados`);
+        const vehiculos = await response.json();
+        
+        const container = document.getElementById('vehiculos-container');
+        container.innerHTML = '';
+        
+        if (vehiculos.length === 0) {
+          container.innerHTML = '<div class="col-12 text-center"><p class="text-muted">No hay vehículos disponibles</p></div>';
+          return;
+        }
+        
+        vehiculos.forEach(v => {
+          const precio = parseFloat(v.precio || 0).toLocaleString('es-AR');
+          
+          const col = document.createElement('div');
+          col.className = 'col-md-6 col-lg-4';
+          col.innerHTML = `
+            <div class="vehicle-card-premium">
+              <div class="vehicle-img-wrapper">
+                <div class="vehicle-badge">FIAT</div>
+                <img src="${v.imagen}" alt="${v.modelo}">
+              </div>
+              <div class="vehicle-body">
+                <h3 class="vehicle-name">${v.modelo}</h3>
+                <p class="vehicle-desc">${v.descripcion}</p>
+                <span class="vehicle-price">$${precio}</span>
+                <a href="detalle_vehiculo.html?id=${v._id}" class="btn-ver-auto">Ver Detalles →</a>
+              </div>
+            </div>
+          `;
+          
+          container.appendChild(col);
+        });
+        
+      } catch (error) {
+        console.error('Error:', error);
+        document.getElementById('vehiculos-container').innerHTML = 
+          '<div class="col-12 text-center"><p class="text-danger">Error al cargar vehículos</p></div>';
+      }
+    }
+    
+    document.addEventListener('DOMContentLoaded', () => {
+      checkAuth();
+      cargarVehiculosDestacados();
+    });
+  </script>
 </body>
 </html>
