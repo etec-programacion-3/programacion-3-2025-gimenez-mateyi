@@ -2,224 +2,171 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Catálogo - Giménez Automotores</title>
-  <link rel="stylesheet" href="static/css/styles.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="css/styles.css">
 </head>
-<body class="bg-light text-dark">
-  <!-- NAVBAR -->
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container">
-      <a class="navbar-brand fw-bold" href="index.html">
-        <i class="bi bi-car-front-fill"></i> Giménez Automotores
-      </a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ms-auto">
-          <li class="nav-item"><a class="nav-link" href="index.html">Inicio</a></li>
-          <li class="nav-item"><a class="nav-link" href="quienes-somos.html">Quiénes Somos</a></li>
-          <li class="nav-item"><a class="nav-link active" href="catalogo.html">Modelos</a></li>
-          <li class="nav-item"><a class="nav-link" href="planes.html">Planes</a></li>
-          <li class="nav-item"><a class="nav-link" href="cotizador.html">Cotizador</a></li>
-          <li class="nav-item"><a class="nav-link" href="contacto.html">Contacto</a></li>
-          
-          <!-- Usuario logueado -->
-          <li class="nav-item" id="nav-user" style="display: none;">
-            <div class="dropdown">
-              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                <i class="bi bi-person-circle"></i> <span id="username-display"></span>
-              </a>
-              <ul class="dropdown-menu dropdown-menu-end">
-                <li><a class="dropdown-item" href="#" onclick="logout()">
-                  <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
-                </a></li>
-              </ul>
-            </div>
-          </li>
-          
-          <!-- Botones login/register -->
-          <li class="nav-item" id="nav-login">
-            <a class="btn btn-outline-light btn-sm" href="login.html">
-              <i class="bi bi-lock-fill"></i> Iniciar Sesión
-            </a>
-          </li>
-        </ul>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container">
+    <a class="navbar-brand" href="index.html">
+      <i class="bi bi-car-front-fill"></i> Giménez Automotores
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link" href="index.html">Inicio</a></li>
+        <li class="nav-item"><a class="nav-link active" href="catalogo.html">Catálogo</a></li>
+        <li class="nav-item"><a class="nav-link" href="planes.html">Planes</a></li>
+        <li class="nav-item"><a class="nav-link" href="quienes_somos.html">Quiénes Somos</a></li>
+        <li class="nav-item"><a class="nav-link" href="contacto.html">Contacto</a></li>
+        <li class="nav-item" id="auth-menu">
+          <a class="nav-link" href="login.html">Iniciar Sesión</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO SECTION -->
+<section class="hero">
+  <div class="container">
+    <h2>Nuestro Catálogo</h2>
+    <p>Todos nuestros vehículos FIAT 0km disponibles</p>
+  </div>
+</section>
+
+<!-- FILTROS Y LISTADO -->
+<section class="container my-5">
+  <div class="row mb-4">
+    <div class="col-md-12">
+      <h3 class="section-title">Vehículos Disponibles</h3>
+      
+      <!-- FILTROS -->
+      <div class="row mb-4 p-3" style="background-color: #f8f9fa; border-radius: 10px;">
+        <div class="col-md-4">
+          <label for="filter-marca" class="form-label"><strong>Marca</strong></label>
+          <select id="filter-marca" class="form-select" onchange="filterVehicles()">
+            <option value="">Todas las marcas</option>
+            <option value="FIAT">FIAT</option>
+          </select>
+        </div>
+        <div class="col-md-4">
+          <label for="filter-modelo" class="form-label"><strong>Modelo</strong></label>
+          <input type="text" id="filter-modelo" class="form-control" placeholder="Buscar modelo..." onkeyup="filterVehicles()">
+        </div>
+        <div class="col-md-4">
+          <label for="filter-precio" class="form-label"><strong>Precio máximo</strong></label>
+          <input type="number" id="filter-precio" class="form-control" placeholder="Ej: 10000000" onkeyup="filterVehicles()">
+        </div>
       </div>
     </div>
-  </nav>
-
-  <!-- Header del Catálogo -->
-  <div class="catalogo-header">
-    <div class="header-content">
-      <h1 class="catalogo-title">Encontrá Tu FIAT 0KM</h1>
-      <p class="catalogo-subtitle">Descubrí nuestra línea completa de vehículos con la mejor financiación</p>
-    </div>
-    <div class="header-bg"></div>
   </div>
 
-  <!-- Grid de Vehículos -->
-  <section class="vehiculos-grid">
-    <div class="container">
-      <div class="row g-4" id="vehiculos-container">
-        <!-- Spinner de carga -->
-        <div class="col-12 text-center py-5">
-          <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;"></div>
-          <p class="mt-3 text-muted">Cargando vehículos...</p>
-        </div>
+  <!-- LISTADO DE VEHÍCULOS -->
+  <div id="vehicles-list" class="vehicle-grid">
+    <p class="text-center">Cargando catálogo...</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>&copy; 2025 Giménez Automotores - Todos los derechos reservados</p>
+</footer>
+
+<!-- Scripts -->
+<script src="js/config.js"></script>
+<script src="js/api.js"></script>
+<script>
+let allVehicles = [];
+
+document.addEventListener('DOMContentLoaded', async () => {
+  await loadVehicles();
+  updateAuthMenu();
+});
+
+async function loadVehicles() {
+  try {
+    const container = document.getElementById('vehicles-list');
+    allVehicles = await api.getVehicles();
+    
+    if (!allVehicles || allVehicles.length === 0) {
+      container.innerHTML = '<p class="text-center text-muted">No hay vehículos disponibles</p>';
+      return;
+    }
+
+    renderVehicles(allVehicles);
+  } catch (error) {
+    console.error('Error:', error);
+    document.getElementById('vehicles-list').innerHTML = 
+      '<p class="text-center text-danger">Error al cargar el catálogo</p>';
+  }
+}
+
+function renderVehicles(vehicles) {
+  const container = document.getElementById('vehicles-list');
+  
+  if (vehicles.length === 0) {
+    container.innerHTML = '<p class="text-center text-muted col-12">No se encontraron vehículos</p>';
+    return;
+  }
+
+  container.innerHTML = vehicles.map(v => `
+    <div class="vehicle-card">
+      <img src="${v.imagen || 'https://via.placeholder.com/300x200'}" alt="${v.modelo}">
+      <div class="card-body">
+        <h5>${v.marca} ${v.modelo}</h5>
+        <p>${v.descripcion || ''}</p>
+        <p class="text-muted">Año: ${v.anio || 'N/A'} | Stock: ${v.stock || 0}</p>
+        <p class="price">$${Number(v.precio || 0).toLocaleString('es-AR')}</p>
+        <button class="btn" onclick="goToVehicle('${v._id}')">Ver detalles</button>
       </div>
     </div>
-  </section>
+  `).join('');
+}
 
-  <!-- CTA Section -->
-  <section class="cta-section">
-    <div class="container">
-      <div class="cta-card">
-        <div class="cta-content">
-          <h2>¿No encontraste lo que buscabas?</h2>
-          <p>Contactanos y te ayudamos a encontrar el FIAT perfecto para vos</p>
-        </div>
-        <a href="contacto.html" class="btn-cta">
-          Contactar Ahora <i class="bi bi-arrow-right ms-2"></i>
-        </a>
-      </div>
-    </div>
-  </section>
+function filterVehicles() {
+  const marca = document.getElementById('filter-marca').value.toLowerCase();
+  const modelo = document.getElementById('filter-modelo').value.toLowerCase();
+  const precioMax = parseInt(document.getElementById('filter-precio').value) || Infinity;
 
-  <!-- FOOTER -->
-  <footer class="bg-dark text-white py-4 mt-0">
-    <div class="container text-center">
-      <p class="mb-0"><i class="bi bi-c-circle"></i> 2025 Giménez Automotores - Todos los derechos reservados</p>
-    </div>
-  </footer>
+  const filtered = allVehicles.filter(v => {
+    return (
+      (marca === '' || v.marca.toLowerCase().includes(marca)) &&
+      (modelo === '' || v.modelo.toLowerCase().includes(modelo)) &&
+      (v.precio <= precioMax)
+    );
+  });
+
+  renderVehicles(filtered);
+}
+
+function goToVehicle(id) {
+  window.location.href = `detalle_vehiculo.html?id=${id}`;
+}
+
+function updateAuthMenu() {
+  const user = JSON.parse(localStorage.getItem('user'));
+  const authMenu = document.getElementById('auth-menu');
   
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  
-  <script>
-    const API_URL = 'http://localhost:3000/api';
-    
-    // Autenticación
-    function checkAuth() {
-      const token = localStorage.getItem('token');
-      const username = localStorage.getItem('username');
-      
-      if (token && username) {
-        document.getElementById('nav-user').style.display = 'block';
-        document.getElementById('nav-login').style.display = 'none';
-        document.getElementById('username-display').textContent = username;
-      }
-    }
-    
-    function logout() {
-      localStorage.removeItem('token');
-      localStorage.removeItem('username');
-      localStorage.removeItem('userId');
-      localStorage.removeItem('role');
-      window.location.reload();
-    }
-    
-    // Cargar vehículos
-    async function cargarVehiculos() {
-      try {
-        const response = await fetch(`${API_URL}/vehiculos`);
-        
-        if (!response.ok) {
-          throw new Error('Error al cargar vehículos');
-        }
-        
-        const vehiculos = await response.json();
-        
-        const container = document.getElementById('vehiculos-container');
-        container.innerHTML = '';
-        
-        if (vehiculos.length === 0) {
-          container.innerHTML = `
-            <div class="col-12 text-center py-5">
-              <i class="bi bi-car-front" style="font-size: 5rem; color: #dee2e6;"></i>
-              <h3 class="mt-4 text-muted">No hay vehículos disponibles</h3>
-              <p class="text-muted">Pronto tendremos nuevos modelos para vos</p>
-            </div>
-          `;
-          return;
-        }
-        
-        vehiculos.forEach(v => {
-          const precio = parseFloat(v.precio || 0).toLocaleString('es-AR');
-          
-          const col = document.createElement('div');
-          col.className = 'col-md-6 col-lg-4';
-          col.innerHTML = `
-            <div class="vehicle-card-modern">
-              <div class="vehicle-image-wrapper">
-                <div class="vehicle-badge-modern">
-                  <span>FIAT</span>
-                </div>
-                <div class="vehicle-overlay-gradient"></div>
-                <img src="${v.imagen}" alt="${v.modelo}" class="vehicle-image">
-              </div>
-              
-              <div class="vehicle-content">
-                <h3 class="vehicle-title">${v.modelo}</h3>
-                <p class="vehicle-description">${v.descripcion}</p>
-                
-                <div class="vehicle-specs">
-                  <span class="spec-item">
-                    <i class="bi bi-calendar"></i> ${v.anio || 2024}
-                  </span>
-                  <span class="spec-item">
-                    <i class="bi bi-speedometer2"></i> 0 km
-                  </span>
-                  <span class="spec-item">
-                    <i class="bi bi-box-seam"></i> Stock: ${v.stock || 1}
-                  </span>
-                </div>
-                
-                <div class="vehicle-price-section">
-                  <span class="price-label">Desde</span>
-                  <span class="price-amount">$${precio}</span>
-                </div>
-                
-                <div class="vehicle-actions-modern">
-                  <a href="detalle.html?id=${v._id}" class="btn-ver-detalle">
-                    <span>Ver Detalles</span>
-                    <i class="bi bi-arrow-right"></i>
-                  </a>
-                  <a href="cotizador.html" class="btn-cotizar">
-                    <i class="bi bi-calculator"></i>
-                  </a>
-                </div>
-              </div>
-            </div>
-          `;
-          
-          container.appendChild(col);
-        });
-        
-        console.log(`✅ Vehículos cargados: ${vehiculos.length}`);
-        
-      } catch (error) {
-        console.error('❌ Error al cargar vehículos:', error);
-        document.getElementById('vehiculos-container').innerHTML = `
-          <div class="col-12 text-center py-5">
-            <i class="bi bi-exclamation-triangle text-danger" style="font-size: 5rem;"></i>
-            <h3 class="mt-4 text-danger">Error al cargar vehículos</h3>
-            <p class="text-muted">Verificá que el backend esté corriendo en http://localhost:3000</p>
-            <button class="btn btn-primary" onclick="cargarVehiculos()">
-              <i class="bi bi-arrow-clockwise"></i> Reintentar
-            </button>
-          </div>
-        `;
-      }
-    }
-    
-    // Inicializar
-    document.addEventListener('DOMContentLoaded', () => {
-      checkAuth();
-      cargarVehiculos();
-    });
-  </script>
+  if (user) {
+    authMenu.innerHTML = `
+      <span class="nav-link">Hola, <strong>${user.username}</strong></span>
+      <button class="btn btn-logout" onclick="logout()">Cerrar sesión</button>
+    `;
+  }
+}
+
+function logout() {
+  api.logout();
+  location.reload();
+}
+</script>
+
 </body>
 </html>

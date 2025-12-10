@@ -1,347 +1,411 @@
-{% extends 'base.html' %}
-{% block title %}Contacto - Giménez Automotores{% endblock %}
-{% block content %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Contacto - Giménez Automotores</title>
+  <link rel="stylesheet" href="static/css/styles.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+  <style>
+    /* Hero Contacto */
+    .contacto-hero {
+      position: relative;
+      height: 400px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
 
-<!-- Hero Contacto -->
-<div class="contacto-hero">
-  <div class="contacto-hero-overlay"></div>
-  <div class="container contacto-hero-content">
-    <h1 class="contacto-hero-title">Contactanos</h1>
-    <p class="contacto-hero-subtitle">Estamos para ayudarte a encontrar tu FIAT ideal</p>
-  </div>
-</div>
+    .contacto-hero-overlay {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at 30% 50%, rgba(255,255,255,0.1) 0%, transparent 50%);
+      animation: bgMove 15s ease-in-out infinite;
+    }
 
-<!-- Formulario y Info -->
-<section class="contacto-section">
-  <div class="container">
-    <div class="row g-5">
-      <!-- Formulario -->
-      <div class="col-lg-7">
-        <div class="contacto-card">
-          <h2 class="contacto-card-title">Envianos tu Consulta</h2>
-          <p class="contacto-card-subtitle">Completá el formulario y te responderemos a la brevedad</p>
-          
-          <form method="POST" action="{{ url_for('contacto') }}" class="contacto-form">
-            <div class="mb-4">
-              <label for="nombre" class="form-label">Nombre Completo</label>
-              <input type="text" class="form-control form-control-lg" id="nombre" name="nombre" required>
-            </div>
-            
-            <div class="mb-4">
-              <label for="email" class="form-label">Email</label>
-              <input type="email" class="form-control form-control-lg" id="email" name="email" required>
-            </div>
-            
-            <div class="mb-4">
-              <label for="telefono" class="form-label">Teléfono</label>
-              <input type="tel" class="form-control form-control-lg" id="telefono" name="telefono">
-            </div>
-            
-            <div class="mb-4">
-              <label for="mensaje" class="form-label">Mensaje</label>
-              <textarea class="form-control form-control-lg" id="mensaje" name="mensaje" rows="5" required></textarea>
-            </div>
-            
-            <button type="submit" class="btn-contacto-submit">
-              <i class="bi bi-send-fill me-2"></i>
-              Enviar Mensaje
-            </button>
-          </form>
-        </div>
-      </div>
+    .contacto-hero-content {
+      position: relative;
+      z-index: 10;
+      text-align: center;
+      color: white;
+    }
+
+    .contacto-hero-title {
+      font-size: 4.5rem;
+      font-weight: 900;
+      margin-bottom: 20px;
+      text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      animation: fadeInUp 0.8s ease;
+    }
+
+    .contacto-hero-subtitle {
+      font-size: 1.5rem;
+      opacity: 0.95;
+      animation: fadeInUp 1s ease;
+    }
+
+    /* Formulario */
+    .contacto-section {
+      padding: 80px 0;
+      background: #f8f9fa;
+    }
+
+    .contacto-card {
+      background: white;
+      padding: 50px;
+      border-radius: 24px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+    }
+
+    .contacto-card-title {
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: #2c3e50;
+      margin-bottom: 15px;
+    }
+
+    .contacto-card-subtitle {
+      color: #7f8c8d;
+      font-size: 1.1rem;
+      margin-bottom: 40px;
+    }
+
+    .contacto-form .form-label {
+      font-weight: 600;
+      color: #2c3e50;
+      margin-bottom: 10px;
+    }
+
+    .contacto-form .form-control {
+      border: 2px solid #e9ecef;
+      border-radius: 12px;
+      padding: 15px 20px;
+      transition: all 0.3s ease;
+    }
+
+    .contacto-form .form-control:focus {
+      border-color: #667eea;
+      box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+    }
+
+    .btn-contacto-submit {
+      width: 100%;
+      padding: 18px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 1.2rem;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .btn-contacto-submit:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+    }
+
+    /* Info Card */
+    .contacto-info-card {
+      background: white;
+      padding: 40px;
+      border-radius: 24px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+      margin-bottom: 30px;
+    }
+
+    .contacto-info-card h3 {
+      font-size: 2rem;
+      font-weight: 800;
+      color: #2c3e50;
+    }
+
+    .info-item {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 30px;
+      padding-bottom: 30px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .info-item:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .info-icon {
+      width: 60px;
+      height: 60px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      flex-shrink: 0;
+    }
+
+    .info-item h5 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #2c3e50;
+      margin-bottom: 8px;
+    }
+
+    .info-item p {
+      color: #7f8c8d;
+      margin: 0;
+      line-height: 1.6;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes bgMove {
+      0%, 100% { transform: translate(0, 0); }
+      50% { transform: translate(-20px, -20px); }
+    }
+
+    @media (max-width: 768px) {
+      .contacto-hero-title {
+        font-size: 2.5rem;
+      }
       
-      <!-- Info de Contacto -->
-      <div class="col-lg-5">
-        <div class="contacto-info-card">
-          <h3 class="mb-4">Información de Contacto</h3>
+      .contacto-card {
+        padding: 30px 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- NAVBAR -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+      <a class="navbar-brand fw-bold" href="index.html">
+        <i class="bi bi-car-front-fill"></i> Giménez Automotores
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link" href="index.html">Inicio</a></li>
+          <li class="nav-item"><a class="nav-link" href="quienes-somos.html">Quiénes Somos</a></li>
+          <li class="nav-item"><a class="nav-link" href="catalogo.html">Modelos</a></li>
+          <li class="nav-item"><a class="nav-link" href="planes.html">Planes</a></li>
+          <li class="nav-item"><a class="nav-link" href="cotizador.html">Cotizador</a></li>
+          <li class="nav-item"><a class="nav-link active" href="contacto.html">Contacto</a></li>
           
-          <div class="info-item">
-            <div class="info-icon">
-              <i class="bi bi-geo-alt-fill"></i>
+          <li class="nav-item" id="nav-user" style="display: none;">
+            <div class="dropdown">
+              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                <i class="bi bi-person-circle"></i> <span id="username-display"></span>
+              </a>
+              <ul class="dropdown-menu dropdown-menu-end">
+                <li><a class="dropdown-item" href="#" onclick="logout()">
+                  <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
+                </a></li>
+              </ul>
             </div>
-            <div>
-              <h5>Dirección</h5>
-              <p>Av. San Martín 3500, Godoy Cruz<br>Mendoza, Argentina</p>
-            </div>
-          </div>
+          </li>
           
-          <div class="info-item">
-            <div class="info-icon">
-              <i class="bi bi-telephone-fill"></i>
-            </div>
-            <div>
-              <h5>Teléfono</h5>
-              <p>(261) 423-8000</p>
-            </div>
-          </div>
-          
-          <div class="info-item">
-            <div class="info-icon">
-              <i class="bi bi-envelope-fill"></i>
-            </div>
-            <div>
-              <h5>Email</h5>
-              <p>info@gimenezautomotores.com</p>
-            </div>
-          </div>
-          
-          <div class="info-item">
-            <div class="info-icon">
-              <i class="bi bi-clock-fill"></i>
-            </div>
-            <div>
-              <h5>Horarios</h5>
-              <p>Lunes a Viernes: 9:00 - 19:00<br>Sábados: 9:00 - 13:00</p>
-            </div>
+          <li class="nav-item" id="nav-login">
+            <a class="btn btn-outline-light btn-sm" href="login.html">
+              <i class="bi bi-lock-fill"></i> Iniciar Sesión
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Contacto -->
+  <div class="contacto-hero">
+    <div class="contacto-hero-overlay"></div>
+    <div class="container contacto-hero-content">
+      <h1 class="contacto-hero-title">Contactanos</h1>
+      <p class="contacto-hero-subtitle">Estamos para ayudarte a encontrar tu FIAT ideal</p>
+    </div>
+  </div>
+
+  <!-- Formulario y Info -->
+  <section class="contacto-section">
+    <div class="container">
+      <div class="row g-5">
+        <!-- Formulario -->
+        <div class="col-lg-7">
+          <div class="contacto-card">
+            <h2 class="contacto-card-title">Envianos tu Consulta</h2>
+            <p class="contacto-card-subtitle">Completá el formulario y te responderemos a la brevedad</p>
+            
+            <!-- Alerta -->
+            <div id="alert-container"></div>
+            
+            <form id="contactoForm" class="contacto-form">
+              <div class="mb-4">
+                <label for="nombre" class="form-label">Nombre Completo</label>
+                <input type="text" class="form-control form-control-lg" id="nombre" name="nombre" required>
+              </div>
+              
+              <div class="mb-4">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" class="form-control form-control-lg" id="email" name="email" required>
+              </div>
+              
+              <div class="mb-4">
+                <label for="telefono" class="form-label">Teléfono</label>
+                <input type="tel" class="form-control form-control-lg" id="telefono" name="telefono">
+              </div>
+              
+              <div class="mb-4">
+                <label for="mensaje" class="form-label">Mensaje</label>
+                <textarea class="form-control form-control-lg" id="mensaje" name="mensaje" rows="5" required></textarea>
+              </div>
+              
+              <button type="submit" class="btn-contacto-submit">
+                <i class="bi bi-send-fill me-2"></i>
+                Enviar Mensaje
+              </button>
+            </form>
           </div>
         </div>
         
-        <!-- Redes Sociales -->
-        <div class="contacto-redes">
-          <h4 class="mb-3">Seguinos en Redes</h4>
-          <div class="redes-buttons">
-            <a href="#" class="btn-red facebook"><i class="bi bi-facebook"></i></a>
-            <a href="#" class="btn-red instagram"><i class="bi bi-instagram"></i></a>
-            <a href="#" class="btn-red whatsapp"><i class="bi bi-whatsapp"></i></a>
+        <!-- Info de Contacto -->
+        <div class="col-lg-5">
+          <div class="contacto-info-card">
+            <h3 class="mb-4">Información de Contacto</h3>
+            
+            <div class="info-item">
+              <div class="info-icon">
+                <i class="bi bi-geo-alt-fill"></i>
+              </div>
+              <div>
+                <h5>Dirección</h5>
+                <p>Av. San Martín 3500, Godoy Cruz<br>Mendoza, Argentina</p>
+              </div>
+            </div>
+            
+            <div class="info-item">
+              <div class="info-icon">
+                <i class="bi bi-telephone-fill"></i>
+              </div>
+              <div>
+                <h5>Teléfono</h5>
+                <p>(261) 423-8000</p>
+              </div>
+            </div>
+            
+            <div class="info-item">
+              <div class="info-icon">
+                <i class="bi bi-envelope-fill"></i>
+              </div>
+              <div>
+                <h5>Email</h5>
+                <p>info@gimenezautomotores.com</p>
+              </div>
+            </div>
+            
+            <div class="info-item">
+              <div class="info-icon">
+                <i class="bi bi-clock-fill"></i>
+              </div>
+              <div>
+                <h5>Horarios</h5>
+                <p>Lunes a Viernes: 9:00 - 19:00<br>Sábados: 9:00 - 13:00</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<style>
-/* Hero Contacto */
-.contacto-hero {
-  position: relative;
-  height: 400px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-}
+  <!-- FOOTER -->
+  <footer class="bg-dark text-white py-4">
+    <div class="container text-center">
+      <p class="mb-0"><i class="bi bi-c-circle"></i> 2025 Giménez Automotores</p>
+    </div>
+  </footer>
 
-.contacto-hero-overlay {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  background: radial-gradient(circle at 30% 50%, rgba(255,255,255,0.1) 0%, transparent 50%);
-  animation: bgMove 15s ease-in-out infinite;
-}
-
-.contacto-hero-content {
-  position: relative;
-  z-index: 10;
-  text-align: center;
-  color: white;
-}
-
-.contacto-hero-title {
-  font-size: 4.5rem;
-  font-weight: 900;
-  margin-bottom: 20px;
-  text-shadow: 0 4px 20px rgba(0,0,0,0.3);
-  animation: fadeInUp 0.8s ease;
-}
-
-.contacto-hero-subtitle {
-  font-size: 1.5rem;
-  opacity: 0.95;
-  animation: fadeInUp 1s ease;
-}
-
-/* Sección Contacto */
-.contacto-section {
-  padding: 80px 0;
-  background: #f8f9fa;
-}
-
-.contacto-card {
-  background: white;
-  padding: 50px;
-  border-radius: 24px;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.08);
-}
-
-.contacto-card-title {
-  font-size: 2.5rem;
-  font-weight: 800;
-  color: #2c3e50;
-  margin-bottom: 15px;
-}
-
-.contacto-card-subtitle {
-  color: #7f8c8d;
-  font-size: 1.1rem;
-  margin-bottom: 40px;
-}
-
-.contacto-form .form-label {
-  font-weight: 600;
-  color: #2c3e50;
-  margin-bottom: 10px;
-}
-
-.contacto-form .form-control {
-  border: 2px solid #e9ecef;
-  border-radius: 12px;
-  padding: 15px 20px;
-  transition: all 0.3s ease;
-}
-
-.contacto-form .form-control:focus {
-  border-color: #667eea;
-  box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
-}
-
-.btn-contacto-submit {
-  width: 100%;
-  padding: 18px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  border: none;
-  border-radius: 12px;
-  font-weight: 700;
-  font-size: 1.2rem;
-  transition: all 0.3s ease;
-  cursor: pointer;
-}
-
-.btn-contacto-submit:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
-}
-
-/* Info Card */
-.contacto-info-card {
-  background: white;
-  padding: 40px;
-  border-radius: 24px;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.08);
-  margin-bottom: 30px;
-}
-
-.contacto-info-card h3 {
-  font-size: 2rem;
-  font-weight: 800;
-  color: #2c3e50;
-}
-
-.info-item {
-  display: flex;
-  gap: 20px;
-  margin-bottom: 30px;
-  padding-bottom: 30px;
-  border-bottom: 1px solid #f0f0f0;
-}
-
-.info-item:last-child {
-  border-bottom: none;
-  margin-bottom: 0;
-  padding-bottom: 0;
-}
-
-.info-icon {
-  width: 60px;
-  height: 60px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.5rem;
-  flex-shrink: 0;
-}
-
-.info-item h5 {
-  font-size: 1.3rem;
-  font-weight: 700;
-  color: #2c3e50;
-  margin-bottom: 8px;
-}
-
-.info-item p {
-  color: #7f8c8d;
-  margin: 0;
-  line-height: 1.6;
-}
-
-/* Redes Sociales */
-.contacto-redes {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 30px;
-  border-radius: 24px;
-  color: white;
-  text-align: center;
-}
-
-.contacto-redes h4 {
-  font-weight: 800;
-}
-
-.redes-buttons {
-  display: flex;
-  gap: 15px;
-  justify-content: center;
-}
-
-.btn-red {
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.5rem;
-  color: white;
-  text-decoration: none;
-  transition: all 0.3s ease;
-}
-
-.btn-red.facebook {
-  background: #1877f2;
-}
-
-.btn-red.instagram {
-  background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
-}
-
-.btn-red.whatsapp {
-  background: #25d366;
-}
-
-.btn-red:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-}
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes bgMove {
-  0%, 100% { transform: translate(0, 0); }
-  50% { transform: translate(-20px, -20px); }
-}
-
-@media (max-width: 768px) {
-  .contacto-hero-title {
-    font-size: 2.5rem;
-  }
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   
-  .contacto-card {
-    padding: 30px 20px;
-  }
-}
-</style>
-
-{% endblock %}
+  <script>
+    const API_URL = 'http://localhost:3000/api';
+    
+    function checkAuth() {
+      const token = localStorage.getItem('token');
+      const username = localStorage.getItem('username');
+      
+      if (token && username) {
+        document.getElementById('nav-user').style.display = 'block';
+        document.getElementById('nav-login').style.display = 'none';
+        document.getElementById('username-display').textContent = username;
+      }
+    }
+    
+    function logout() {
+      localStorage.clear();
+      window.location.reload();
+    }
+    
+    function showAlert(message, type) {
+      const alertContainer = document.getElementById('alert-container');
+      alertContainer.innerHTML = `
+        <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+          ${message}
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+      `;
+    }
+    
+    document.getElementById('contactoForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const nombre = document.getElementById('nombre').value;
+      const email = document.getElementById('email').value;
+      const telefono = document.getElementById('telefono').value;
+      const mensaje = document.getElementById('mensaje').value;
+      
+      try {
+        const response = await fetch(`${API_URL}/mensajes`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ nombre, email, telefono, mensaje })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+          showAlert('¡Mensaje enviado exitosamente! Te responderemos a la brevedad.', 'success');
+          document.getElementById('contactoForm').reset();
+        } else {
+          showAlert(data.error || 'Error al enviar mensaje', 'danger');
+        }
+        
+      } catch (error) {
+        console.error('Error:', error);
+        showAlert('Error de conexión. Verificá que el backend esté corriendo.', 'danger');
+      }
+    });
+    
+    document.addEventListener('DOMContentLoaded', checkAuth);
+  </script>
+</body>
+</html>
