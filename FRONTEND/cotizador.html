@@ -1,414 +1,469 @@
-{% extends 'base.html' %}
-{% block title %}Cotizador - Giménez Automotores{% endblock %}
-{% block content %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cotizador - Giménez Automotores</title>
+  <link rel="stylesheet" href="static/css/styles.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+  <style>
+    .cotizador-hero {
+      position: relative;
+      height: 400px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
 
-<!-- Hero Cotizador -->
-<div class="cotizador-hero">
-  <div class="cotizador-hero-overlay"></div>
-  <div class="container cotizador-hero-content">
-    <h1 class="cotizador-hero-title">Cotizador de Vehículos</h1>
-    <p class="cotizador-hero-subtitle">Calculá el valor de tu auto usado de forma rápida y sencilla</p>
-  </div>
-</div>
+    .cotizador-hero-overlay {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at 30% 50%, rgba(255,255,255,0.1) 0%, transparent 50%);
+      animation: bgMove 15s ease-in-out infinite;
+    }
 
-<!-- Formulario Cotizador -->
-<section class="cotizador-section">
-  <div class="container">
-    <div class="row justify-content-center">
-      <div class="col-lg-8">
-        <div class="cotizador-card">
-          <div class="cotizador-header">
-            <i class="bi bi-calculator"></i>
-            <h2>Ingresá los datos de tu vehículo</h2>
-            <p>Obtendrás una cotización estimada al instante</p>
-          </div>
+    .cotizador-hero-content {
+      position: relative;
+      z-index: 10;
+      text-align: center;
+      color: white;
+    }
+
+    .cotizador-hero-title {
+      font-size: 4.5rem;
+      font-weight: 900;
+      margin-bottom: 20px;
+      text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      animation: fadeInUp 0.8s ease;
+    }
+
+    .cotizador-hero-subtitle {
+      font-size: 1.5rem;
+      opacity: 0.95;
+      animation: fadeInUp 1s ease;
+    }
+
+    .cotizador-section {
+      padding: 80px 0;
+      background: #f8f9fa;
+    }
+
+    .cotizador-card {
+      background: white;
+      padding: 50px;
+      border-radius: 24px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+      margin-bottom: 30px;
+    }
+
+    .cotizador-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .cotizador-header i {
+      font-size: 4rem;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .cotizador-header h2 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: #2c3e50;
+      margin: 20px 0 10px;
+    }
+
+    .cotizador-header p {
+      color: #7f8c8d;
+      font-size: 1.1rem;
+    }
+
+    .cotizador-form .form-label {
+      font-weight: 600;
+      color: #2c3e50;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .cotizador-form .form-label i {
+      color: #667eea;
+    }
+
+    .cotizador-form .form-control,
+    .cotizador-form .form-select {
+      border: 2px solid #e9ecef;
+      border-radius: 12px;
+      padding: 15px 20px;
+      transition: all 0.3s ease;
+    }
+
+    .cotizador-form .form-control:focus,
+    .cotizador-form .form-select:focus {
+      border-color: #667eea;
+      box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+    }
+
+    .btn-cotizar-submit {
+      width: 100%;
+      padding: 20px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 1.3rem;
+      margin-top: 30px;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .btn-cotizar-submit:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+    }
+
+    .resultado-cotizacion {
+      margin-top: 40px;
+      padding: 40px;
+      background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+      border-radius: 20px;
+      color: white;
+      text-align: center;
+      animation: fadeInUp 0.5s ease;
+    }
+
+    .resultado-header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .resultado-header i {
+      font-size: 3rem;
+    }
+
+    .resultado-header h3 {
+      font-size: 2rem;
+      font-weight: 800;
+      margin: 0;
+    }
+
+    .resultado-precio {
+      font-size: 4rem;
+      font-weight: 900;
+      margin: 30px 0;
+    }
+
+    .resultado-nota {
+      font-size: 0.95rem;
+      opacity: 0.9;
+      margin-bottom: 30px;
+    }
+
+    .resultado-actions {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn-resultado,
+    .btn-resultado-secondary {
+      padding: 15px 35px;
+      border-radius: 50px;
+      font-weight: 700;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn-resultado {
+      background: white;
+      color: #11998e;
+    }
+
+    .btn-resultado-secondary {
+      background: rgba(255,255,255,0.2);
+      color: white;
+      border: 2px solid white;
+    }
+
+    .btn-resultado:hover,
+    .btn-resultado-secondary:hover {
+      transform: translateY(-3px);
+      color: white;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes bgMove {
+      0%, 100% { transform: translate(0, 0); }
+      50% { transform: translate(-20px, -20px); }
+    }
+
+    @media (max-width: 768px) {
+      .cotizador-hero-title {
+        font-size: 2.5rem;
+      }
+      
+      .cotizador-card {
+        padding: 30px 20px;
+      }
+      
+      .resultado-precio {
+        font-size: 2.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- NAVBAR -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+      <a class="navbar-brand fw-bold" href="index.html">
+        <i class="bi bi-car-front-fill"></i> Giménez Automotores
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link" href="index.html">Inicio</a></li>
+          <li class="nav-item"><a class="nav-link" href="quienes-somos.html">Quiénes Somos</a></li>
+          <li class="nav-item"><a class="nav-link" href="catalogo.html">Modelos</a></li>
+          <li class="nav-item"><a class="nav-link" href="planes.html">Planes</a></li>
+          <li class="nav-item"><a class="nav-link active" href="cotizador.html">Cotizador</a></li>
+          <li class="nav-item"><a class="nav-link" href="contacto.html">Contacto</a></li>
           
-          <form method="POST" action="{{ url_for('cotizador') }}" class="cotizador-form">
-            <div class="row g-4">
-              <div class="col-md-6">
-                <label for="marca" class="form-label">
-                  <i class="bi bi-car-front"></i> Marca
-                </label>
-                <input type="text" class="form-control form-control-lg" id="marca" name="marca" 
-                       placeholder="Ej: Fiat" required>
-              </div>
-              
-              <div class="col-md-6">
-                <label for="modelo" class="form-label">
-                  <i class="bi bi-tag"></i> Modelo
-                </label>
-                <input type="text" class="form-control form-control-lg" id="modelo" name="modelo" 
-                       placeholder="Ej: Cronos" required>
-              </div>
-              
-              <div class="col-md-6">
-                <label for="anio" class="form-label">
-                  <i class="bi bi-calendar"></i> Año
-                </label>
-                <input type="number" class="form-control form-control-lg" id="anio" name="anio" 
-                       placeholder="Ej: 2020" min="1990" max="2025" required>
-              </div>
-              
-              <div class="col-md-6">
-                <label for="kilometraje" class="form-label">
-                  <i class="bi bi-speedometer2"></i> Kilometraje
-                </label>
-                <input type="number" class="form-control form-control-lg" id="kilometraje" name="kilometraje" 
-                       placeholder="Ej: 50000" required>
-              </div>
-              
-              <div class="col-12">
-                <label for="estado" class="form-label">
-                  <i class="bi bi-star"></i> Estado del Vehículo
-                </label>
-                <select class="form-select form-select-lg" id="estado" name="estado" required>
-                  <option value="">Seleccioná el estado</option>
-                  <option value="excelente">Excelente</option>
-                  <option value="muy_bueno">Muy Bueno</option>
-                  <option value="bueno">Bueno</option>
-                  <option value="regular">Regular</option>
-                </select>
-              </div>
-              
-              <div class="col-12">
-                <label for="observaciones" class="form-label">
-                  <i class="bi bi-chat-left-text"></i> Observaciones (Opcional)
-                </label>
-                <textarea class="form-control form-control-lg" id="observaciones" name="observaciones" 
-                          rows="3" placeholder="Comentarios adicionales sobre el vehículo..."></textarea>
-              </div>
+          <li class="nav-item" id="nav-user" style="display: none;">
+            <div class="dropdown">
+              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                <i class="bi bi-person-circle"></i> <span id="username-display"></span>
+              </a>
+              <ul class="dropdown-menu dropdown-menu-end">
+                <li><a class="dropdown-item" href="#" onclick="logout()">
+                  <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
+                </a></li>
+              </ul>
+            </div>
+          </li>
+          
+          <li class="nav-item" id="nav-login">
+            <a class="btn btn-outline-light btn-sm" href="login.html">
+              <i class="bi bi-lock-fill"></i> Iniciar Sesión
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Cotizador -->
+  <div class="cotizador-hero">
+    <div class="cotizador-hero-overlay"></div>
+    <div class="container cotizador-hero-content">
+      <h1 class="cotizador-hero-title">Cotizador de Vehículos</h1>
+      <p class="cotizador-hero-subtitle">Calculá el valor de tu auto usado de forma rápida y sencilla</p>
+    </div>
+  </div>
+
+  <!-- Formulario Cotizador -->
+  <section class="cotizador-section">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-lg-8">
+          <div class="cotizador-card">
+            <div class="cotizador-header">
+              <i class="bi bi-calculator"></i>
+              <h2>Ingresá los datos de tu vehículo</h2>
+              <p>Obtendrás una cotización estimada al instante</p>
             </div>
             
-            <button type="submit" class="btn-cotizar-submit">
-              <i class="bi bi-check-circle me-2"></i>
-              Calcular Cotización
-            </button>
-          </form>
-          
-          {% if resultado %}
-          <div class="resultado-cotizacion">
-            <div class="resultado-header">
-              <i class="bi bi-check-circle-fill"></i>
-              <h3>Cotización Estimada</h3>
-            </div>
-            <div class="resultado-precio">
-              ${{ "{:,.0f}".format(resultado.valor_estimado) }}
-            </div>
-            <p class="resultado-nota">
-              * Esta es una estimación basada en los datos ingresados. 
-              Para una valuación exacta, visitanos en nuestro local.
-            </p>
-            <div class="resultado-actions">
-              <a href="{{ url_for('contacto') }}" class="btn-resultado">
-                <i class="bi bi-envelope"></i> Contactar Ahora
-              </a>
-              <a href="{{ url_for('vehiculos.catalogo') }}" class="btn-resultado-secondary">
-                <i class="bi bi-car-front"></i> Ver Vehículos
-              </a>
-            </div>
-          </div>
-          {% endif %}
-        </div>
-        
-        <!-- Info Adicional -->
-        <div class="cotizador-info">
-          <div class="row g-3">
-            <div class="col-md-4">
-              <div class="info-badge">
-                <i class="bi bi-clock-history"></i>
-                <div>
-                  <strong>Rápido</strong>
-                  <span>Cotización en segundos</span>
+            <!-- Alerta -->
+            <div id="alert-container"></div>
+            
+            <form id="cotizadorForm" class="cotizador-form">
+              <div class="row g-4">
+                <div class="col-md-6">
+                  <label for="marca" class="form-label">
+                    <i class="bi bi-car-front"></i> Marca
+                  </label>
+                  <input type="text" class="form-control form-control-lg" id="marca" name="marca" 
+                         placeholder="Ej: Fiat" required>
+                </div>
+                
+                <div class="col-md-6">
+                  <label for="modelo" class="form-label">
+                    <i class="bi bi-tag"></i> Modelo
+                  </label>
+                  <input type="text" class="form-control form-control-lg" id="modelo" name="modelo" 
+                         placeholder="Ej: Cronos" required>
+                </div>
+                
+                <div class="col-md-6">
+                  <label for="anio" class="form-label">
+                    <i class="bi bi-calendar"></i> Año
+                  </label>
+                  <input type="number" class="form-control form-control-lg" id="anio" name="anio" 
+                         placeholder="Ej: 2020" min="1990" max="2025" required>
+                </div>
+                
+                <div class="col-md-6">
+                  <label for="kilometraje" class="form-label">
+                    <i class="bi bi-speedometer2"></i> Kilometraje
+                  </label>
+                  <input type="number" class="form-control form-control-lg" id="kilometraje" name="kilometraje" 
+                         placeholder="Ej: 50000" required>
+                </div>
+                
+                <div class="col-12">
+                  <label for="estado" class="form-label">
+                    <i class="bi bi-star"></i> Estado del Vehículo
+                  </label>
+                  <select class="form-select form-select-lg" id="estado" name="estado" required>
+                    <option value="">Seleccioná el estado</option>
+                    <option value="excelente">Excelente</option>
+                    <option value="muy_bueno">Muy Bueno</option>
+                    <option value="bueno">Bueno</option>
+                    <option value="regular">Regular</option>
+                  </select>
                 </div>
               </div>
-            </div>
-            <div class="col-md-4">
-              <div class="info-badge">
-                <i class="bi bi-shield-check"></i>
-                <div>
-                  <strong>Confiable</strong>
-                  <span>Valuación profesional</span>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-4">
-              <div class="info-badge">
-                <i class="bi bi-cash-coin"></i>
-                <div>
-                  <strong>Sin Costo</strong>
-                  <span>Servicio gratuito</span>
-                </div>
-              </div>
-            </div>
+              
+              <button type="submit" class="btn-cotizar-submit">
+                <i class="bi bi-check-circle me-2"></i>
+                Calcular Cotización
+              </button>
+            </form>
+            
+            <!-- Resultado -->
+            <div id="resultado-container"></div>
           </div>
         </div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<style>
-/* Hero Cotizador */
-.cotizador-hero {
-  position: relative;
-  height: 400px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-}
+  <!-- FOOTER -->
+  <footer class="bg-dark text-white py-4">
+    <div class="container text-center">
+      <p class="mb-0"><i class="bi bi-c-circle"></i> 2025 Giménez Automotores</p>
+    </div>
+  </footer>
 
-.cotizador-hero-overlay {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  background: radial-gradient(circle at 30% 50%, rgba(255,255,255,0.1) 0%, transparent 50%);
-  animation: bgMove 15s ease-in-out infinite;
-}
-
-.cotizador-hero-content {
-  position: relative;
-  z-index: 10;
-  text-align: center;
-  color: white;
-}
-
-.cotizador-hero-title {
-  font-size: 4.5rem;
-  font-weight: 900;
-  margin-bottom: 20px;
-  text-shadow: 0 4px 20px rgba(0,0,0,0.3);
-  animation: fadeInUp 0.8s ease;
-}
-
-.cotizador-hero-subtitle {
-  font-size: 1.5rem;
-  opacity: 0.95;
-  animation: fadeInUp 1s ease;
-}
-
-/* Sección Cotizador */
-.cotizador-section {
-  padding: 80px 0;
-  background: #f8f9fa;
-}
-
-.cotizador-card {
-  background: white;
-  padding: 50px;
-  border-radius: 24px;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.08);
-  margin-bottom: 30px;
-}
-
-.cotizador-header {
-  text-align: center;
-  margin-bottom: 40px;
-}
-
-.cotizador-header i {
-  font-size: 4rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.cotizador-header h2 {
-  font-size: 2.5rem;
-  font-weight: 800;
-  color: #2c3e50;
-  margin: 20px 0 10px;
-}
-
-.cotizador-header p {
-  color: #7f8c8d;
-  font-size: 1.1rem;
-}
-
-.cotizador-form .form-label {
-  font-weight: 600;
-  color: #2c3e50;
-  margin-bottom: 10px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.cotizador-form .form-label i {
-  color: #667eea;
-}
-
-.cotizador-form .form-control,
-.cotizador-form .form-select {
-  border: 2px solid #e9ecef;
-  border-radius: 12px;
-  padding: 15px 20px;
-  transition: all 0.3s ease;
-}
-
-.cotizador-form .form-control:focus,
-.cotizador-form .form-select:focus {
-  border-color: #667eea;
-  box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
-}
-
-.btn-cotizar-submit {
-  width: 100%;
-  padding: 20px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  border: none;
-  border-radius: 12px;
-  font-weight: 700;
-  font-size: 1.3rem;
-  margin-top: 30px;
-  transition: all 0.3s ease;
-  cursor: pointer;
-}
-
-.btn-cotizar-submit:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
-}
-
-/* Resultado */
-.resultado-cotizacion {
-  margin-top: 40px;
-  padding: 40px;
-  background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
-  border-radius: 20px;
-  color: white;
-  text-align: center;
-}
-
-.resultado-header {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 15px;
-  margin-bottom: 20px;
-}
-
-.resultado-header i {
-  font-size: 3rem;
-}
-
-.resultado-header h3 {
-  font-size: 2rem;
-  font-weight: 800;
-  margin: 0;
-}
-
-.resultado-precio {
-  font-size: 4rem;
-  font-weight: 900;
-  margin: 30px 0;
-}
-
-.resultado-nota {
-  font-size: 0.95rem;
-  opacity: 0.9;
-  margin-bottom: 30px;
-}
-
-.resultado-actions {
-  display: flex;
-  gap: 15px;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-
-.btn-resultado,
-.btn-resultado-secondary {
-  padding: 15px 35px;
-  border-radius: 50px;
-  font-weight: 700;
-  text-decoration: none;
-  transition: all 0.3s ease;
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.btn-resultado {
-  background: white;
-  color: #11998e;
-}
-
-.btn-resultado-secondary {
-  background: rgba(255,255,255,0.2);
-  color: white;
-  border: 2px solid white;
-}
-
-.btn-resultado:hover,
-.btn-resultado-secondary:hover {
-  transform: translateY(-3px);
-}
-
-/* Info Badges */
-.cotizador-info {
-  margin-top: 30px;
-}
-
-.info-badge {
-  background: white;
-  padding: 25px;
-  border-radius: 16px;
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  box-shadow: 0 5px 20px rgba(0,0,0,0.05);
-}
-
-.info-badge i {
-  font-size: 2.5rem;
-  color: #667eea;
-}
-
-.info-badge strong {
-  display: block;
-  font-size: 1.2rem;
-  color: #2c3e50;
-}
-
-.info-badge span {
-  display: block;
-  font-size: 0.9rem;
-  color: #7f8c8d;
-}
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes bgMove {
-  0%, 100% { transform: translate(0, 0); }
-  50% { transform: translate(-20px, -20px); }
-}
-
-@media (max-width: 768px) {
-  .cotizador-hero-title {
-    font-size: 2.5rem;
-  }
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   
-  .cotizador-card {
-    padding: 30px 20px;
-  }
-  
-  .resultado-precio {
-    font-size: 2.5rem;
-  }
-}
-</style>
-
-{% endblock %}
+  <script>
+    const API_URL = 'http://localhost:3000/api';
+    
+    function checkAuth() {
+      const token = localStorage.getItem('token');
+      const username = localStorage.getItem('username');
+      
+      if (token && username) {
+        document.getElementById('nav-user').style.display = 'block';
+        document.getElementById('nav-login').style.display = 'none';
+        document.getElementById('username-display').textContent = username;
+      }
+    }
+    
+    function logout() {
+      localStorage.clear();
+      window.location.reload();
+    }
+    
+    function showAlert(message, type) {
+      const alertContainer = document.getElementById('alert-container');
+      alertContainer.innerHTML = `
+        <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+          ${message}
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+      `;
+    }
+    
+    document.getElementById('cotizadorForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const marca = document.getElementById('marca').value;
+      const modelo = document.getElementById('modelo').value;
+      const anio = parseInt(document.getElementById('anio').value);
+      const kilometraje = parseInt(document.getElementById('kilometraje').value);
+      const estado = document.getElementById('estado').value;
+      
+      try {
+        const response = await fetch(`${API_URL}/cotizador`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ marca, modelo, anio, kilometraje, estado })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+          const valorEstimado = data.valorEstimado.toLocaleString('es-AR');
+          
+          document.getElementById('resultado-container').innerHTML = `
+            <div class="resultado-cotizacion">
+              <div class="resultado-header">
+                <i class="bi bi-check-circle-fill"></i>
+                <h3>Cotización Estimada</h3>
+              </div>
+              <div class="resultado-precio">
+                $${valorEstimado}
+              </div>
+              <p class="resultado-nota">
+                * Esta es una estimación basada en los datos ingresados. 
+                Para una valuación exacta, visitanos en nuestro local.
+              </p>
+              <div class="resultado-actions">
+                <a href="contacto.html" class="btn-resultado">
+                  <i class="bi bi-envelope"></i> Contactar Ahora
+                </a>
+                <a href="catalogo.html" class="btn-resultado-secondary">
+                  <i class="bi bi-car-front"></i> Ver Vehículos
+                </a>
+              </div>
+            </div>
+          `;
+          
+          showAlert(`Cotización de ${marca} ${modelo} ${anio} calculada exitosamente`, 'success');
+          
+        } else {
+          showAlert(data.error || 'Error al calcular cotización', 'danger');
+        }
+        
+      } catch (error) {
+        console.error('Error:', error);
+        showAlert('Error de conexión. Verificá que el backend esté corriendo.', 'danger');
+      }
+    });
+    
+    document.addEventListener('DOMContentLoaded', checkAuth);
+  </script>
+</body>
+</html>
