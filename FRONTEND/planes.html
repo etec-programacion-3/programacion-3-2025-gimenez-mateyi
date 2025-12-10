@@ -2,200 +2,763 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Planes de Financiación</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-  <link rel="stylesheet" href="css/styles.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Planes de Financiación - Giménez Automotores</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+  <style>
+    /* Hero Premium */
+    .planes-hero {
+      position: relative;
+      height: 450px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .planes-hero-overlay {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at 30% 50%, rgba(255,255,255,0.1) 0%, transparent 50%);
+      animation: bgMove 15s ease-in-out infinite;
+    }
+
+    .planes-hero-content {
+      position: relative;
+      z-index: 10;
+      text-align: center;
+      color: white;
+    }
+
+    .planes-hero-title {
+      font-size: 4.5rem;
+      font-weight: 900;
+      margin-bottom: 20px;
+      text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      animation: fadeInUp 0.8s ease;
+    }
+
+    .planes-hero-subtitle {
+      font-size: 1.5rem;
+      opacity: 0.95;
+      animation: fadeInUp 1s ease;
+    }
+
+    /* Sección Planes */
+    .planes-section {
+      padding: 80px 0;
+      background: #f8f9fa;
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+
+    .section-label {
+      display: inline-block;
+      padding: 8px 20px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border-radius: 20px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      margin-bottom: 20px;
+    }
+
+    .section-title {
+      font-size: 3rem;
+      font-weight: 900;
+      color: #2c3e50;
+      margin-bottom: 15px;
+    }
+
+    .section-desc {
+      font-size: 1.2rem;
+      color: #7f8c8d;
+    }
+
+    /* Tarjetas de Planes */
+    .plan-card-premium {
+      background: white;
+      border-radius: 24px;
+      padding: 40px 30px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+      transition: all 0.3s ease;
+      height: 100%;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .plan-card-premium:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+    }
+
+    .plan-destacado {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      transform: scale(1.05);
+    }
+
+    .plan-destacado:hover {
+      transform: scale(1.05) translateY(-10px);
+    }
+
+    .badge-destacado {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: rgba(255,215,0,0.9);
+      color: #2c3e50;
+      padding: 8px 20px;
+      border-radius: 20px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+    }
+
+    .plan-icon {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 25px;
+      font-size: 2.5rem;
+      color: white;
+    }
+
+    .plan-destacado .plan-icon {
+      background: rgba(255,255,255,0.2);
+    }
+
+    .plan-nombre {
+      font-size: 1.8rem;
+      font-weight: 800;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    .plan-descripcion {
+      text-align: center;
+      margin-bottom: 25px;
+      font-size: 1rem;
+      opacity: 0.9;
+    }
+
+    .plan-cuotas {
+      text-align: center;
+      font-size: 3rem;
+      font-weight: 900;
+      margin-bottom: 10px;
+    }
+
+    .plan-destacado .plan-cuotas {
+      color: #ffd700;
+    }
+
+    .plan-interes {
+      text-align: center;
+      font-size: 1.1rem;
+      margin-bottom: 30px;
+      opacity: 0.8;
+    }
+
+    .plan-caracteristicas {
+      list-style: none;
+      padding: 0;
+      margin-bottom: 30px;
+    }
+
+    .plan-caracteristicas li {
+      padding: 12px 0;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+    }
+
+    .plan-destacado .plan-caracteristicas li {
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .plan-caracteristicas li:last-child {
+      border-bottom: none;
+    }
+
+    .plan-caracteristicas i {
+      color: #28a745;
+      font-size: 1.3rem;
+    }
+
+    .plan-destacado .plan-caracteristicas i {
+      color: #ffd700;
+    }
+
+    .btn-plan {
+      width: 100%;
+      padding: 18px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .btn-plan:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+    }
+
+    .plan-destacado .btn-plan {
+      background: white;
+      color: #667eea;
+    }
+
+    .plan-destacado .btn-plan:hover {
+      background: rgba(255,255,255,0.9);
+    }
+
+    /* Calculadora */
+    .calculadora-section {
+      padding: 80px 0;
+      background: white;
+    }
+
+    .calculadora-card {
+      background: white;
+      border-radius: 24px;
+      padding: 50px 40px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+    }
+
+    .calc-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .calc-header i {
+      font-size: 4rem;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .calc-header h3 {
+      font-size: 2rem;
+      font-weight: 800;
+      color: #2c3e50;
+      margin: 20px 0 10px;
+    }
+
+    .calc-header p {
+      color: #7f8c8d;
+      font-size: 1.1rem;
+    }
+
+    .form-label {
+      font-weight: 600;
+      color: #2c3e50;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .form-label i {
+      color: #667eea;
+    }
+
+    .form-control,
+    .form-select {
+      border: 2px solid #e9ecef;
+      border-radius: 12px;
+      padding: 15px 20px;
+      transition: all 0.3s ease;
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+      border-color: #667eea;
+      box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+    }
+
+    .btn-calcular {
+      width: 100%;
+      padding: 20px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 1.3rem;
+      margin-top: 30px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .btn-calcular:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+    }
+
+    /* Resultado */
+    .resultado-calc {
+      margin-top: 40px;
+      padding: 40px;
+      background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+      border-radius: 20px;
+      color: white;
+      animation: fadeInUp 0.5s ease;
+    }
+
+    .resultado-header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .resultado-header i {
+      font-size: 3rem;
+      margin-bottom: 15px;
+    }
+
+    .resultado-header h4 {
+      font-size: 2rem;
+      font-weight: 800;
+      margin: 0;
+    }
+
+    .resultado-detalles {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .resultado-item {
+      text-align: center;
+      padding: 20px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 12px;
+    }
+
+    .resultado-item strong {
+      display: block;
+      font-size: 0.9rem;
+      margin-bottom: 10px;
+      opacity: 0.9;
+    }
+
+    .resultado-item span {
+      display: block;
+      font-size: 1.8rem;
+      font-weight: 900;
+    }
+
+    .resultado-cuota-principal {
+      text-align: center;
+      padding: 30px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 16px;
+      margin-bottom: 30px;
+    }
+
+    .resultado-cuota-principal strong {
+      display: block;
+      font-size: 1.2rem;
+      margin-bottom: 10px;
+    }
+
+    .resultado-cuota-principal span {
+      display: block;
+      font-size: 3.5rem;
+      font-weight: 900;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes bgMove {
+      0%, 100% { transform: translate(0, 0); }
+      50% { transform: translate(-20px, -20px); }
+    }
+
+    @media (max-width: 768px) {
+      .planes-hero-title {
+        font-size: 2.5rem;
+      }
+
+      .section-title {
+        font-size: 2rem;
+      }
+
+      .plan-destacado {
+        transform: scale(1);
+      }
+
+      .plan-destacado:hover {
+        transform: scale(1) translateY(-10px);
+      }
+
+      .calculadora-card {
+        padding: 30px 20px;
+      }
+    }
+  </style>
 </head>
 <body>
-
-<!-- NAVBAR -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-  <div class="container">
-    <a class="navbar-brand" href="index.html">
-      <i class="bi bi-car-front-fill"></i> Giménez Automotores
-    </a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav ms-auto">
-        <li class="nav-item"><a class="nav-link" href="index.html">Inicio</a></li>
-        <li class="nav-item"><a class="nav-link" href="catalogo.html">Catálogo</a></li>
-        <li class="nav-item"><a class="nav-link active" href="planes.html">Planes</a></li>
-        <li class="nav-item"><a class="nav-link" href="quienes_somos.html">Quiénes Somos</a></li>
-        <li class="nav-item"><a class="nav-link" href="contacto.html">Contacto</a></li>
-        <li class="nav-item" id="auth-menu">
-          <a class="nav-link" href="login.html">Iniciar Sesión</a>
-        </li>
-      </ul>
-    </div>
-  </div>
-</nav>
-
-<!-- HERO SECTION -->
-<section class="hero">
-  <div class="container">
-    <h2>Planes de Financiación</h2>
-    <p>Encuentra el plan que se ajuste a tu presupuesto</p>
-  </div>
-</section>
-
-<!-- PLANES -->
-<section class="container my-5">
-  <h2 class="section-title">Nuestras Opciones de Financiación</h2>
-  <div id="plans-list" class="plans-container">
-    <p class="text-center">Cargando planes...</p>
-  </div>
-</section>
-
-<!-- CALCULADORA -->
-<section class="container my-5">
-  <h2 class="section-title">Calculadora de Cuotas</h2>
-  <div class="row">
-    <div class="col-lg-6 mx-auto">
-      <div class="form-container">
-        <h4>Simula tu financiación</h4>
-        
-        <div class="form-group">
-          <label for="calc-plan"><strong>Selecciona un plan:</strong></label>
-          <select id="calc-plan" class="form-select">
-            <option value="">-- Seleccionar --</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label for="calc-monto"><strong>Monto del vehículo ($):</strong></label>
-          <input type="number" id="calc-monto" class="form-control" placeholder="Ej: 6500000" min="0">
-        </div>
-
-        <div class="form-group">
-          <label for="calc-enganche"><strong>Enganche ($):</strong></label>
-          <input type="number" id="calc-enganche" class="form-control" placeholder="Opcional" min="0" value="0">
-        </div>
-
-        <button class="btn btn-primary w-100" onclick="calculateQuota()">Calcular Cuota</button>
-      </div>
-
-      <div id="result-container" class="alert alert-info mt-3" style="display: none;">
-        <h5>Resultado</h5>
-        <p id="result-text"></p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- FOOTER -->
-<footer>
-  <p>&copy; 2025 Giménez Automotores - Todos los derechos reservados</p>
-</footer>
-
-<!-- Scripts -->
-<script src="js/config.js"></script>
-<script src="js/api.js"></script>
-<script>
-let allPlans = [];
-
-document.addEventListener('DOMContentLoaded', async () => {
-  await loadPlans();
-  updateAuthMenu();
-});
-
-async function loadPlans() {
-  try {
-    allPlans = await api.getPlans();
-
-    if (!allPlans || allPlans.length === 0) {
-      document.getElementById('plans-list').innerHTML = 
-        '<p class="text-center text-muted">No hay planes disponibles</p>';
-      return;
-    }
-
-    // Renderizar tarjetas de planes
-    document.getElementById('plans-list').innerHTML = allPlans.map(plan => `
-      <div class="plan-card ${plan.destacado ? 'featured' : ''}">
-        ${plan.destacado ? '<div class="badge">Destacado</div>' : ''}
-        <h3>${plan.nombre}</h3>
-        <p class="subtitle">${plan.descripcion || ''}</p>
-        <ul>
-          ${plan.beneficios ? plan.beneficios.map(b => `<li>${b}</li>`).join('') : ''}
+  <!-- NAVBAR -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+      <a class="navbar-brand fw-bold" href="index.html">
+        <i class="bi bi-car-front-fill"></i> Giménez Automotores
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link" href="index.html">Inicio</a></li>
+          <li class="nav-item"><a class="nav-link" href="quienes_somos.html">Quiénes Somos</a></li>
+          <li class="nav-item"><a class="nav-link" href="catalogo.html">Catálogo</a></li>
+          <li class="nav-item"><a class="nav-link active" href="planes.html">Planes</a></li>
+          <li class="nav-item"><a class="nav-link" href="cotizador.html">Cotizador</a></li>
+          <li class="nav-item"><a class="nav-link" href="contacto.html">Contacto</a></li>
+          
+          <li class="nav-item" id="nav-user" style="display: none;">
+            <div class="dropdown">
+              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                <i class="bi bi-person-circle"></i> <span id="username-display"></span>
+              </a>
+              <ul class="dropdown-menu dropdown-menu-end">
+                <li><a class="dropdown-item" href="#" onclick="logout()">
+                  <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
+                </a></li>
+              </ul>
+            </div>
+          </li>
+          
+          <li class="nav-item" id="nav-login">
+            <a class="btn btn-outline-light btn-sm" href="login.html">
+              <i class="bi bi-lock-fill"></i> Iniciar Sesión
+            </a>
+          </li>
         </ul>
-        <div class="price">${plan.cuotas ? `Hasta ${plan.cuotas} cuotas` : 'Consultar'}</div>
-        <button class="btn" onclick="selectPlan('${plan._id}', '${plan.nombre}')">
-          Seleccionar este plan
-        </button>
       </div>
-    `).join('');
+    </div>
+  </nav>
 
-    // Llenar selector de planes
-    document.getElementById('calc-plan').innerHTML = `
-      <option value="">-- Seleccionar --</option>
-      ${allPlans.map(p => `<option value="${p._id}">${p.nombre}</option>`).join('')}
-    `;
+  <!-- Hero -->
+  <div class="planes-hero">
+    <div class="planes-hero-overlay"></div>
+    <div class="container planes-hero-content">
+      <h1 class="planes-hero-title">Planes de Financiación</h1>
+      <p class="planes-hero-subtitle">Encontrá el plan perfecto para tu presupuesto</p>
+    </div>
+  </div>
 
-  } catch (error) {
-    console.error('Error:', error);
-    document.getElementById('plans-list').innerHTML = 
-      '<p class="text-center text-danger">Error al cargar los planes</p>';
-  }
-}
+  <!-- Planes -->
+  <section class="planes-section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">Nuestras Opciones</span>
+        <h2 class="section-title">Elegí tu Plan Ideal</h2>
+        <p class="section-desc">Financiación flexible adaptada a tus necesidades</p>
+      </div>
 
-function selectPlan(planId, planName) {
-  document.getElementById('calc-plan').value = planId;
-  alert(`Plan "${planName}" seleccionado. Ahora usa la calculadora para simular tu cuota.`);
-  document.querySelector('html, body').scrollTop = document.querySelector('#result-container').offsetTop;
-}
+      <div class="row g-4" id="planes-container">
+        <div class="col-12 text-center py-5">
+          <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;"></div>
+          <p class="mt-3 text-muted">Cargando planes...</p>
+        </div>
+      </div>
+    </div>
+  </section>
 
-async function calculateQuota() {
-  const planId = document.getElementById('calc-plan').value;
-  const monto = parseInt(document.getElementById('calc-monto').value) || 0;
-  const enganche = parseInt(document.getElementById('calc-enganche').value) || 0;
+  <!-- Calculadora -->
+  <section class="calculadora-section">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-lg-8">
+          <div class="calculadora-card">
+            <div class="calc-header">
+              <i class="bi bi-calculator"></i>
+              <h3>Calculá tu Cuota</h3>
+              <p>Simulá tu financiación al instante</p>
+            </div>
 
-  if (!planId || monto === 0) {
-    alert('Por favor completa todos los campos');
-    return;
-  }
+            <div id="alert-container"></div>
 
-  try {
-    const result = await api.calculatePayment(planId, monto, enganche);
-    
-    const resultContainer = document.getElementById('result-container');
-    const resultText = document.getElementById('result-text');
+            <form id="calcForm">
+              <div class="mb-4">
+                <label for="calc-plan" class="form-label">
+                  <i class="bi bi-credit-card"></i> Seleccioná un plan
+                </label>
+                <select id="calc-plan" class="form-select form-select-lg" required>
+                  <option value="">-- Elegí un plan --</option>
+                </select>
+              </div>
 
-    if (result.cuota) {
-      resultText.innerHTML = `
-        <strong>Monto a financiar:</strong> $${(monto - enganche).toLocaleString('es-AR')}<br>
-        <strong>Cuota mensual:</strong> <span style="font-size: 1.5rem; color: #0d6efd;">$${Number(result.cuota).toLocaleString('es-AR')}</span><br>
-        ${result.tasa ? `<strong>Tasa de interés:</strong> ${result.tasa}%<br>` : ''}
-        ${result.plazo ? `<strong>Plazo:</strong> ${result.plazo} meses` : ''}
-      `;
-      resultContainer.style.display = 'block';
-    } else {
-      resultText.innerHTML = 'No se pudo calcular la cuota. Por favor intenta de nuevo.';
-      resultContainer.style.display = 'block';
-    }
-  } catch (error) {
-    alert(`Error: ${error.message}`);
-  }
-}
+              <div class="mb-4">
+                <label for="calc-monto" class="form-label">
+                  <i class="bi bi-cash-stack"></i> Monto del vehículo
+                </label>
+                <input type="number" id="calc-monto" class="form-control form-control-lg" 
+                       placeholder="Ej: 15000000" required>
+              </div>
 
-function updateAuthMenu() {
-  const user = JSON.parse(localStorage.getItem('user'));
-  const authMenu = document.getElementById('auth-menu');
+              <div class="mb-4">
+                <label for="calc-enganche" class="form-label">
+                  <i class="bi bi-wallet2"></i> Enganche (opcional)
+                </label>
+                <input type="number" id="calc-enganche" class="form-control form-control-lg" 
+                       placeholder="0" value="0">
+              </div>
+
+              <button type="submit" class="btn-calcular">
+                <i class="bi bi-check-circle me-2"></i>
+                Calcular Cuota
+              </button>
+            </form>
+
+            <div id="resultado-container" style="display: none;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="bg-dark text-white py-4">
+    <div class="container text-center">
+      <p class="mb-0"><i class="bi bi-c-circle"></i> 2025 Giménez Automotores</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   
-  if (user) {
-    authMenu.innerHTML = `
-      <span class="nav-link">Hola, <strong>${user.username}</strong></span>
-      <button class="btn btn-logout" onclick="logout()">Cerrar sesión</button>
-    `;
-  }
-}
+  <script>
+    const API_URL = 'http://localhost:3000/api';
+    let planesData = [];
 
-function logout() {
-  api.logout();
-  location.reload();
-}
-</script>
+    function checkAuth() {
+      const token = localStorage.getItem('token');
+      const username = localStorage.getItem('username');
+      
+      if (token && username) {
+        document.getElementById('nav-user').style.display = 'block';
+        document.getElementById('nav-login').style.display = 'none';
+        document.getElementById('username-display').textContent = username;
+      }
+    }
 
+    function logout() {
+      localStorage.clear();
+      window.location.reload();
+    }
+
+    function showAlert(message, type) {
+      const alertContainer = document.getElementById('alert-container');
+      alertContainer.innerHTML = `
+        <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+          ${message}
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+      `;
+    }
+
+    async function cargarPlanes() {
+      try {
+        const response = await fetch(`${API_URL}/planes`);
+        planesData = await response.json();
+
+        const container = document.getElementById('planes-container');
+        const selectPlan = document.getElementById('calc-plan');
+
+        if (!planesData || planesData.length === 0) {
+          container.innerHTML = '<div class="col-12 text-center"><p class="text-muted">No hay planes disponibles</p></div>';
+          return;
+        }
+
+        container.innerHTML = '';
+        selectPlan.innerHTML = '<option value="">-- Elegí un plan --</option>';
+
+        planesData.forEach(plan => {
+          const col = document.createElement('div');
+          col.className = 'col-md-6 col-lg-3';
+          
+          const isDestacado = plan.destacado;
+          
+          col.innerHTML = `
+            <div class="plan-card-premium ${isDestacado ? 'plan-destacado' : ''}">
+              ${isDestacado ? '<div class="badge-destacado">Destacado</div>' : ''}
+              
+              <div class="plan-icon">
+                <i class="bi bi-${isDestacado ? 'star-fill' : 'credit-card-2-front'}"></i>
+              </div>
+              
+              <h3 class="plan-nombre">${plan.nombre}</h3>
+              <p class="plan-descripcion">${plan.descripcion}</p>
+              
+              <div class="plan-cuotas">${plan.cuotas}</div>
+              <p class="plan-interes">cuotas al ${plan.interes}% anual</p>
+              
+              <ul class="plan-caracteristicas">
+                <li>
+                  <i class="bi bi-check-circle-fill"></i>
+                  <span>Enganche mínimo ${plan.engancheMinimo}%</span>
+                </li>
+                <li>
+                  <i class="bi bi-check-circle-fill"></i>
+                  <span>Monto desde $${(plan.montoMinimo/1000000).toFixed(1)}M</span>
+                </li>
+                <li>
+                  <i class="bi bi-check-circle-fill"></i>
+                  <span>Hasta $${(plan.montoMaximo/1000000).toFixed(1)}M</span>
+                </li>
+                <li>
+                  <i class="bi bi-check-circle-fill"></i>
+                  <span>Tasa mensual ${plan.tasaMensual}%</span>
+                </li>
+              </ul>
+              
+              <button class="btn-plan" onclick="seleccionarPlan('${plan.id}')">
+                <i class="bi bi-calculator me-2"></i>
+                Calcular Cuota
+              </button>
+            </div>
+          `;
+          
+          container.appendChild(col);
+
+          // Agregar al selector
+          const option = document.createElement('option');
+          option.value = plan.id;
+          option.textContent = plan.nombre;
+          selectPlan.appendChild(option);
+        });
+
+      } catch (error) {
+        console.error('Error:', error);
+        document.getElementById('planes-container').innerHTML = 
+          '<div class="col-12 text-center"><p class="text-danger">Error al cargar planes</p></div>';
+      }
+    }
+
+    function seleccionarPlan(planId) {
+      document.getElementById('calc-plan').value = planId;
+      document.querySelector('.calculadora-section').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    document.getElementById('calcForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const planId = document.getElementById('calc-plan').value;
+      const monto = parseFloat(document.getElementById('calc-monto').value);
+      const enganche = parseFloat(document.getElementById('calc-enganche').value) || 0;
+
+      if (!planId || !monto) {
+        showAlert('Por favor completá todos los campos requeridos', 'warning');
+        return;
+      }
+
+      try {
+        const response = await fetch(`${API_URL}/planes/${planId}/calcular`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ monto, enganche })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          const resultContainer = document.getElementById('resultado-container');
+          
+          resultContainer.innerHTML = `
+            <div class="resultado-calc">
+              <div class="resultado-header">
+                <i class="bi bi-check-circle-fill"></i>
+                <h4>Resultado de tu Simulación</h4>
+              </div>
+
+              <div class="resultado-cuota-principal">
+                <strong>Tu Cuota Mensual:</strong>
+                <span>$${data.cuotaMensual.toLocaleString('es-AR')}</span>
+              </div>
+
+              <div class="resultado-detalles">
+                <div class="resultado-item">
+                  <strong>Monto Vehículo</strong>
+                  <span>$${data.montoVehiculo.toLocaleString('es-AR')}</span>
+                </div>
+                <div class="resultado-item">
+                  <strong>Enganche</strong>
+                  <span>$${data.enganche.toLocaleString('es-AR')}</span>
+                </div>
+                <div class="resultado-item">
+                  <strong>A Financiar</strong>
+                  <span>$${data.montoFinanciar.toLocaleString('es-AR')}</span>
+                </div>
+                <div class="resultado-item">
+                  <strong>Cuotas</strong>
+                  <span>${data.cuotas}</span>
+                </div>
+                <div class="resultado-item">
+                  <strong>Total a Pagar</strong>
+                  <span>$${data.totalAPagar.toLocaleString('es-AR')}</span>
+                </div>
+                <div class="resultado-item">
+                  <strong>Interés Total</strong>
+                  <span>$${data.interesTotal.toLocaleString('es-AR')}</span>
+                </div>
+              </div>
+
+              <div class="text-center">
+                <p style="opacity: 0.9; font-size: 0.95rem; margin: 0;">
+                  * Simulación estimada. Para información exacta, visitanos en nuestras sucursales.
+                </p>
+              </div>
+            </div>
+          `;
+
+          resultContainer.style.display = 'block';
+          resultContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          showAlert('Cálculo realizado exitosamente', 'success');
+
+        } else {
+          showAlert(data.error || 'Error al calcular', 'danger');
+        }
+
+      } catch (error) {
+        console.error('Error:', error);
+        showAlert('Error de conexión. Verificá que el backend esté corriendo.', 'danger');
+      }
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      checkAuth();
+      cargarPlanes();
+    });
+  </script>
 </body>
 </html>
