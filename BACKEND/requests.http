@@ -1,0 +1,231 @@
+###############################################################################
+# REQUESTS.HTTP - Pruebas de API Backend
+# Giménez Automotores - Backend Node.js
+# Alumno: Mateo Giménez - ETEC 2025
+###############################################################################
+
+# IMPORTANTE: Instalar extensión "REST Client" en VS Code
+# Cambiar @baseURL si el backend corre en otro puerto/host
+
+@baseURL = http://localhost:3000
+@token = TU_TOKEN_AQUI_DESPUES_DE_LOGIN
+
+###############################################################################
+# HEALTH CHECK
+###############################################################################
+
+### Health Check
+GET {{baseURL}}/api/health
+
+###############################################################################
+# AUTENTICACIÓN
+###############################################################################
+
+### Registrar nuevo usuario
+POST {{baseURL}}/api/auth/register
+Content-Type: application/json
+
+{
+  "username": "juan_perez",
+  "email": "juan@example.com",
+  "password": "123456"
+}
+
+### Login Admin
+POST {{baseURL}}/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "password": "admin123"
+}
+
+### Login Usuario Normal
+POST {{baseURL}}/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "juan_perez",
+  "password": "123456"
+}
+
+### Obtener mi perfil (requiere token)
+GET {{baseURL}}/api/auth/me
+Authorization: Bearer {{token}}
+
+###############################################################################
+# VEHÍCULOS (PÚBLICO)
+###############################################################################
+
+### Obtener todos los vehículos
+GET {{baseURL}}/api/vehiculos
+
+### Obtener vehículos destacados (primeros 3)
+GET {{baseURL}}/api/vehiculos/destacados
+
+### Obtener un vehículo por ID
+GET {{baseURL}}/api/vehiculos/PONER_ID_AQUI
+
+###############################################################################
+# VEHÍCULOS (ADMIN - Requiere token de admin)
+###############################################################################
+
+### Crear nuevo vehículo (SOLO ADMIN)
+POST {{baseURL}}/api/vehiculos
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "modelo": "Fiat Fastback",
+  "descripcion": "SUV coupé moderno con diseño deportivo y tecnología avanzada",
+  "precio": 28000000,
+  "imagen": "/static/img/fiat-fastback.png",
+  "anio": 2024,
+  "stock": 3
+}
+
+### Actualizar vehículo (SOLO ADMIN)
+PUT {{baseURL}}/api/vehiculos/PONER_ID_AQUI
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "precio": 29000000,
+  "stock": 5
+}
+
+### Eliminar vehículo (SOLO ADMIN)
+DELETE {{baseURL}}/api/vehiculos/PONER_ID_AQUI
+Authorization: Bearer {{token}}
+
+###############################################################################
+# MENSAJES DE CONTACTO
+###############################################################################
+
+### Enviar mensaje (PÚBLICO - no requiere login)
+POST {{baseURL}}/api/mensajes
+Content-Type: application/json
+
+{
+  "nombre": "María García",
+  "email": "maria@example.com",
+  "telefono": "261-1234567",
+  "mensaje": "Hola, estoy interesada en el Fiat Cronos. ¿Tienen disponibilidad?"
+}
+
+### Obtener todos los mensajes (SOLO ADMIN)
+GET {{baseURL}}/api/mensajes
+Authorization: Bearer {{token}}
+
+### Obtener solo mensajes no leídos (SOLO ADMIN)
+GET {{baseURL}}/api/mensajes?no_leidos=true
+Authorization: Bearer {{token}}
+
+### Marcar mensaje como leído (SOLO ADMIN)
+PUT {{baseURL}}/api/mensajes/PONER_ID_AQUI/leido
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "leido": true
+}
+
+### Eliminar mensaje (SOLO ADMIN)
+DELETE {{baseURL}}/api/mensajes/PONER_ID_AQUI
+Authorization: Bearer {{token}}
+
+### Estadísticas de mensajes (SOLO ADMIN)
+GET {{baseURL}}/api/mensajes/stats
+Authorization: Bearer {{token}}
+
+###############################################################################
+# FAVORITOS (Requiere autenticación de usuario)
+###############################################################################
+
+### Agregar vehículo a favoritos
+POST {{baseURL}}/api/favoritos
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "vehiculoId": "PONER_ID_DEL_VEHICULO_AQUI"
+}
+
+### Obtener mis favoritos
+GET {{baseURL}}/api/favoritos
+Authorization: Bearer {{token}}
+
+### Eliminar de favoritos
+DELETE {{baseURL}}/api/favoritos/PONER_ID_DEL_VEHICULO_AQUI
+Authorization: Bearer {{token}}
+
+###############################################################################
+# COTIZADOR
+###############################################################################
+
+### Cotizar vehículo usado
+POST {{baseURL}}/api/cotizador
+Content-Type: application/json
+
+{
+  "marca": "Fiat",
+  "modelo": "Cronos",
+  "anio": 2020,
+  "kilometraje": 50000,
+  "estado": "bueno"
+}
+
+###############################################################################
+# PLANES DE FINANCIACIÓN
+###############################################################################
+
+### Obtener todos los planes
+GET {{baseURL}}/api/planes
+
+### Obtener solo planes destacados
+GET {{baseURL}}/api/planes?destacados=true
+
+### Calcular cuota para un plan específico
+POST {{baseURL}}/api/planes/plan-a/calcular
+Content-Type: application/json
+
+{
+  "monto": 15000000,
+  "enganche": 3000000
+}
+
+###############################################################################
+# TURNOS TEST DRIVE (Requiere autenticación)
+###############################################################################
+
+### Agendar turno para test drive
+POST {{baseURL}}/api/turnos
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "vehiculoId": "PONER_ID_DEL_VEHICULO_AQUI",
+  "fecha": "2025-01-15",
+  "hora": "10:00",
+  "comentarios": "Prefiero por la mañana"
+}
+
+### Obtener mis turnos
+GET {{baseURL}}/api/turnos
+Authorization: Bearer {{token}}
+
+### Cancelar turno
+DELETE {{baseURL}}/api/turnos/PONER_ID_DEL_TURNO_AQUI
+Authorization: Bearer {{token}}
+
+###############################################################################
+# NOTAS IMPORTANTES
+###############################################################################
+
+# 1. Después de hacer login, copiar el token y pegarlo en la variable @token
+# 2. Para rutas que requieren ID, primero obtener vehículos/mensajes y copiar un _id
+# 3. El token expira en 7 días
+# 4. Solo usuarios con role="admin" pueden crear/editar/eliminar vehículos
+# 5. Usuarios normales pueden: ver vehículos, favoritos, turnos, cotizar
+
+###############################################################################
