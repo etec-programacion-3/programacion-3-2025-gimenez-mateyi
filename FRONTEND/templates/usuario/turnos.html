@@ -1,97 +1,219 @@
-{% extends 'base.html' %}
-{% block title %}Mis Turnos{% endblock %}
-{% block content %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mis Turnos - Giménez Automotores</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+</head>
+<body class="bg-light">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+      <a class="navbar-brand fw-bold" href="index.html">
+        <i class="bi bi-car-front-fill"></i> Giménez Automotores
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link" href="index.html">Inicio</a></li>
+          <li class="nav-item"><a class="nav-link" href="catalogo.html">Modelos</a></li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+              <i class="bi bi-person-circle"></i> <span id="username-display"></span>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li><a class="dropdown-item" href="dashboard.html"><i class="bi bi-speedometer2"></i> Mi Panel</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="favoritos.html"><i class="bi bi-heart-fill text-danger"></i> Mis Favoritos</a></li>
+              <li><a class="dropdown-item" href="cotizaciones.html"><i class="bi bi-file-text"></i> Mis Cotizaciones</a></li>
+              <li><a class="dropdown-item active" href="turnos.html"><i class="bi bi-calendar-check"></i> Mis Turnos</a></li>
+              <li><a class="dropdown-item" href="alertas.html"><i class="bi bi-bell"></i> Mis Alertas</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item text-danger" href="#" onclick="logout()"><i class="bi bi-box-arrow-right"></i> Cerrar Sesión</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <div>
+  <div class="container my-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div>
         <h1><i class="bi bi-calendar-check-fill text-success"></i> Mis Turnos</h1>
         <p class="text-muted">Turnos agendados para test drive</p>
-    </div>
-    <a href="{{ url_for('usuarios.agendar_turno') }}" class="btn btn-success">
+      </div>
+      <a href="agendar-turno.html" class="btn btn-success">
         <i class="bi bi-calendar-plus"></i> Agendar Turno
-    </a>
-</div>
-
-{% if turnos %}
-<div class="row g-3">
-    {% for turno in turnos %}
-    <div class="col-12">
-        <div class="card border-0 shadow-sm border-start border-5 border-{{ 'success' if turno.estado == 'confirmado' else 'warning' if turno.estado == 'pendiente' else 'secondary' }}">
-            <div class="card-body">
-                <div class="row align-items-center">
-                    <div class="col-md-2">
-                        {% if turno.vehiculo %}
-                        <img src="{{ turno.vehiculo.imagen }}" alt="{{ turno.vehiculo.modelo }}" class="img-fluid rounded">
-                        {% endif %}
-                    </div>
-                    <div class="col-md-6">
-                        <h5 class="mb-2">
-                            {% if turno.vehiculo %}
-                                {{ turno.vehiculo.modelo }}
-                            {% else %}
-                                Vehículo no disponible
-                            {% endif %}
-                        </h5>
-                        <p class="mb-1">
-                            <i class="bi bi-calendar"></i> {{ turno.fecha_hora.strftime('%d/%m/%Y') }}
-                            <i class="bi bi-clock ms-3"></i> {{ turno.fecha_hora.strftime('%H:%M') }}hs
-                        </p>
-                        {% if turno.comentarios %}
-                        <p class="text-muted small mb-0">
-                            <i class="bi bi-chat-left-text"></i> {{ turno.comentarios }}
-                        </p>
-                        {% endif %}
-                    </div>
-                    <div class="col-md-4 text-md-end">
-                        <span class="badge bg-{{ 'success' if turno.estado == 'confirmado' else 'warning' if turno.estado == 'pendiente' else 'danger' if turno.estado == 'cancelado' else 'secondary' }} mb-2">
-                            {{ turno.estado.capitalize() }}
-                        </span>
-                        <br>
-                        {% if turno.estado == 'pendiente' %}
-                        <button class="btn btn-sm btn-outline-danger" onclick="cancelarTurno('{{ turno._id }}')">
-                            <i class="bi bi-x-circle"></i> Cancelar
-                        </button>
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
-        </div>
+      </a>
     </div>
-    {% endfor %}
-</div>
-{% else %}
-<div class="text-center py-5">
-    <i class="bi bi-calendar-x" style="font-size: 5rem; color: #dee2e6;"></i>
-    <h3 class="mt-4 text-muted">No tenés turnos agendados</h3>
-    <p class="text-muted">Agendá tu primer test drive y probá el auto de tus sueños</p>
-    <a href="{{ url_for('usuarios.agendar_turno') }}" class="btn btn-success btn-lg mt-3">
-        <i class="bi bi-calendar-plus"></i> Agendar Test Drive
-    </a>
-</div>
-{% endif %}
 
-<script>
-async function cancelarTurno(turnoId) {
-    if (!confirm('¿Estás seguro de cancelar este turno?')) return;
+    <div id="listado-turnos" class="row g-3">
+      <!-- Se cargan dinámicamente -->
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <script>
+    const API_URL = 'http://localhost:3000/api';
     
-    try {
-        const response = await fetch(`/usuario/turno/cancelar/${turnoId}`, {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'}
+    function verificarAuth() {
+      const token = localStorage.getItem('token');
+      const username = localStorage.getItem('username');
+      
+      if (!token) {
+        alert('Debes iniciar sesión');
+        window.location.href = 'login.html';
+        return false;
+      }
+      
+      document.getElementById('username-display').textContent = username;
+      return true;
+    }
+    
+    function logout() {
+      localStorage.clear();
+      window.location.href = 'index.html';
+    }
+    
+    async function cargarTurnos() {
+      const token = localStorage.getItem('token');
+      const listado = document.getElementById('listado-turnos');
+      
+      listado.innerHTML = `
+        <div class="col-12 text-center py-5">
+          <div class="spinner-border text-primary"></div>
+          <p class="mt-3">Cargando turnos...</p>
+        </div>
+      `;
+      
+      try {
+        const response = await fetch(`${API_URL}/turnos`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
         });
         
-        const data = await response.json();
+        const turnos = await response.json();
         
-        if (data.success) {
-            location.reload();
-        } else {
-            alert('Error al cancelar turno');
+        if (turnos.length === 0) {
+          listado.innerHTML = `
+            <div class="col-12 text-center py-5">
+              <i class="bi bi-calendar-x" style="font-size: 5rem; color: #dee2e6;"></i>
+              <h3 class="mt-4 text-muted">No tenés turnos agendados</h3>
+              <p class="text-muted">Agendá tu primer test drive y probá el auto de tus sueños</p>
+              <a href="agendar-turno.html" class="btn btn-success btn-lg mt-3">
+                <i class="bi bi-calendar-plus"></i> Agendar Test Drive
+              </a>
+            </div>
+          `;
+          return;
         }
-    } catch (error) {
+        
+        listado.innerHTML = '';
+        
+        turnos.forEach(turno => {
+          const fecha = new Date(turno.fechaHora);
+          const fechaStr = fecha.toLocaleDateString('es-AR');
+          const horaStr = fecha.toLocaleTimeString('es-AR', {hour: '2-digit', minute: '2-digit'});
+          
+          const estadoColor = turno.estado === 'confirmado' ? 'success' : 
+                              turno.estado === 'pendiente' ? 'warning' : 
+                              turno.estado === 'cancelado' ? 'danger' : 'secondary';
+          
+          const borderColor = turno.estado === 'confirmado' ? 'border-success' : 
+                              turno.estado === 'pendiente' ? 'border-warning' : 'border-secondary';
+          
+          listado.innerHTML += `
+            <div class="col-12">
+              <div class="card border-0 shadow-sm border-start border-5 ${borderColor}">
+                <div class="card-body">
+                  <div class="row align-items-center">
+                    <div class="col-md-2">
+                      ${turno.vehiculo ? `
+                        <img src="${turno.vehiculo.imagen}" alt="${turno.vehiculo.modelo}" 
+                             class="img-fluid rounded">
+                      ` : '<div class="bg-light p-4 rounded text-center">Sin imagen</div>'}
+                    </div>
+                    <div class="col-md-6">
+                      <h5 class="mb-2">
+                        ${turno.vehiculo ? turno.vehiculo.modelo : 'Vehículo no disponible'}
+                      </h5>
+                      <p class="mb-1">
+                        <i class="bi bi-calendar"></i> ${fechaStr}
+                        <i class="bi bi-clock ms-3"></i> ${horaStr} hs
+                      </p>
+                      ${turno.comentarios ? `
+                        <p class="text-muted small mb-0">
+                          <i class="bi bi-chat-left-text"></i> ${turno.comentarios}
+                        </p>
+                      ` : ''}
+                    </div>
+                    <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                      <span class="badge bg-${estadoColor} mb-2">
+                        ${turno.estado.charAt(0).toUpperCase() + turno.estado.slice(1)}
+                      </span>
+                      <br>
+                      ${turno.estado === 'pendiente' ? `
+                        <button class="btn btn-sm btn-outline-danger" onclick="cancelarTurno('${turno._id}')">
+                          <i class="bi bi-x-circle"></i> Cancelar
+                        </button>
+                      ` : ''}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          `;
+        });
+        
+      } catch (error) {
+        console.error('Error:', error);
+        listado.innerHTML = `
+          <div class="col-12 text-center py-5">
+            <i class="bi bi-exclamation-triangle text-danger" style="font-size: 5rem;"></i>
+            <h3 class="mt-4 text-danger">Error al cargar turnos</h3>
+            <button class="btn btn-primary mt-3" onclick="cargarTurnos()">
+              <i class="bi bi-arrow-clockwise"></i> Reintentar
+            </button>
+          </div>
+        `;
+      }
+    }
+    
+    async function cancelarTurno(turnoId) {
+      if (!confirm('¿Estás seguro de cancelar este turno?')) return;
+      
+      const token = localStorage.getItem('token');
+      
+      try {
+        const response = await fetch(`${API_URL}/turnos/${turnoId}`, {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        
+        if (response.ok) {
+          cargarTurnos();
+        } else {
+          alert('Error al cancelar turno');
+        }
+      } catch (error) {
         console.error('Error:', error);
         alert('Error al cancelar turno');
+      }
     }
-}
-</script>
-
-{% endblock %}
+    
+    document.addEventListener('DOMContentLoaded', () => {
+      if (verificarAuth()) {
+        cargarTurnos();
+      }
+    });
+  </script>
+</body>
+</html>
