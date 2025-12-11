@@ -16,7 +16,7 @@ const MONGO_URL = process.env.MONGO_URL || 'mongodb://admin:admin123@localhost:2
 
 // ==================== MIDDLEWARES ====================
 app.use(cors({
-  origin: '*', // Permite cualquier origen (frontend en otra PC)
+  origin: '*',
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
@@ -24,7 +24,6 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Logger de requests
 app.use((req, res, next) => {
   console.log(`[${new Date().toISOString()}] ${req.method} ${req.path}`);
   next();
@@ -37,6 +36,8 @@ let usuariosCollection;
 let mensajesCollection;
 let favoritosCollection;
 let turnosCollection;
+let alertasCollection;
+let cotizacionesCollection;
 
 async function connectDB() {
   try {
@@ -51,10 +52,11 @@ async function connectDB() {
     mensajesCollection = db.collection('mensajes');
     favoritosCollection = db.collection('favoritos');
     turnosCollection = db.collection('turnos');
+    alertasCollection = db.collection('alertas');
+    cotizacionesCollection = db.collection('cotizaciones');
     
     console.log('✅ Conectado a MongoDB');
     
-    // Crear índices
     await usuariosCollection.createIndex({ username: 1 }, { unique: true });
     await usuariosCollection.createIndex({ email: 1 }, { unique: true });
     
@@ -67,7 +69,7 @@ async function connectDB() {
 // ==================== MIDDLEWARE DE AUTENTICACIÓN ====================
 function authenticateToken(req, res, next) {
   const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
+  const token = authHeader && authHeader.split(' ')[1];
   
   if (!token) {
     return res.status(401).json({ error: 'Token no proporcionado' });
@@ -90,13 +92,10 @@ function isAdmin(req, res, next) {
 }
 
 // ==================== RUTAS DE AUTENTICACIÓN ====================
-
-// POST /api/auth/register - Registrar usuario
 app.post('/api/auth/register', async (req, res) => {
   try {
     const { username, email, password } = req.body;
     
-    // Validaciones
     if (!username || !email || !password) {
       return res.status(400).json({ error: 'Faltan campos requeridos' });
     }
@@ -109,21 +108,18 @@ app.post('/api/auth/register', async (req, res) => {
       return res.status(400).json({ error: 'La contraseña debe tener al menos 6 caracteres' });
     }
     
-    // Verificar si el usuario ya existe
-    const existeUsername = await usuariosCollection.findOne({ username });
+    const existeUsername = await usuariosCollection.findOne({ username: username.toLowerCase() });
     if (existeUsername) {
       return res.status(400).json({ error: 'El username ya está en uso' });
     }
     
-    const existeEmail = await usuariosCollection.findOne({ email });
+    const existeEmail = await usuariosCollection.findOne({ email: email.toLowerCase() });
     if (existeEmail) {
       return res.status(400).json({ error: 'El email ya está registrado' });
     }
     
-    // Hash de la contraseña
     const hashedPassword = await bcrypt.hash(password, 10);
     
-    // Crear usuario
     const nuevoUsuario = {
       username: username.toLowerCase(),
       email: email.toLowerCase(),
@@ -145,7 +141,6 @@ app.post('/api/auth/register', async (req, res) => {
   }
 });
 
-// POST /api/auth/login - Iniciar sesión
 app.post('/api/auth/login', async (req, res) => {
   try {
     const { username, password } = req.body;
@@ -154,7 +149,6 @@ app.post('/api/auth/login', async (req, res) => {
       return res.status(400).json({ error: 'Username y password son requeridos' });
     }
     
-    // Buscar usuario
     const usuario = await usuariosCollection.findOne({ 
       username: username.toLowerCase() 
     });
@@ -163,14 +157,12 @@ app.post('/api/auth/login', async (req, res) => {
       return res.status(401).json({ error: 'Credenciales inválidas' });
     }
     
-    // Verificar contraseña
     const passwordValida = await bcrypt.compare(password, usuario.password);
     
     if (!passwordValida) {
       return res.status(401).json({ error: 'Credenciales inválidas' });
     }
     
-    // Generar token JWT
     const token = jwt.sign(
       { 
         userId: usuario._id.toString(), 
@@ -198,7 +190,6 @@ app.post('/api/auth/login', async (req, res) => {
   }
 });
 
-// GET /api/auth/me - Obtener usuario actual
 app.get('/api/auth/me', authenticateToken, async (req, res) => {
   try {
     const usuario = await usuariosCollection.findOne(
@@ -219,13 +210,10 @@ app.get('/api/auth/me', authenticateToken, async (req, res) => {
 });
 
 // ==================== RUTAS DE VEHÍCULOS ====================
-
-// GET /api/vehiculos - Obtener todos los vehículos
 app.get('/api/vehiculos', async (req, res) => {
   try {
     const vehiculos = await vehiculosCollection.find({}).toArray();
     
-    // Convertir ObjectId a string
     const vehiculosFormateados = vehiculos.map(v => ({
       ...v,
       _id: v._id.toString()
@@ -239,7 +227,6 @@ app.get('/api/vehiculos', async (req, res) => {
   }
 });
 
-// GET /api/vehiculos/destacados - Vehículos destacados (primeros 3)
 app.get('/api/vehiculos/destacados', async (req, res) => {
   try {
     const vehiculos = await vehiculosCollection.find({}).limit(3).toArray();
@@ -257,7 +244,6 @@ app.get('/api/vehiculos/destacados', async (req, res) => {
   }
 });
 
-// GET /api/vehiculos/:id - Obtener un vehículo por ID
 app.get('/api/vehiculos/:id', async (req, res) => {
   try {
     const vehiculo = await vehiculosCollection.findOne({ 
@@ -279,7 +265,6 @@ app.get('/api/vehiculos/:id', async (req, res) => {
   }
 });
 
-// POST /api/vehiculos - Crear vehículo (SOLO ADMIN)
 app.post('/api/vehiculos', authenticateToken, isAdmin, async (req, res) => {
   try {
     const { modelo, descripcion, precio, imagen, anio, stock } = req.body;
@@ -311,7 +296,6 @@ app.post('/api/vehiculos', authenticateToken, isAdmin, async (req, res) => {
   }
 });
 
-// PUT /api/vehiculos/:id - Actualizar vehículo (SOLO ADMIN)
 app.put('/api/vehiculos/:id', authenticateToken, isAdmin, async (req, res) => {
   try {
     const { modelo, descripcion, precio, imagen, anio, stock } = req.body;
@@ -341,7 +325,6 @@ app.put('/api/vehiculos/:id', authenticateToken, isAdmin, async (req, res) => {
   }
 });
 
-// DELETE /api/vehiculos/:id - Eliminar vehículo (SOLO ADMIN)
 app.delete('/api/vehiculos/:id', authenticateToken, isAdmin, async (req, res) => {
   try {
     const resultado = await vehiculosCollection.deleteOne({ 
@@ -361,8 +344,6 @@ app.delete('/api/vehiculos/:id', authenticateToken, isAdmin, async (req, res) =>
 });
 
 // ==================== RUTAS DE MENSAJES ====================
-
-// POST /api/mensajes - Crear mensaje de contacto (PÚBLICO)
 app.post('/api/mensajes', async (req, res) => {
   try {
     const { nombre, email, telefono, mensaje } = req.body;
@@ -393,7 +374,6 @@ app.post('/api/mensajes', async (req, res) => {
   }
 });
 
-// GET /api/mensajes - Obtener mensajes (SOLO ADMIN)
 app.get('/api/mensajes', authenticateToken, isAdmin, async (req, res) => {
   try {
     const soloNoLeidos = req.query.no_leidos === 'true';
@@ -418,7 +398,6 @@ app.get('/api/mensajes', authenticateToken, isAdmin, async (req, res) => {
   }
 });
 
-// PUT /api/mensajes/:id/leido - Marcar mensaje como leído (SOLO ADMIN)
 app.put('/api/mensajes/:id/leido', authenticateToken, isAdmin, async (req, res) => {
   try {
     const { leido } = req.body;
@@ -440,7 +419,6 @@ app.put('/api/mensajes/:id/leido', authenticateToken, isAdmin, async (req, res) 
   }
 });
 
-// DELETE /api/mensajes/:id - Eliminar mensaje (SOLO ADMIN)
 app.delete('/api/mensajes/:id', authenticateToken, isAdmin, async (req, res) => {
   try {
     const resultado = await mensajesCollection.deleteOne({ 
@@ -459,7 +437,6 @@ app.delete('/api/mensajes/:id', authenticateToken, isAdmin, async (req, res) => 
   }
 });
 
-// GET /api/mensajes/stats - Estadísticas de mensajes (SOLO ADMIN)
 app.get('/api/mensajes/stats', authenticateToken, isAdmin, async (req, res) => {
   try {
     const total = await mensajesCollection.countDocuments();
@@ -478,8 +455,6 @@ app.get('/api/mensajes/stats', authenticateToken, isAdmin, async (req, res) => {
 });
 
 // ==================== RUTAS DE FAVORITOS ====================
-
-// POST /api/favoritos - Agregar a favoritos (REQUIERE AUTH)
 app.post('/api/favoritos', authenticateToken, async (req, res) => {
   try {
     const { vehiculoId } = req.body;
@@ -488,7 +463,6 @@ app.post('/api/favoritos', authenticateToken, async (req, res) => {
       return res.status(400).json({ error: 'vehiculoId es requerido' });
     }
     
-    // Verificar si ya existe
     const existe = await favoritosCollection.findOne({
       usuarioId: req.user.userId,
       vehiculoId
@@ -506,7 +480,7 @@ app.post('/api/favoritos', authenticateToken, async (req, res) => {
     
     await favoritosCollection.insertOne(nuevoFavorito);
     
-    res.status(201).json({ message: 'Agregado a favoritos' });
+    res.status(201).json({ message: 'Agregado a favoritos', success: true });
     
   } catch (error) {
     console.error('Error:', error);
@@ -514,7 +488,6 @@ app.post('/api/favoritos', authenticateToken, async (req, res) => {
   }
 });
 
-// DELETE /api/favoritos/:vehiculoId - Eliminar de favoritos (REQUIERE AUTH)
 app.delete('/api/favoritos/:vehiculoId', authenticateToken, async (req, res) => {
   try {
     const resultado = await favoritosCollection.deleteOne({
@@ -526,7 +499,7 @@ app.delete('/api/favoritos/:vehiculoId', authenticateToken, async (req, res) => 
       return res.status(404).json({ error: 'No está en favoritos' });
     }
     
-    res.json({ message: 'Eliminado de favoritos' });
+    res.json({ message: 'Eliminado de favoritos', success: true });
     
   } catch (error) {
     console.error('Error:', error);
@@ -534,25 +507,32 @@ app.delete('/api/favoritos/:vehiculoId', authenticateToken, async (req, res) => 
   }
 });
 
-// GET /api/favoritos - Obtener mis favoritos (REQUIERE AUTH)
 app.get('/api/favoritos', authenticateToken, async (req, res) => {
   try {
     const favoritos = await favoritosCollection
       .find({ usuarioId: req.user.userId })
       .toArray();
     
-    // Obtener información de cada vehículo
     const vehiculosIds = favoritos.map(f => new ObjectId(f.vehiculoId));
+    
+    if (vehiculosIds.length === 0) {
+      return res.json([]);
+    }
+    
     const vehiculos = await vehiculosCollection
       .find({ _id: { $in: vehiculosIds } })
       .toArray();
     
-    const vehiculosFormateados = vehiculos.map(v => ({
-      ...v,
-      _id: v._id.toString()
-    }));
+    const vehiculosConFecha = vehiculos.map(v => {
+      const favorito = favoritos.find(f => f.vehiculoId === v._id.toString());
+      return {
+        ...v,
+        _id: v._id.toString(),
+        fechaAgregado: favorito ? favorito.fechaAgregado : new Date()
+      };
+    });
     
-    res.json(vehiculosFormateados);
+    res.json(vehiculosConFecha);
     
   } catch (error) {
     console.error('Error:', error);
@@ -561,13 +541,10 @@ app.get('/api/favoritos', authenticateToken, async (req, res) => {
 });
 
 // ==================== RUTAS DE COTIZADOR ====================
-
-// POST /api/cotizador - Cotizar vehículo usado (PÚBLICO)
 app.post('/api/cotizador', async (req, res) => {
   try {
     const { marca, modelo, anio, kilometraje, estado } = req.body;
     
-    // Validaciones
     if (!marca || !modelo || !anio || !kilometraje || !estado) {
       return res.status(400).json({ error: 'Faltan campos requeridos' });
     }
@@ -586,8 +563,7 @@ app.post('/api/cotizador', async (req, res) => {
       });
     }
     
-    // Cálculo de cotización
-    const valorBase = 8000000; // Base 8 millones
+    const valorBase = 8000000;
     const aniosUso = anioActual - anio;
     const depreciacionAnual = 400000;
     const depreciacionTotal = aniosUso * depreciacionAnual;
@@ -602,7 +578,28 @@ app.post('/api/cotizador', async (req, res) => {
     
     const multiplicador = multiplicadores[estado];
     let valorEstimado = (valorBase - depreciacionTotal - depreciacionKm) * multiplicador;
-    valorEstimado = Math.max(valorEstimado, 500000); // Mínimo 500k
+    valorEstimado = Math.max(valorEstimado, 500000);
+    
+    // Guardar en historial si está autenticado
+    const token = req.headers['authorization']?.split(' ')[1];
+    if (token) {
+      try {
+        const decoded = jwt.verify(token, JWT_SECRET);
+        const cotizacion = {
+          usuarioId: decoded.userId,
+          marca,
+          modelo,
+          anio,
+          kilometraje,
+          estado,
+          valorEstimado: Math.round(valorEstimado),
+          fecha: new Date()
+        };
+        await cotizacionesCollection.insertOne(cotizacion);
+      } catch (err) {
+        // Si el token no es válido, continuar sin guardar
+      }
+    }
     
     res.json({
       valorEstimado: Math.round(valorEstimado),
@@ -627,175 +624,27 @@ app.post('/api/cotizador', async (req, res) => {
   }
 });
 
-// ==================== RUTAS DE PLANES ====================
-
-// GET /api/planes - Obtener planes de financiación (PÚBLICO)
-app.get('/api/planes', (req, res) => {
+app.get('/api/cotizaciones', authenticateToken, async (req, res) => {
   try {
-    const planes = [
-      {
-        id: 'plan-a',
-        nombre: 'Plan 12 Cuotas Sin Interés',
-        descripcion: 'Ideal para compras rápidas. Pagá tu auto en 12 cuotas fijas sin interés.',
-        cuotas: 12,
-        interes: 0,
-        tasaMensual: 0,
-        engancheMinimo: 20,
-        montoMinimo: 5000000,
-        montoMaximo: 15000000,
-        vigencia: '2025-12-31',
-        destacado: true
-      },
-      {
-        id: 'plan-b',
-        nombre: 'Plan 24 Cuotas Tasa Promocional',
-        descripcion: 'Tasa promocional del 5% anual. Perfecto para financiar sin comprometer tu presupuesto.',
-        cuotas: 24,
-        interes: 5,
-        tasaMensual: 0.42,
-        engancheMinimo: 15,
-        montoMinimo: 3000000,
-        montoMaximo: 20000000,
-        vigencia: '2025-12-31',
-        destacado: true
-      },
-      {
-        id: 'plan-c',
-        nombre: 'Plan 36 Cuotas Extendido',
-        descripcion: 'Financiación a largo plazo con cuotas más bajas. Tasa del 8% anual.',
-        cuotas: 36,
-        interes: 8,
-        tasaMensual: 0.67,
-        engancheMinimo: 10,
-        montoMinimo: 2000000,
-        montoMaximo: 25000000,
-        vigencia: '2025-12-31',
-        destacado: false
-      },
-      {
-        id: 'plan-100',
-        nombre: 'Plan 100% Financiado',
-        descripcion: 'Sin enganche. Financiamos el 100% del valor del vehículo en hasta 48 cuotas.',
-        cuotas: 48,
-        interes: 12,
-        tasaMensual: 1.0,
-        engancheMinimo: 0,
-        montoMinimo: 4000000,
-        montoMaximo: 18000000,
-        vigencia: '2025-12-31',
-        destacado: true
-      }
-    ];
+    const cotizaciones = await cotizacionesCollection
+      .find({ usuarioId: req.user.userId })
+      .sort({ fecha: -1 })
+      .toArray();
     
-    // Filtros opcionales
-    const destacados = req.query.destacados === 'true';
-    const cuotasMax = parseInt(req.query.cuotas_max);
-    const monto = parseFloat(req.query.monto);
+    const cotizacionesFormateadas = cotizaciones.map(c => ({
+      ...c,
+      _id: c._id.toString()
+    }));
     
-    let planesFiltrados = planes;
-    
-    if (destacados) {
-      planesFiltrados = planesFiltrados.filter(p => p.destacado);
-    }
-    
-    if (cuotasMax) {
-      planesFiltrados = planesFiltrados.filter(p => p.cuotas <= cuotasMax);
-    }
-    
-    if (monto) {
-      planesFiltrados = planesFiltrados.filter(
-        p => p.montoMinimo <= monto && monto <= p.montoMaximo
-      );
-    }
-    
-    res.json(planesFiltrados);
+    res.json(cotizacionesFormateadas);
     
   } catch (error) {
     console.error('Error:', error);
-    res.status(500).json({ error: 'Error al obtener planes' });
+    res.status(500).json({ error: 'Error al obtener cotizaciones' });
   }
 });
 
-// POST /api/planes/:planId/calcular - Calcular cuota (PÚBLICO)
-app.post('/api/planes/:planId/calcular', (req, res) => {
-  try {
-    const { monto, enganche } = req.body;
-    
-    if (!monto) {
-      return res.status(400).json({ error: 'Monto es requerido' });
-    }
-    
-    // Obtener plan
-    const planes = {
-      'plan-a': { cuotas: 12, tasaMensual: 0, engancheMinimo: 20, montoMinimo: 5000000, montoMaximo: 15000000, interes: 0 },
-      'plan-b': { cuotas: 24, tasaMensual: 0.42, engancheMinimo: 15, montoMinimo: 3000000, montoMaximo: 20000000, interes: 5 },
-      'plan-c': { cuotas: 36, tasaMensual: 0.67, engancheMinimo: 10, montoMinimo: 2000000, montoMaximo: 25000000, interes: 8 },
-      'plan-100': { cuotas: 48, tasaMensual: 1.0, engancheMinimo: 0, montoMinimo: 4000000, montoMaximo: 18000000, interes: 12 }
-    };
-    
-    const plan = planes[req.params.planId];
-    
-    if (!plan) {
-      return res.status(404).json({ error: 'Plan no encontrado' });
-    }
-    
-    const montoTotal = parseFloat(monto);
-    const engancheMonto = parseFloat(enganche || 0);
-    
-    // Validar monto
-    if (montoTotal < plan.montoMinimo || montoTotal > plan.montoMaximo) {
-      return res.status(400).json({
-        error: `El monto debe estar entre ${plan.montoMinimo.toLocaleString()} y ${plan.montoMaximo.toLocaleString()}`
-      });
-    }
-    
-    // Validar enganche mínimo
-    const engancheMinimo = montoTotal * (plan.engancheMinimo / 100);
-    if (engancheMonto < engancheMinimo) {
-      return res.status(400).json({
-        error: `El enganche mínimo es ${Math.round(engancheMinimo).toLocaleString()} (${plan.engancheMinimo}%)`
-      });
-    }
-    
-    const montoFinanciar = montoTotal - engancheMonto;
-    const tasaMensual = plan.tasaMensual / 100;
-    const cuotas = plan.cuotas;
-    
-    let cuotaMensual, totalAPagar, interesTotal;
-    
-    if (tasaMensual === 0) {
-      cuotaMensual = montoFinanciar / cuotas;
-      totalAPagar = montoFinanciar;
-      interesTotal = 0;
-    } else {
-      // Fórmula de amortización francesa
-      cuotaMensual = montoFinanciar * (tasaMensual * Math.pow(1 + tasaMensual, cuotas)) / (Math.pow(1 + tasaMensual, cuotas) - 1);
-      totalAPagar = cuotaMensual * cuotas;
-      interesTotal = totalAPagar - montoFinanciar;
-    }
-    
-    res.json({
-      planId: req.params.planId,
-      montoVehiculo: Math.round(montoTotal),
-      enganche: Math.round(engancheMonto),
-      montoFinanciar: Math.round(montoFinanciar),
-      cuotas,
-      cuotaMensual: Math.round(cuotaMensual),
-      totalAPagar: Math.round(totalAPagar),
-      interesTotal: Math.round(interesTotal),
-      tasaAnual: plan.interes,
-      tasaMensual: plan.tasaMensual
-    });
-    
-  } catch (error) {
-    console.error('Error:', error);
-    res.status(500).json({ error: 'Error al calcular cuota' });
-  }
-});
-
-// ==================== RUTAS DE TURNOS (TEST DRIVE) ====================
-
-// POST /api/turnos - Agendar turno (REQUIERE AUTH)
+// ==================== RUTAS DE TURNOS ====================
 app.post('/api/turnos', authenticateToken, async (req, res) => {
   try {
     const { vehiculoId, fecha, hora, comentarios } = req.body;
@@ -804,7 +653,6 @@ app.post('/api/turnos', authenticateToken, async (req, res) => {
       return res.status(400).json({ error: 'Faltan campos requeridos' });
     }
     
-    // Verificar que el vehículo existe
     const vehiculo = await vehiculosCollection.findOne({ 
       _id: new ObjectId(vehiculoId) 
     });
@@ -813,7 +661,6 @@ app.post('/api/turnos', authenticateToken, async (req, res) => {
       return res.status(404).json({ error: 'Vehículo no encontrado' });
     }
     
-    // Crear fecha y hora completa
     const fechaHora = new Date(`${fecha}T${hora}`);
     
     const nuevoTurno = {
@@ -829,7 +676,8 @@ app.post('/api/turnos', authenticateToken, async (req, res) => {
     
     res.status(201).json({
       message: 'Turno agendado exitosamente',
-      turnoId: resultado.insertedId.toString()
+      turnoId: resultado.insertedId.toString(),
+      success: true
     });
     
   } catch (error) {
@@ -838,7 +686,6 @@ app.post('/api/turnos', authenticateToken, async (req, res) => {
   }
 });
 
-// GET /api/turnos - Obtener mis turnos (REQUIERE AUTH)
 app.get('/api/turnos', authenticateToken, async (req, res) => {
   try {
     const turnos = await turnosCollection
@@ -846,7 +693,6 @@ app.get('/api/turnos', authenticateToken, async (req, res) => {
       .sort({ fechaHora: -1 })
       .toArray();
     
-    // Obtener información de cada vehículo
     const turnosConVehiculos = await Promise.all(
       turnos.map(async (turno) => {
         const vehiculo = await vehiculosCollection.findOne({ 
@@ -872,7 +718,6 @@ app.get('/api/turnos', authenticateToken, async (req, res) => {
   }
 });
 
-// DELETE /api/turnos/:id - Cancelar turno (REQUIERE AUTH)
 app.delete('/api/turnos/:id', authenticateToken, async (req, res) => {
   try {
     const resultado = await turnosCollection.updateOne(
@@ -887,7 +732,7 @@ app.delete('/api/turnos/:id', authenticateToken, async (req, res) => {
       return res.status(404).json({ error: 'Turno no encontrado' });
     }
     
-    res.json({ message: 'Turno cancelado exitosamente' });
+    res.json({ message: 'Turno cancelado exitosamente', success: true });
     
   } catch (error) {
     console.error('Error:', error);
@@ -895,7 +740,172 @@ app.delete('/api/turnos/:id', authenticateToken, async (req, res) => {
   }
 });
 
-// ==================== RUTA DE PRUEBA ====================
+// ==================== RUTAS DE ALERTAS ====================
+app.post('/api/alertas', authenticateToken, async (req, res) => {
+  try {
+    const { marca, modelo, precioMax, anioMin } = req.body;
+    
+    const nuevaAlerta = {
+      usuarioId: req.user.userId,
+      marca: marca || null,
+      modelo: modelo || null,
+      precioMax: precioMax ? parseFloat(precioMax) : null,
+      anioMin: anioMin ? parseInt(anioMin) : null,
+      activa: true,
+      createdAt: new Date()
+    };
+    
+    const resultado = await alertasCollection.insertOne(nuevaAlerta);
+    
+    res.status(201).json({
+      message: 'Alerta creada exitosamente',
+      alertaId: resultado.insertedId.toString(),
+      success: true
+    });
+    
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ error: 'Error al crear alerta' });
+  }
+});
+
+app.get('/api/alertas', authenticateToken, async (req, res) => {
+  try {
+    const alertas = await alertasCollection
+      .find({ usuarioId: req.user.userId })
+      .sort({ createdAt: -1 })
+      .toArray();
+    
+    const alertasFormateadas = alertas.map(a => ({
+      ...a,
+      _id: a._id.toString()
+    }));
+    
+    res.json(alertasFormateadas);
+    
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ error: 'Error al obtener alertas' });
+  }
+});
+
+app.put('/api/alertas/:id/toggle', authenticateToken, async (req, res) => {
+  try {
+    const alerta = await alertasCollection.findOne({
+      _id: new ObjectId(req.params.id),
+      usuarioId: req.user.userId
+    });
+    
+    if (!alerta) {
+      return res.status(404).json({ error: 'Alerta no encontrada' });
+    }
+    
+    const resultado = await alertasCollection.updateOne(
+      { _id: new ObjectId(req.params.id) },
+      { $set: { activa: !alerta.activa } }
+    );
+    
+    res.json({ 
+      message: 'Alerta actualizada', 
+      success: true,
+      activa: !alerta.activa
+    });
+    
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ error: 'Error al actualizar alerta' });
+  }
+});
+
+app.delete('/api/alertas/:id', authenticateToken, async (req, res) => {
+  try {
+    const resultado = await alertasCollection.deleteOne({
+      _id: new ObjectId(req.params.id),
+      usuarioId: req.user.userId
+    });
+    
+    if (resultado.deletedCount === 0) {
+      return res.status(404).json({ error: 'Alerta no encontrada' });
+    }
+    
+    res.json({ message: 'Alerta eliminada', success: true });
+    
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ error: 'Error al eliminar alerta' });
+  }
+});
+
+// ==================== RUTAS DE PLANES ====================
+app.get('/api/planes', (req, res) => {
+  try {
+    const planes = [
+      {
+        id: 'plan-a',
+        nombre: 'Plan 12 Cuotas Sin Interés',
+        descripcion: 'Ideal para compras rápidas.',
+        cuotas: 12,
+        interes: 0,
+        tasaMensual: 0,
+        destacado: true
+      },
+      {
+        id: 'plan-b',
+        nombre: 'Plan 24 Cuotas',
+        descripcion: 'Tasa promocional del 5% anual.',
+        cuotas: 24,
+        interes: 5,
+        tasaMensual: 0.42,
+        destacado: true
+      }
+    ];
+    
+    const destacados = req.query.destacados === 'true';
+    let planesFiltrados = destacados ? planes.filter(p => p.destacado) : planes;
+    
+    res.json(planesFiltrados);
+    
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ error: 'Error al obtener planes' });
+  }
+});
+
+// ==================== DASHBOARD USUARIO ====================
+app.get('/api/usuario/stats', authenticateToken, async (req, res) => {
+  try {
+    const favoritos = await favoritosCollection.countDocuments({ 
+      usuarioId: req.user.userId 
+    });
+    
+    const cotizaciones = await cotizacionesCollection.countDocuments({ 
+      usuarioId: req.user.userId 
+    });
+    
+    const turnos = await turnosCollection.countDocuments({ 
+      usuarioId: req.user.userId,
+      estado: 'pendiente'
+    });
+    
+    const alertas = await alertasCollection.countDocuments({ 
+      usuarioId: req.user.userId,
+      activa: true
+    });
+    
+    res.json({
+      favoritos,
+      cotizaciones,
+      turnos,
+      alertas
+    });
+    
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ error: 'Error al obtener estadísticas' });
+  }
+});
+
+// ==================== HEALTH CHECK ====================
 app.get('/api/health', (req, res) => {
   res.json({ 
     status: 'OK', 
@@ -929,8 +939,10 @@ async function startServer() {
     console.log(`   - POST /api/auth/register`);
     console.log(`   - POST /api/auth/login`);
     console.log(`   - GET  /api/vehiculos`);
-    console.log(`   - GET  /api/vehiculos/destacados`);
-    console.log(`   - POST /api/mensajes`);
+    console.log(`   - GET  /api/favoritos (AUTH)`);
+    console.log(`   - GET  /api/turnos (AUTH)`);
+    console.log(`   - GET  /api/alertas (AUTH)`);
+    console.log(`   - GET  /api/cotizaciones (AUTH)`);
     console.log('='.repeat(60));
   });
 }

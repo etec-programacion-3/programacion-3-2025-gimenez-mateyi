@@ -1,125 +1,223 @@
-{% extends 'base.html' %}
-{% block title %}Mi Panel - Giménez Automotores{% endblock %}
-{% block content %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mi Panel - Giménez Automotores</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+</head>
+<body class="bg-light">
+  <!-- NAVBAR -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+      <a class="navbar-brand fw-bold" href="index.html">
+        <i class="bi bi-car-front-fill"></i> Giménez Automotores
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link" href="index.html">Inicio</a></li>
+          <li class="nav-item"><a class="nav-link" href="catalogo.html">Modelos</a></li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+              <i class="bi bi-person-circle"></i> <span id="username-display"></span>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li><a class="dropdown-item active" href="dashboard.html"><i class="bi bi-speedometer2"></i> Mi Panel</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="favoritos.html"><i class="bi bi-heart-fill text-danger"></i> Mis Favoritos</a></li>
+              <li><a class="dropdown-item" href="cotizaciones.html"><i class="bi bi-file-text"></i> Mis Cotizaciones</a></li>
+              <li><a class="dropdown-item" href="turnos.html"><i class="bi bi-calendar-check"></i> Mis Turnos</a></li>
+              <li><a class="dropdown-item" href="alertas.html"><i class="bi bi-bell"></i> Mis Alertas</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item text-danger" href="#" onclick="logout()"><i class="bi bi-box-arrow-right"></i> Cerrar Sesión</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
 
-<div class="row mb-4">
-    <div class="col-12">
-        <h1><i class="bi bi-speedometer2"></i> ¡Hola, {{ current_user.username }}!</h1>
+  <div class="container my-4">
+    <div class="row mb-4">
+      <div class="col-12">
+        <h1><i class="bi bi-speedometer2"></i> ¡Hola, <span id="username-title"></span>!</h1>
         <p class="text-muted">Bienvenido a tu panel de usuario</p>
+      </div>
     </div>
-</div>
 
-<!-- Tarjetas de estadísticas -->
-<div class="row g-4 mb-5">
-    <div class="col-md-3">
+    <!-- Tarjetas de estadísticas -->
+    <div class="row g-4 mb-5">
+      <div class="col-md-3">
         <div class="card border-0 shadow-sm h-100 card-hover">
-            <div class="card-body text-center">
-                <i class="bi bi-heart-fill text-danger fs-1"></i>
-                <h3 class="mt-3 mb-0">{{ favoritos_count }}</h3>
-                <p class="text-muted">Favoritos</p>
-                <a href="{{ url_for('usuarios.mis_favoritos') }}" class="btn btn-sm btn-outline-danger">Ver favoritos</a>
-            </div>
+          <div class="card-body text-center">
+            <i class="bi bi-heart-fill text-danger fs-1"></i>
+            <h3 class="mt-3 mb-0" id="stat-favoritos">0</h3>
+            <p class="text-muted">Favoritos</p>
+            <a href="favoritos.html" class="btn btn-sm btn-outline-danger">Ver favoritos</a>
+          </div>
         </div>
-    </div>
-    
-    <div class="col-md-3">
+      </div>
+      
+      <div class="col-md-3">
         <div class="card border-0 shadow-sm h-100 card-hover">
-            <div class="card-body text-center">
-                <i class="bi bi-file-text-fill text-primary fs-1"></i>
-                <h3 class="mt-3 mb-0">{{ cotizaciones_count }}</h3>
-                <p class="text-muted">Cotizaciones</p>
-                <a href="{{ url_for('usuarios.mis_cotizaciones') }}" class="btn btn-sm btn-outline-primary">Ver historial</a>
-            </div>
+          <div class="card-body text-center">
+            <i class="bi bi-file-text-fill text-primary fs-1"></i>
+            <h3 class="mt-3 mb-0" id="stat-cotizaciones">0</h3>
+            <p class="text-muted">Cotizaciones</p>
+            <a href="cotizaciones.html" class="btn btn-sm btn-outline-primary">Ver historial</a>
+          </div>
         </div>
-    </div>
-    
-    <div class="col-md-3">
+      </div>
+      
+      <div class="col-md-3">
         <div class="card border-0 shadow-sm h-100 card-hover">
-            <div class="card-body text-center">
-                <i class="bi bi-calendar-check-fill text-success fs-1"></i>
-                <h3 class="mt-3 mb-0">{{ turnos_count }}</h3>
-                <p class="text-muted">Turnos Pendientes</p>
-                <a href="{{ url_for('usuarios.mis_turnos') }}" class="btn btn-sm btn-outline-success">Ver turnos</a>
-            </div>
+          <div class="card-body text-center">
+            <i class="bi bi-calendar-check-fill text-success fs-1"></i>
+            <h3 class="mt-3 mb-0" id="stat-turnos">0</h3>
+            <p class="text-muted">Turnos Pendientes</p>
+            <a href="turnos.html" class="btn btn-sm btn-outline-success">Ver turnos</a>
+          </div>
         </div>
-    </div>
-    
-    <div class="col-md-3">
+      </div>
+      
+      <div class="col-md-3">
         <div class="card border-0 shadow-sm h-100 card-hover">
-            <div class="card-body text-center">
-                <i class="bi bi-bell-fill text-warning fs-1"></i>
-                <h3 class="mt-3 mb-0">{{ alertas_count }}</h3>
-                <p class="text-muted">Alertas Activas</p>
-                <a href="{{ url_for('usuarios.mis_alertas') }}" class="btn btn-sm btn-outline-warning">Ver alertas</a>
-            </div>
+          <div class="card-body text-center">
+            <i class="bi bi-bell-fill text-warning fs-1"></i>
+            <h3 class="mt-3 mb-0" id="stat-alertas">0</h3>
+            <p class="text-muted">Alertas Activas</p>
+            <a href="alertas.html" class="btn btn-sm btn-outline-warning">Ver alertas</a>
+          </div>
         </div>
+      </div>
     </div>
-</div>
 
-<!-- Acciones rápidas -->
-<div class="row mb-4">
-    <div class="col-12">
+    <!-- Acciones rápidas -->
+    <div class="row mb-4">
+      <div class="col-12">
         <h3 class="mb-3">Acciones Rápidas</h3>
+      </div>
     </div>
-</div>
 
-<div class="row g-3">
-    <div class="col-md-4">
-        <a href="{{ url_for('vehiculos.catalogo') }}" class="text-decoration-none">
-            <div class="card border-0 shadow-sm h-100 card-action">
-                <div class="card-body">
-                    <i class="bi bi-car-front-fill fs-2 text-primary mb-3"></i>
-                    <h5>Explorar Vehículos</h5>
-                    <p class="text-muted mb-0">Descubrí nuestro catálogo completo de 0km</p>
-                </div>
+    <div class="row g-3">
+      <div class="col-md-4">
+        <a href="catalogo.html" class="text-decoration-none">
+          <div class="card border-0 shadow-sm h-100 card-action">
+            <div class="card-body">
+              <i class="bi bi-car-front-fill fs-2 text-primary mb-3"></i>
+              <h5>Explorar Vehículos</h5>
+              <p class="text-muted mb-0">Descubrí nuestro catálogo completo de 0km</p>
             </div>
+          </div>
         </a>
-    </div>
-    
-    <div class="col-md-4">
-        <a href="{{ url_for('usuarios.agendar_turno') }}" class="text-decoration-none">
-            <div class="card border-0 shadow-sm h-100 card-action">
-                <div class="card-body">
-                    <i class="bi bi-calendar-plus-fill fs-2 text-success mb-3"></i>
-                    <h5>Agendar Test Drive</h5>
-                    <p class="text-muted mb-0">Probá el auto de tus sueños</p>
-                </div>
+      </div>
+      
+      <div class="col-md-4">
+        <a href="agendar-turno.html" class="text-decoration-none">
+          <div class="card border-0 shadow-sm h-100 card-action">
+            <div class="card-body">
+              <i class="bi bi-calendar-plus-fill fs-2 text-success mb-3"></i>
+              <h5>Agendar Test Drive</h5>
+              <p class="text-muted mb-0">Probá el auto de tus sueños</p>
             </div>
+          </div>
         </a>
-    </div>
-    
-    <div class="col-md-4">
-        <a href="{{ url_for('usuarios.crear_alerta') }}" class="text-decoration-none">
-            <div class="card border-0 shadow-sm h-100 card-action">
-                <div class="card-body">
-                    <i class="bi bi-bell-fill fs-2 text-warning mb-3"></i>
-                    <h5>Crear Alerta</h5>
-                    <p class="text-muted mb-0">Te avisamos cuando llegue el auto que buscás</p>
-                </div>
+      </div>
+      
+      <div class="col-md-4">
+        <a href="crear-alerta.html" class="text-decoration-none">
+          <div class="card border-0 shadow-sm h-100 card-action">
+            <div class="card-body">
+              <i class="bi bi-bell-fill fs-2 text-warning mb-3"></i>
+              <h5>Crear Alerta</h5>
+              <p class="text-muted mb-0">Te avisamos cuando llegue el auto que buscás</p>
             </div>
+          </div>
         </a>
+      </div>
     </div>
-</div>
+  </div>
 
-<style>
-.card-hover {
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <script>
+    const API_URL = 'http://localhost:3000/api';
+    
+    function verificarAuth() {
+      const token = localStorage.getItem('token');
+      const username = localStorage.getItem('username');
+      const role = localStorage.getItem('role');
+      
+      if (!token || role === 'admin') {
+        alert('Acceso denegado. Solo usuarios normales.');
+        window.location.href = role === 'admin' ? 'admin-vehiculos.html' : 'login.html';
+        return false;
+      }
+      
+      document.getElementById('username-display').textContent = username;
+      document.getElementById('username-title').textContent = username;
+      
+      return true;
+    }
+    
+    function logout() {
+      localStorage.clear();
+      window.location.href = 'index.html';
+    }
+    
+    async function cargarEstadisticas() {
+      const token = localStorage.getItem('token');
+      
+      try {
+        const response = await fetch(`${API_URL}/usuario/stats`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        
+        const stats = await response.json();
+        
+        document.getElementById('stat-favoritos').textContent = stats.favoritos;
+        document.getElementById('stat-cotizaciones').textContent = stats.cotizaciones;
+        document.getElementById('stat-turnos').textContent = stats.turnos;
+        document.getElementById('stat-alertas').textContent = stats.alertas;
+        
+      } catch (error) {
+        console.error('Error al cargar estadísticas:', error);
+      }
+    }
+    
+    document.addEventListener('DOMContentLoaded', () => {
+      if (verificarAuth()) {
+        cargarEstadisticas();
+      }
+    });
+  </script>
+
+  <style>
+  .card-hover {
     transition: all 0.3s;
-}
+  }
 
-.card-hover:hover {
+  .card-hover:hover {
     transform: translateY(-5px);
     box-shadow: 0 10px 25px rgba(0,0,0,0.15) !important;
-}
+  }
 
-.card-action {
+  .card-action {
     transition: all 0.3s;
-}
+    color: inherit;
+  }
 
-.card-action:hover {
+  .card-action:hover {
     transform: translateY(-5px);
     box-shadow: 0 10px 25px rgba(0,0,0,0.15) !important;
     background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-}
-</style>
-
-{% endblock %}
+  }
+  </style>
+</body>
+</html>
