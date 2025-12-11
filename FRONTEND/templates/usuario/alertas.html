@@ -1,122 +1,240 @@
-{% extends 'base.html' %}
-{% block title %}Mis Alertas{% endblock %}
-{% block content %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mis Alertas - Giménez Automotores</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+</head>
+<body class="bg-light">
+  <!-- NAVBAR -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+      <a class="navbar-brand fw-bold" href="index.html">
+        <i class="bi bi-car-front-fill"></i> Giménez Automotores
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link" href="index.html">Inicio</a></li>
+          <li class="nav-item"><a class="nav-link" href="catalogo.html">Modelos</a></li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+              <i class="bi bi-person-circle"></i> <span id="username-display"></span>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li><a class="dropdown-item" href="dashboard.html"><i class="bi bi-speedometer2"></i> Mi Panel</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="favoritos.html"><i class="bi bi-heart-fill text-danger"></i> Mis Favoritos</a></li>
+              <li><a class="dropdown-item" href="turnos.html"><i class="bi bi-calendar-check"></i> Mis Turnos</a></li>
+              <li><a class="dropdown-item active" href="alertas.html"><i class="bi bi-bell"></i> Mis Alertas</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item text-danger" href="#" onclick="logout()"><i class="bi bi-box-arrow-right"></i> Cerrar Sesión</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <div>
+  <div class="container my-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div>
         <h1><i class="bi bi-bell-fill text-warning"></i> Mis Alertas</h1>
         <p class="text-muted">Te avisamos cuando lleguen los autos que buscás</p>
-    </div>
-    <a href="{{ url_for('usuarios.crear_alerta') }}" class="btn btn-warning">
+      </div>
+      <a href="crear-alerta.html" class="btn btn-warning">
         <i class="bi bi-bell-fill"></i> Nueva Alerta
-    </a>
-</div>
+      </a>
+    </div>
 
-{% if alertas %}
-<div class="row g-3">
-    {% for alerta in alertas %}
-    <div class="col-md-6">
-        <div class="card border-0 shadow-sm">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-start mb-3">
+    <div id="listado-alertas" class="row g-3">
+      <!-- Se cargan dinámicamente -->
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <script>
+    const API_URL = 'http://localhost:3000/api';
+    
+    function verificarAuth() {
+      const token = localStorage.getItem('token');
+      const username = localStorage.getItem('username');
+      
+      if (!token) {
+        alert('Debes iniciar sesión');
+        window.location.href = 'login.html';
+        return false;
+      }
+      
+      document.getElementById('username-display').textContent = username;
+      return true;
+    }
+    
+    function logout() {
+      localStorage.clear();
+      window.location.href = 'index.html';
+    }
+    
+    async function cargarAlertas() {
+      const token = localStorage.getItem('token');
+      const listado = document.getElementById('listado-alertas');
+      
+      listado.innerHTML = `
+        <div class="col-12 text-center py-5">
+          <div class="spinner-border text-primary"></div>
+          <p class="mt-3">Cargando alertas...</p>
+        </div>
+      `;
+      
+      try {
+        const response = await fetch(`${API_URL}/alertas`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        
+        const alertas = await response.json();
+        
+        if (alertas.length === 0) {
+          listado.innerHTML = `
+            <div class="col-12 text-center py-5">
+              <i class="bi bi-bell-slash" style="font-size: 5rem; color: #dee2e6;"></i>
+              <h3 class="mt-4 text-muted">No tenés alertas configuradas</h3>
+              <p class="text-muted">Creá alertas y te avisaremos cuando lleguen los autos que te interesan</p>
+              <a href="crear-alerta.html" class="btn btn-warning btn-lg mt-3">
+                <i class="bi bi-bell-fill"></i> Crear Primera Alerta
+              </a>
+            </div>
+          `;
+          return;
+        }
+        
+        listado.innerHTML = '';
+        
+        alertas.forEach(alerta => {
+          const fecha = new Date(alerta.createdAt).toLocaleDateString('es-AR');
+          
+          listado.innerHTML += `
+            <div class="col-md-6">
+              <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                  <div class="d-flex justify-content-between align-items-start mb-3">
                     <h5 class="mb-0">
-                        <i class="bi bi-{{ 'bell-fill' if alerta.activa else 'bell-slash' }} text-{{ 'warning' if alerta.activa else 'secondary' }}"></i>
-                        {{ alerta.marca or 'Cualquier marca' }}
+                      <i class="bi bi-${alerta.activa ? 'bell-fill' : 'bell-slash'} text-${alerta.activa ? 'warning' : 'secondary'}"></i>
+                      ${alerta.marca || 'Cualquier marca'}
                     </h5>
                     <div class="form-check form-switch">
-                        <input class="form-check-input" 
-                               type="checkbox" 
-                               {{ 'checked' if alerta.activa else '' }}
-                               onchange="toggleAlerta('{{ alerta._id }}')">
+                      <input class="form-check-input" 
+                             type="checkbox" 
+                             ${alerta.activa ? 'checked' : ''}
+                             onchange="toggleAlerta('${alerta._id}')">
                     </div>
-                </div>
-                
-                <div class="mb-2">
-                    {% if alerta.modelo %}
-                    <span class="badge bg-light text-dark">
-                        <i class="bi bi-car-front"></i> {{ alerta.modelo }}
-                    </span>
-                    {% endif %}
+                  </div>
+                  
+                  <div class="mb-2">
+                    ${alerta.modelo ? `
+                      <span class="badge bg-light text-dark">
+                        <i class="bi bi-car-front"></i> ${alerta.modelo}
+                      </span>
+                    ` : ''}
                     
-                    {% if alerta.precio_max %}
-                    <span class="badge bg-light text-dark">
-                        <i class="bi bi-cash"></i> Hasta ${{ "{:,.0f}".format(alerta.precio_max) }}
-                    </span>
-                    {% endif %}
+                    ${alerta.precioMax ? `
+                      <span class="badge bg-light text-dark">
+                        <i class="bi bi-cash"></i> Hasta $${parseFloat(alerta.precioMax).toLocaleString('es-AR')}
+                      </span>
+                    ` : ''}
                     
-                    {% if alerta.anio_min %}
-                    <span class="badge bg-light text-dark">
-                        <i class="bi bi-calendar"></i> Desde {{ alerta.anio_min }}
-                    </span>
-                    {% endif %}
-                </div>
-                
-                <small class="text-muted">
-                    <i class="bi bi-clock"></i> Creada: {{ alerta.fecha_creacion.strftime('%d/%m/%Y') }}
-                </small>
-                
-                <div class="mt-3">
-                    <button class="btn btn-sm btn-outline-danger" onclick="eliminarAlerta('{{ alerta._id }}')">
-                        <i class="bi bi-trash"></i> Eliminar
+                    ${alerta.anioMin ? `
+                      <span class="badge bg-light text-dark">
+                        <i class="bi bi-calendar"></i> Desde ${alerta.anioMin}
+                      </span>
+                    ` : ''}
+                  </div>
+                  
+                  <small class="text-muted">
+                    <i class="bi bi-clock"></i> Creada: ${fecha}
+                  </small>
+                  
+                  <div class="mt-3">
+                    <button class="btn btn-sm btn-outline-danger" onclick="eliminarAlerta('${alerta._id}')">
+                      <i class="bi bi-trash"></i> Eliminar
                     </button>
+                  </div>
                 </div>
+              </div>
             </div>
-        </div>
-    </div>
-    {% endfor %}
-</div>
-{% else %}
-<div class="text-center py-5">
-    <i class="bi bi-bell-slash" style="font-size: 5rem; color: #dee2e6;"></i>
-    <h3 class="mt-4 text-muted">No tenés alertas configuradas</h3>
-    <p class="text-muted">Creá alertas y te avisaremos cuando lleguen los autos que te interesan</p>
-    <a href="{{ url_for('usuarios.crear_alerta') }}" class="btn btn-warning btn-lg mt-3">
-        <i class="bi bi-bell-fill"></i> Crear Primera Alerta
-    </a>
-</div>
-{% endif %}
-
-<script>
-async function toggleAlerta(alertaId) {
-    try {
-        const response = await fetch(`/usuario/alerta/toggle/${alertaId}`, {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'}
+          `;
         });
         
-        const data = await response.json();
+      } catch (error) {
+        console.error('Error:', error);
+        listado.innerHTML = `
+          <div class="col-12 text-center py-5">
+            <i class="bi bi-exclamation-triangle text-danger" style="font-size: 5rem;"></i>
+            <h3 class="mt-4 text-danger">Error al cargar alertas</h3>
+            <button class="btn btn-primary mt-3" onclick="cargarAlertas()">
+              <i class="bi bi-arrow-clockwise"></i> Reintentar
+            </button>
+          </div>
+        `;
+      }
+    }
+    
+    async function toggleAlerta(alertaId) {
+      const token = localStorage.getItem('token');
+      
+      try {
+        const response = await fetch(`${API_URL}/alertas/${alertaId}/toggle`, {
+          method: 'PUT',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
         
-        if (!data.success) {
-            alert('Error al actualizar alerta');
-            location.reload();
+        if (!response.ok) {
+          alert('Error al actualizar alerta');
+          cargarAlertas();
         }
-    } catch (error) {
+      } catch (error) {
         console.error('Error:', error);
         alert('Error al actualizar alerta');
+      }
     }
-}
-
-async function eliminarAlerta(alertaId) {
-    if (!confirm('¿Querés eliminar esta alerta?')) return;
     
-    try {
-        const response = await fetch(`/usuario/alerta/eliminar/${alertaId}`, {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'}
+    async function eliminarAlerta(alertaId) {
+      if (!confirm('¿Querés eliminar esta alerta?')) return;
+      
+      const token = localStorage.getItem('token');
+      
+      try {
+        const response = await fetch(`${API_URL}/alertas/${alertaId}`, {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
         });
         
-        const data = await response.json();
-        
-        if (data.success) {
-            location.reload();
+        if (response.ok) {
+          cargarAlertas();
         } else {
-            alert('Error al eliminar alerta');
+          alert('Error al eliminar alerta');
         }
-    } catch (error) {
+      } catch (error) {
         console.error('Error:', error);
         alert('Error al eliminar alerta');
+      }
     }
-}
-</script>
-
-{% endblock %}
+    
+    document.addEventListener('DOMContentLoaded', () => {
+      if (verificarAuth()) {
+        cargarAlertas();
+      }
+    });
+  </script>
+</body>
+</html>
