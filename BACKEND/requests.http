@@ -1,27 +1,34 @@
 ###############################################################################
 # REQUESTS.HTTP - Pruebas de API Backend
-# Giménez Automotores - Backend Node.js
+# Giménez Automotores - Backend Node.js + Express + MongoDB
 # Alumno: Mateo Giménez - ETEC 2025
 ###############################################################################
 
-# IMPORTANTE: Instalar extensión "REST Client" en VS Code
+# ⚠️ IMPORTANTE: Instalar extensión "REST Client" en VS Code
 # Cambiar @baseURL si el backend corre en otro puerto/host
 
 @baseURL = http://localhost:3000
-@token = TU_TOKEN_AQUI_DESPUES_DE_LOGIN
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+
+# 💡 INSTRUCCIONES:
+# 1. Hacer clic en "Send Request" sobre cada endpoint
+# 2. Después de login, copiar el token y pegarlo en @token
+# 3. Para rutas protegidas, primero hacer login
 
 ###############################################################################
-# HEALTH CHECK
+# 🏥 HEALTH CHECK
 ###############################################################################
 
-### Health Check
+### Health Check - Verificar que el servidor esté corriendo
 GET {{baseURL}}/api/health
+Content-Type: application/json
 
 ###############################################################################
-# AUTENTICACIÓN
+# 🔐 AUTENTICACIÓN
 ###############################################################################
 
 ### Registrar nuevo usuario
+# Crea un usuario nuevo con rol "usuario"
 POST {{baseURL}}/api/auth/register
 Content-Type: application/json
 
@@ -31,7 +38,10 @@ Content-Type: application/json
   "password": "123456"
 }
 
-### Login Admin
+### ─────────────────────────────────────────────────────────────────────────
+
+### Login - Usuario Administrador
+# Credenciales por defecto del sistema
 POST {{baseURL}}/api/auth/login
 Content-Type: application/json
 
@@ -40,7 +50,10 @@ Content-Type: application/json
   "password": "admin123"
 }
 
-### Login Usuario Normal
+### ─────────────────────────────────────────────────────────────────────────
+
+### Login - Usuario Normal
+# Primero debes registrar este usuario
 POST {{baseURL}}/api/auth/login
 Content-Type: application/json
 
@@ -49,28 +62,39 @@ Content-Type: application/json
   "password": "123456"
 }
 
-### Obtener mi perfil (requiere token)
+### ─────────────────────────────────────────────────────────────────────────
+
+### Obtener mi perfil
+# 🔒 Requiere token de autenticación
 GET {{baseURL}}/api/auth/me
 Authorization: Bearer {{token}}
 
 ###############################################################################
-# VEHÍCULOS (PÚBLICO)
+# 🚗 VEHÍCULOS (PÚBLICO)
 ###############################################################################
 
 ### Obtener todos los vehículos
+# Listado completo del catálogo
 GET {{baseURL}}/api/vehiculos
 
-### Obtener vehículos destacados (primeros 3)
+### ─────────────────────────────────────────────────────────────────────────
+
+### Obtener vehículos destacados
+# Primeros 3 vehículos del catálogo
 GET {{baseURL}}/api/vehiculos/destacados
 
+### ─────────────────────────────────────────────────────────────────────────
+
 ### Obtener un vehículo por ID
-GET {{baseURL}}/api/vehiculos/PONER_ID_AQUI
+# Reemplazar {id} con un _id real de MongoDB
+GET {{baseURL}}/api/vehiculos/675887e5c8f9a12345678901
 
 ###############################################################################
-# VEHÍCULOS (ADMIN - Requiere token de admin)
+# 🔧 VEHÍCULOS (ADMIN - Solo Administradores)
 ###############################################################################
 
-### Crear nuevo vehículo (SOLO ADMIN)
+### Crear nuevo vehículo
+# 🔒 SOLO ADMIN - Requiere token de administrador
 POST {{baseURL}}/api/vehiculos
 Authorization: Bearer {{token}}
 Content-Type: application/json
@@ -81,28 +105,43 @@ Content-Type: application/json
   "precio": 28000000,
   "imagen": "/static/img/fiat-fastback.png",
   "anio": 2024,
-  "stock": 3
+  "stock": 3,
+  "especificaciones": {
+    "motor": "1.3L Turbo",
+    "potencia": "170 CV",
+    "transmision": "Automática CVT",
+    "combustible": "Nafta",
+    "capacidad": "5 personas"
+  }
 }
 
-### Actualizar vehículo (SOLO ADMIN)
-PUT {{baseURL}}/api/vehiculos/PONER_ID_AQUI
+### ─────────────────────────────────────────────────────────────────────────
+
+### Actualizar vehículo
+# 🔒 SOLO ADMIN - Actualiza campos específicos
+PUT {{baseURL}}/api/vehiculos/675887e5c8f9a12345678901
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
   "precio": 29000000,
-  "stock": 5
+  "stock": 5,
+  "descripcion": "SUV coupé moderno - PRECIO ACTUALIZADO"
 }
 
-### Eliminar vehículo (SOLO ADMIN)
-DELETE {{baseURL}}/api/vehiculos/PONER_ID_AQUI
+### ─────────────────────────────────────────────────────────────────────────
+
+### Eliminar vehículo
+# 🔒 SOLO ADMIN - Elimina permanentemente
+DELETE {{baseURL}}/api/vehiculos/675887e5c8f9a12345678901
 Authorization: Bearer {{token}}
 
 ###############################################################################
-# MENSAJES DE CONTACTO
+# 📬 MENSAJES DE CONTACTO
 ###############################################################################
 
-### Enviar mensaje (PÚBLICO - no requiere login)
+### Enviar mensaje de contacto
+# Público - No requiere autenticación
 POST {{baseURL}}/api/mensajes
 Content-Type: application/json
 
@@ -110,19 +149,41 @@ Content-Type: application/json
   "nombre": "María García",
   "email": "maria@example.com",
   "telefono": "261-1234567",
-  "mensaje": "Hola, estoy interesada en el Fiat Cronos. ¿Tienen disponibilidad?"
+  "mensaje": "Hola, estoy interesada en el Fiat Cronos. ¿Tienen disponibilidad en color rojo? Me gustaría agendar un test drive para el próximo fin de semana."
 }
 
-### Obtener todos los mensajes (SOLO ADMIN)
+### ─────────────────────────────────────────────────────────────────────────
+
+### Enviar mensaje sin teléfono
+# El campo teléfono es opcional
+POST {{baseURL}}/api/mensajes
+Content-Type: application/json
+
+{
+  "nombre": "Carlos López",
+  "email": "carlos@example.com",
+  "mensaje": "Quiero información sobre planes de financiación para la Fiat Toro."
+}
+
+### ─────────────────────────────────────────────────────────────────────────
+
+### Obtener todos los mensajes
+# 🔒 SOLO ADMIN
 GET {{baseURL}}/api/mensajes
 Authorization: Bearer {{token}}
 
-### Obtener solo mensajes no leídos (SOLO ADMIN)
+### ─────────────────────────────────────────────────────────────────────────
+
+### Obtener solo mensajes no leídos
+# 🔒 SOLO ADMIN - Filtra mensajes pendientes
 GET {{baseURL}}/api/mensajes?no_leidos=true
 Authorization: Bearer {{token}}
 
-### Marcar mensaje como leído (SOLO ADMIN)
-PUT {{baseURL}}/api/mensajes/PONER_ID_AQUI/leido
+### ─────────────────────────────────────────────────────────────────────────
+
+### Marcar mensaje como leído
+# 🔒 SOLO ADMIN
+PUT {{baseURL}}/api/mensajes/675887e5c8f9a12345678901/leido
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
@@ -130,40 +191,66 @@ Content-Type: application/json
   "leido": true
 }
 
-### Eliminar mensaje (SOLO ADMIN)
-DELETE {{baseURL}}/api/mensajes/PONER_ID_AQUI
+### ─────────────────────────────────────────────────────────────────────────
+
+### Marcar mensaje como no leído
+# 🔒 SOLO ADMIN
+PUT {{baseURL}}/api/mensajes/675887e5c8f9a12345678901/leido
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "leido": false
+}
+
+### ─────────────────────────────────────────────────────────────────────────
+
+### Eliminar mensaje
+# 🔒 SOLO ADMIN - Elimina permanentemente
+DELETE {{baseURL}}/api/mensajes/675887e5c8f9a12345678901
 Authorization: Bearer {{token}}
 
-### Estadísticas de mensajes (SOLO ADMIN)
+### ─────────────────────────────────────────────────────────────────────────
+
+### Estadísticas de mensajes
+# 🔒 SOLO ADMIN - Total, leídos, no leídos
 GET {{baseURL}}/api/mensajes/stats
 Authorization: Bearer {{token}}
 
 ###############################################################################
-# FAVORITOS (Requiere autenticación de usuario)
+# ❤️ FAVORITOS (Requiere autenticación de usuario)
 ###############################################################################
 
 ### Agregar vehículo a favoritos
+# 🔒 Requiere autenticación
 POST {{baseURL}}/api/favoritos
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "vehiculoId": "PONER_ID_DEL_VEHICULO_AQUI"
+  "vehiculoId": "675887e5c8f9a12345678901"
 }
 
+### ─────────────────────────────────────────────────────────────────────────
+
 ### Obtener mis favoritos
+# 🔒 Requiere autenticación
 GET {{baseURL}}/api/favoritos
 Authorization: Bearer {{token}}
 
+### ─────────────────────────────────────────────────────────────────────────
+
 ### Eliminar de favoritos
-DELETE {{baseURL}}/api/favoritos/PONER_ID_DEL_VEHICULO_AQUI
+# 🔒 Requiere autenticación
+DELETE {{baseURL}}/api/favoritos/675887e5c8f9a12345678901
 Authorization: Bearer {{token}}
 
 ###############################################################################
-# COTIZADOR
+# 💰 COTIZADOR DE VEHÍCULOS USADOS
 ###############################################################################
 
-### Cotizar vehículo usado
+### Cotizar vehículo usado - Ejemplo Fiat Cronos
+# Público - No requiere autenticación
 POST {{baseURL}}/api/cotizador
 Content-Type: application/json
 
@@ -175,17 +262,61 @@ Content-Type: application/json
   "estado": "bueno"
 }
 
+### ─────────────────────────────────────────────────────────────────────────
+
+### Cotizar - Estado excelente
+POST {{baseURL}}/api/cotizador
+Content-Type: application/json
+
+{
+  "marca": "Fiat",
+  "modelo": "Argo",
+  "anio": 2022,
+  "kilometraje": 15000,
+  "estado": "excelente"
+}
+
+### ─────────────────────────────────────────────────────────────────────────
+
+### Cotizar - Estado regular
+POST {{baseURL}}/api/cotizador
+Content-Type: application/json
+
+{
+  "marca": "Fiat",
+  "modelo": "Palio",
+  "anio": 2018,
+  "kilometraje": 120000,
+  "estado": "regular"
+}
+
 ###############################################################################
-# PLANES DE FINANCIACIÓN
+# 💳 PLANES DE FINANCIACIÓN
 ###############################################################################
 
 ### Obtener todos los planes
+# Público - Listado completo de opciones de financiación
 GET {{baseURL}}/api/planes
+
+### ─────────────────────────────────────────────────────────────────────────
 
 ### Obtener solo planes destacados
 GET {{baseURL}}/api/planes?destacados=true
 
-### Calcular cuota para un plan específico
+### ─────────────────────────────────────────────────────────────────────────
+
+### Filtrar planes por monto
+# Muestra planes que acepten este monto
+GET {{baseURL}}/api/planes?monto=15000000
+
+### ─────────────────────────────────────────────────────────────────────────
+
+### Filtrar planes por cuotas máximas
+GET {{baseURL}}/api/planes?cuotas_max=24
+
+### ─────────────────────────────────────────────────────────────────────────
+
+### Calcular cuota - Plan 12 Cuotas Sin Interés
 POST {{baseURL}}/api/planes/plan-a/calcular
 Content-Type: application/json
 
@@ -194,38 +325,131 @@ Content-Type: application/json
   "enganche": 3000000
 }
 
+### ─────────────────────────────────────────────────────────────────────────
+
+### Calcular cuota - Plan 24 Cuotas
+POST {{baseURL}}/api/planes/plan-b/calcular
+Content-Type: application/json
+
+{
+  "monto": 20000000,
+  "enganche": 4000000
+}
+
+### ─────────────────────────────────────────────────────────────────────────
+
+### Calcular cuota - Plan 36 Cuotas
+POST {{baseURL}}/api/planes/plan-c/calcular
+Content-Type: application/json
+
+{
+  "monto": 25000000,
+  "enganche": 5000000
+}
+
+### ─────────────────────────────────────────────────────────────────────────
+
+### Calcular cuota - Plan 100% Financiado (sin enganche)
+POST {{baseURL}}/api/planes/plan-100/calcular
+Content-Type: application/json
+
+{
+  "monto": 18000000,
+  "enganche": 0
+}
+
 ###############################################################################
-# TURNOS TEST DRIVE (Requiere autenticación)
+# 📅 TURNOS TEST DRIVE (Requiere autenticación)
 ###############################################################################
 
 ### Agendar turno para test drive
+# 🔒 Requiere autenticación
 POST {{baseURL}}/api/turnos
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "vehiculoId": "PONER_ID_DEL_VEHICULO_AQUI",
+  "vehiculoId": "675887e5c8f9a12345678901",
   "fecha": "2025-01-15",
   "hora": "10:00",
-  "comentarios": "Prefiero por la mañana"
+  "comentarios": "Prefiero por la mañana. Tengo interés en el Fiat Cronos rojo."
 }
 
+### ─────────────────────────────────────────────────────────────────────────
+
+### Agendar turno - Sin comentarios
+# 🔒 Requiere autenticación
+POST {{baseURL}}/api/turnos
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "vehiculoId": "675887e5c8f9a12345678901",
+  "fecha": "2025-01-20",
+  "hora": "15:30"
+}
+
+### ─────────────────────────────────────────────────────────────────────────
+
 ### Obtener mis turnos
+# 🔒 Requiere autenticación
 GET {{baseURL}}/api/turnos
 Authorization: Bearer {{token}}
 
+### ─────────────────────────────────────────────────────────────────────────
+
 ### Cancelar turno
-DELETE {{baseURL}}/api/turnos/PONER_ID_DEL_TURNO_AQUI
+# 🔒 Requiere autenticación - Marca como "cancelado"
+DELETE {{baseURL}}/api/turnos/675887e5c8f9a12345678901
 Authorization: Bearer {{token}}
 
 ###############################################################################
-# NOTAS IMPORTANTES
+# 📝 NOTAS IMPORTANTES
 ###############################################################################
 
-# 1. Después de hacer login, copiar el token y pegarlo en la variable @token
-# 2. Para rutas que requieren ID, primero obtener vehículos/mensajes y copiar un _id
-# 3. El token expira en 7 días
-# 4. Solo usuarios con role="admin" pueden crear/editar/eliminar vehículos
-# 5. Usuarios normales pueden: ver vehículos, favoritos, turnos, cotizar
+# 1. TOKEN DE AUTENTICACIÓN:
+#    - Después de hacer login, copiar el token del response
+#    - Pegarlo en la variable @token al inicio del archivo
+#    - El token expira en 7 días
+#
+# 2. IDs DE MONGODB:
+#    - Para probar endpoints con :id, primero obtener vehículos/mensajes
+#    - Copiar un _id real y reemplazarlo en las rutas
+#
+# 3. ROLES DE USUARIO:
+#    - "admin": Puede crear/editar/eliminar vehículos y ver mensajes
+#    - "usuario": Puede favoritos, turnos, cotizar
+#
+# 4. DATOS DE PRUEBA:
+#    - Usuario admin: admin / admin123
+#    - 5 vehículos precargados en la BD
+#
+# 5. ERRORES COMUNES:
+#    - 401 Unauthorized: Token inválido o expirado
+#    - 403 Forbidden: No tienes permisos (ej: no eres admin)
+#    - 404 Not Found: El ID no existe
+#    - 400 Bad Request: Faltan campos requeridos
+
+###############################################################################
+# 🧪 CASOS DE PRUEBA SUGERIDOS
+###############################################################################
+
+# FLUJO COMPLETO USUARIO:
+# 1. Registrarse (POST /api/auth/register)
+# 2. Iniciar sesión (POST /api/auth/login)
+# 3. Ver vehículos (GET /api/vehiculos)
+# 4. Agregar a favoritos (POST /api/favoritos)
+# 5. Cotizar usado (POST /api/cotizador)
+# 6. Calcular plan (POST /api/planes/plan-a/calcular)
+# 7. Agendar turno (POST /api/turnos)
+# 8. Enviar mensaje (POST /api/mensajes)
+
+# FLUJO ADMINISTRADOR:
+# 1. Login como admin (POST /api/auth/login)
+# 2. Ver mensajes (GET /api/mensajes)
+# 3. Marcar mensaje leído (PUT /api/mensajes/:id/leido)
+# 4. Crear vehículo (POST /api/vehiculos)
+# 5. Actualizar vehículo (PUT /api/vehiculos/:id)
+# 6. Ver estadísticas (GET /api/mensajes/stats)
 
 ###############################################################################
