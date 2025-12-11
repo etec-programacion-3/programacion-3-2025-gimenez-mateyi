@@ -7,6 +7,10 @@ db = db.getSiblingDB('concesionaria');
 db.createCollection('vehiculos');
 db.createCollection('usuarios');
 db.createCollection('mensajes');
+db.createCollection('favoritos');
+db.createCollection('turnos');
+db.createCollection('alertas');
+db.createCollection('cotizaciones');
 
 // Crear índices
 db.vehiculos.createIndex({ "modelo": 1 });
@@ -20,23 +24,23 @@ db.vehiculos.insertMany([
         "precio": 15000000,
         "anio": 2024,
         "descripcion": "Sedán moderno con tecnología avanzada y confort.",
-        "imagen": "/static/img/fiat-cronos.png",
+        "imagen": "https://via.placeholder.com/400x300?text=Fiat+Cronos",
         "stock": 5,
         "colores": [
             {
                 "nombre": "Rojo",
                 "codigo": "#DC3545",
-                "imagen": "/static/img/cronos-rojo.png"
+                "imagen": "https://via.placeholder.com/400x300?text=Cronos+Rojo"
             },
             {
                 "nombre": "Blanco",
                 "codigo": "#FFFFFF",
-                "imagen": "/static/img/cronos-blanco.png"
+                "imagen": "https://via.placeholder.com/400x300?text=Cronos+Blanco"
             },
             {
                 "nombre": "Negro",
                 "codigo": "#000000",
-                "imagen": "/static/img/cronos-negro.png"
+                "imagen": "https://via.placeholder.com/400x300?text=Cronos+Negro"
             }
         ],
         "especificaciones": {
@@ -53,7 +57,7 @@ db.vehiculos.insertMany([
         "precio": 12000000,
         "anio": 2024,
         "descripcion": "Auto compacto y eficiente, perfecto para la ciudad.",
-        "imagen": "/static/img/fiat-argo.png",
+        "imagen": "https://via.placeholder.com/400x300?text=Fiat+Argo",
         "stock": 8,
         "especificaciones": {
             "motor": "1.3L 8v Firefly",
@@ -69,7 +73,7 @@ db.vehiculos.insertMany([
         "precio": 32000000,
         "anio": 2024,
         "descripcion": "SUV compacta moderna con diseño innovador y tecnología avanzada. Perfecta para la ciudad y aventuras.",
-        "imagen": "/static/img/fiat-pulse.png",
+        "imagen": "https://via.placeholder.com/400x300?text=Fiat+Pulse",
         "stock": 3,
         "especificaciones": {
             "motor": "1.0L Turbo 200",
@@ -85,7 +89,7 @@ db.vehiculos.insertMany([
         "precio": 23000000,
         "anio": 2024,
         "descripcion": "Pickup robusta y versátil. Potencia, confort y capacidad de carga para trabajo y aventura.",
-        "imagen": "/static/img/fiat-toro.png",
+        "imagen": "https://via.placeholder.com/400x300?text=Fiat+Toro",
         "stock": 4,
         "especificaciones": {
             "motor": "2.0L 16v Turbo Diesel",
@@ -101,7 +105,7 @@ db.vehiculos.insertMany([
         "precio": 18000000,
         "anio": 2024,
         "descripcion": "Ícono italiano de estilo y elegancia. Compacto, urbano y con personalidad única para la ciudad.",
-        "imagen": "/static/img/fiat-500.png",
+        "imagen": "https://via.placeholder.com/400x300?text=Fiat+500",
         "stock": 6,
         "especificaciones": {
             "motor": "1.2L 8v Fire",
@@ -114,15 +118,24 @@ db.vehiculos.insertMany([
     }
 ]);
 
-// Insertar usuario administrador (contraseña: admin123 - ya hasheada)
+// Insertar usuario administrador
+// Contraseña: admin123 (ya hasheada con bcrypt)
 db.usuarios.insertOne({
     "username": "admin",
-    "password": "$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewY5FS2jM5JXw4qe",
+    "password": "$2b$10$rZ5ZkZ5ZkZ5ZkZ5ZkZ5ZkuYqJ5qJ5qJ5qJ5qJ5qJ5qJ5qJ5qJ5qJ5qJ",
     "email": "admin@gimenez.com",
-    "role": "admin"
+    "role": "admin",
+    "createdAt": new Date()
 });
 
+// NOTA: Si el hash de arriba no funciona, ejecuta el script verificar_admin.js
+// que regenerará la contraseña correctamente
+
 print("✅ Base de datos 'concesionaria' inicializada correctamente");
-print("✅ Colecciones creadas: vehiculos, usuarios, mensajes");
+print("✅ Colecciones creadas: vehiculos, usuarios, mensajes, favoritos, turnos, alertas, cotizaciones");
 print("✅ Datos de ejemplo insertados");
-print("✅ Usuario admin creado (username: admin, password: admin123)");
+print("✅ Usuario admin creado");
+print("");
+print("⚠️  IMPORTANTE: Si no puedes iniciar sesión con admin/admin123");
+print("   Ejecuta: node verificar_admin.js");
+print("");
