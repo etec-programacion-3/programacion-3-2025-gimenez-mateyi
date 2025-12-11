@@ -927,12 +927,11 @@ app.use((err, req, res, next) => {
 // ==================== INICIAR SERVIDOR ====================
 async function startServer() {
   await connectDB();
-  
-  app.listen(PORT, () => {
+app.listen(PORT, "0.0.0.0", () => {
     console.log('='.repeat(60));
     console.log('🚗 GIMÉNEZ AUTOMOTORES - BACKEND API');
     console.log('='.repeat(60));
-    console.log(`📍 Servidor corriendo en: http://localhost:${PORT}`);
+    console.log(`📍 Servidor corriendo en: http://0.0.0.0:${PORT}`);
     console.log(`🔗 MongoDB: Conectado`);
     console.log(`🔐 Endpoints disponibles:`);
     console.log(`   - GET  /api/health`);
@@ -944,7 +943,8 @@ async function startServer() {
     console.log(`   - GET  /api/alertas (AUTH)`);
     console.log(`   - GET  /api/cotizaciones (AUTH)`);
     console.log('='.repeat(60));
-  });
+});
+
 }
 
 startServer();
