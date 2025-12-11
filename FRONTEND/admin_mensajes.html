@@ -156,6 +156,12 @@
         renderizarMensajes();
       } catch (error) {
         console.error('Error al cargar mensajes:', error);
+        document.getElementById('listadoMensajes').innerHTML = `
+          <div class="alert alert-danger">
+            <i class="bi bi-exclamation-triangle"></i> Error al cargar mensajes. 
+            Verificá que el backend esté corriendo.
+          </div>
+        `;
       }
     }
     
