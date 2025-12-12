@@ -905,7 +905,7 @@ app.get('/api/usuario/stats', authenticateToken, async (req, res) => {
   }
 });
 
-// ==================== HEALTH CHECK ====================
+// ==================== HEALTHh CHECK ====================
 app.get('/api/health', (req, res) => {
   res.json({ 
     status: 'OK', 
