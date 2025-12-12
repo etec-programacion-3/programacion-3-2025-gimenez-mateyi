@@ -928,23 +928,22 @@ app.use((err, req, res, next) => {
 async function startServer() {
   await connectDB();
   
-  app.listen(PORT, () => {
-    console.log('='.repeat(60));
-    console.log('🚗 GIMÉNEZ AUTOMOTORES - BACKEND API');
-    console.log('='.repeat(60));
-    console.log(`📍 Servidor corriendo en: http://localhost:${PORT}`);
-    console.log(`🔗 MongoDB: Conectado`);
-    console.log(`🔐 Endpoints disponibles:`);
-    console.log(`   - GET  /api/health`);
-    console.log(`   - POST /api/auth/register`);
-    console.log(`   - POST /api/auth/login`);
-    console.log(`   - GET  /api/vehiculos`);
-    console.log(`   - GET  /api/favoritos (AUTH)`);
-    console.log(`   - GET  /api/turnos (AUTH)`);
-    console.log(`   - GET  /api/alertas (AUTH)`);
-    console.log(`   - GET  /api/cotizaciones (AUTH)`);
-    console.log('='.repeat(60));
-  });
+app.listen(PORT, () => {
+  console.log('='.repeat(60));
+  console.log('🚗 GIMÉNEZ AUTOMOTORES - BACKEND API');
+  console.log('='.repeat(60));
+  console.log(`📍 Servidor corriendo en: http://localhost:${PORT}`);
+  console.log(`🔗 MongoDB: Conectado`);
+  console.log(`🔐 Endpoints disponibles:`);
+  console.log(`   - GET  /api/health`);
+  console.log(`   - POST /api/auth/register`);
+  console.log(`   - POST /api/auth/login`);
+  console.log(`   - GET  /api/vehiculos`);
+  console.log(`   - GET  /api/favoritos (AUTH)`);
+  console.log(`   - GET  /api/turnos (AUTH)`);
+  console.log(`   - GET  /api/alertas (AUTH)`);
+  console.log(`   - GET  /api/cotizaciones (AUTH)`);
+  console.log('='.repeat(60));
+});
 }
-
 startServer();
